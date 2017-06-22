@@ -22,45 +22,15 @@
  * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
+using System;
 
 namespace net.r_eg.MvsSln.Core
 {
-    public sealed class SlnResult
+    public interface IHandler
     {
         /// <summary>
-        /// Full path to root solution directory.
+        /// Gets unique id of listener.
         /// </summary>
-        public string solutionDir;
-
-        /// <summary>
-        /// Processed type for result.
-        /// </summary>
-        public SlnItems type;
-
-        /// <summary>
-        /// Solution configurations with platforms.
-        /// </summary>
-        public List<ConfigSln> solutionConfigs;
-
-        /// <summary>
-        /// Project configurations with platforms.
-        /// </summary>
-        public List<ConfigPrj> projectConfigs;
-
-        /// <summary>
-        /// All found projects in solution.
-        /// </summary>
-        public List<ProjectItem> projectItems;
-
-        /// <summary>
-        /// Default Configuration and Platform for current solution.
-        /// </summary>
-        public ConfigItem defaultConfig;
-
-        /// <summary>
-        /// All available global properties for solution.
-        /// </summary>
-        public Dictionary<string, string> properties;
+        Guid Id { get; }
     }
 }

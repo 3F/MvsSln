@@ -22,45 +22,30 @@
  * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
+using System;
+using System.IO;
 
-namespace net.r_eg.MvsSln.Core
+namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
-    public sealed class SlnResult
+    public abstract class LAbstract: ISlnHandler
     {
-        /// <summary>
-        /// Full path to root solution directory.
-        /// </summary>
-        public string solutionDir;
+        /// <param name="stream">Used stream.</param>
+        /// <param name="line">Received line.</param>
+        /// <param name="rsln">Handled solution data.</param>
+        public abstract void Positioned(StreamReader stream, string line, SlnResult rsln);
 
         /// <summary>
-        /// Processed type for result.
+        /// Gets unique id of listener.
         /// </summary>
-        public SlnItems type;
+        public Guid Id
+        {
+            get;
+            protected set;
+        }
 
-        /// <summary>
-        /// Solution configurations with platforms.
-        /// </summary>
-        public List<ConfigSln> solutionConfigs;
-
-        /// <summary>
-        /// Project configurations with platforms.
-        /// </summary>
-        public List<ConfigPrj> projectConfigs;
-
-        /// <summary>
-        /// All found projects in solution.
-        /// </summary>
-        public List<ProjectItem> projectItems;
-
-        /// <summary>
-        /// Default Configuration and Platform for current solution.
-        /// </summary>
-        public ConfigItem defaultConfig;
-
-        /// <summary>
-        /// All available global properties for solution.
-        /// </summary>
-        public Dictionary<string, string> properties;
+        public LAbstract()
+        {
+            Id = GetType().GUID;
+        }
     }
 }

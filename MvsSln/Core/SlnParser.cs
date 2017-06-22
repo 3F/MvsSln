@@ -26,8 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using net.r_eg.MvsSln.Log;
+using net.r_eg.MvsSln.Core.SlnHandlers;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -43,20 +42,17 @@ namespace net.r_eg.MvsSln.Core
     ///      -> void ParseFirstProjectLine(string firstLine, ProjectInSolution proj)
     ///      -> crackProjectLine -> PROJECTNAME + RELATIVEPATH
     /// etc.
-    /// 
-    /// Today it just re-licensed and separated into new project 'as is'. Thus:
-    /// TODO: after import - abstraction layer, and scalable items
     /// </summary>
-    internal class SlnParser
+    public class SlnParser: ISlnContainer
     {
         /// <summary>
-        /// Full path to root solution directory
+        /// Available solution handlers.
         /// </summary>
-        public string SolutionDir
+        public SynchSubscribers<ISlnHandler> SlnHandlers
         {
             get;
             protected set;
-        }
+        } = new SynchSubscribers<ISlnHandler>();
 
         /// <summary>
         /// Parse of selected .sln file
@@ -66,8 +62,10 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public SlnResult Parse(string sln, SlnItems type)
         {
-            SolutionDir = GetPathFrom(sln);
-            var data    = InitResult(type);
+            var data = new SlnResult() {
+                solutionDir = GetPathFrom(sln),
+                type = type,
+            };
 
             using(var reader = new StreamReader(sln, Encoding.Default))
             {
@@ -76,22 +74,8 @@ namespace net.r_eg.MvsSln.Core
                 {
                     line = line.Trim();
 
-                    if(data.projectItems != null 
-                        && line.StartsWith("Project(", StringComparison.Ordinal))
-                    {
-                        SetProjects(line, ref data.projectItems);
-                    }
-
-                    if(data.solutionConfigs != null 
-                        && line.StartsWith("GlobalSection(SolutionConfigurationPlatforms)", StringComparison.Ordinal))
-                    {
-                        SetSlnConfigs(reader, ref data.solutionConfigs);
-                    }
-
-                    if(data.projectConfigs != null 
-                        && line.StartsWith("GlobalSection(ProjectConfigurationPlatforms)", StringComparison.Ordinal))
-                    {
-                        SetPrjConfigs(reader, ref data.projectConfigs);
+                    foreach(ISlnHandler h in SlnHandlers) {
+                        h.Positioned(reader, line, data);
                     }
                 }
             }
@@ -109,135 +93,11 @@ namespace net.r_eg.MvsSln.Core
             return data;
         }
 
-        protected SlnResult InitResult(SlnItems type)
+        public SlnParser()
         {
-            var ret = new SlnResult();
-
-            if((type & SlnItems.Projects) != 0) {
-                ret.projectItems = new List<ProjectItem>();
-            }
-
-            if((type & SlnItems.SolutionConfPlatforms) != 0) {
-                ret.solutionConfigs = new List<ConfigSln>();
-            }
-
-            if((type & SlnItems.ProjectConfPlatforms) != 0) {
-                ret.projectConfigs = new List<ConfigPrj>();
-            }
-
-            return ret;
-        }
-
-        /// <summary>
-        /// SolutionConfigurationPlatforms section
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="configuration"></param>
-        protected void SetSlnConfigs(StreamReader reader, ref List<ConfigSln> configuration)
-        {
-            string line;
-            while((line = reader.ReadLine()) != null && line.Trim() != "EndGlobalSection")
-            {
-                string left = line.Split('=')[0].Trim(); // Debug|Win32 = Debug|Win32
-                if(string.Compare(left, "DESCRIPTION", StringComparison.OrdinalIgnoreCase) == 0) {
-                    LSender.Send(this, $"SolutionParser: Solution Configuration has been ignored for line '{line}'", Message.Level.Debug);
-                    continue;
-                }
-
-                string[] cfg = left.Split('|');
-                if(cfg.Length < 2) {
-                    continue;
-                }
-
-                LSender.Send(this, $"SolutionParser: Solution Configuration ->['{cfg[0]}' ; '{cfg[1]}']", Message.Level.Trace);
-                configuration.Add(new ConfigSln(cfg[0], cfg[1]));
-            }
-        }
-
-        /// <summary>
-        /// ProjectConfigurationPlatforms section
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="configuration"></param>
-        protected void SetPrjConfigs(StreamReader reader, ref List<ConfigPrj> configuration)
-        {
-            /*
-               [Projects Guid]                        [Solution pair]                [Project pair]
-               {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.ActiveCfg = Release|Any CPU   - configuration name
-               {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Build.0 = Release|Any CPU     - flag of build  (this line exists only when this flag is true)
-            */
-            string line;
-            while((line = reader.ReadLine()) != null && line.Trim() != "EndGlobalSection")
-            {
-                int x, y;
-
-                x           = line.IndexOf('.');
-                var pGuid   = line.Substring(0, x).Trim();
-
-                y           = line.IndexOf('.', ++x);
-                string csln = line.Substring(x, y - x).Trim();
-
-                x           = line.IndexOf('=', ++y);
-                string type = line.Substring(y, x - y).Trim();
-
-                string cprj = line.Substring(x + 1).Trim();
-
-                if(!type.Equals("ActiveCfg", StringComparison.OrdinalIgnoreCase)) {
-                    LSender.Send(this, $"SolutionParser: Project Configuration has been ignored for line '{line}'", Message.Level.Debug);
-                    continue;
-                }
-
-                LSender.Send(this, $"SolutionParser: Project Configuration `{pGuid}`, `{csln}` = `{cprj}`", Message.Level.Trace);
-
-                // TODO: IncludeInBuild = true -> check existence of .Build.0
-                configuration.Add(
-                    new ConfigPrj(cprj, pGuid, true, new ConfigSln(csln))
-                );
-            }
-        }
-
-        /// <summary>
-        /// Project section
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="projects"></param>
-        protected void SetProjects(string line, ref List<ProjectItem> projects)
-        {
-            // Pattern based on crackProjectLine from Microsoft.Build.BuildEngine.Shared.SolutionParser.
-            string pattern = "^Project\\(\"(?<TypeGuid>.*)\"\\)\\s*=\\s*\"(?<Name>.*)\"\\s*,\\s*\"(?<Path>.*)\"\\s*,\\s*\"(?<Guid>.*)\"$";
-            Match m = Regex.Match(line, pattern);
-            if(!m.Success) {
-                LSender.Send(this, $"SolutionParser: incorrect line for pattern :: '{line}'", Message.Level.Warn);
-                return;
-            }
-
-            string pType = m.Groups["TypeGuid"].Value.Trim();
-            
-            if(String.Equals("{2150E333-8FDC-42A3-9474-1A3956D46DE8}", pType, StringComparison.OrdinalIgnoreCase)) {
-                LSender.Send(this, "SolutionParser: ignored as SolutionFolder", Message.Level.Debug);
-                return;
-            }
-
-            string pName = m.Groups["Name"].Value.Trim();
-            string pPath = m.Groups["Path"].Value.Trim();
-            string pGuid = m.Groups["Guid"].Value.Trim();
-
-            string fullPath;
-            if(Path.IsPathRooted(pPath)) {
-                fullPath = pPath;
-            }
-            else {
-                fullPath = (!String.IsNullOrEmpty(pPath))? Path.Combine(SolutionDir, pPath) : pPath;
-            }
-
-            LSender.Send(this, $"SolutionParser: project ->['{pGuid}'; '{pName}'; '{pPath}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
-            projects.Add(new ProjectItem() {
-                type        = pType,
-                name        = pName,
-                path        = pPath,
-                fullPath    = fullPath,
-                pGuid       = pGuid
-            });
+            SlnHandlers.register(new LProject());
+            SlnHandlers.register(new LProjectConfigurationPlatforms());
+            SlnHandlers.register(new LSolutionConfigurationPlatforms());
         }
 
         protected Dictionary<string, string> GlobalProperties(string sln, string configuration, string platform)

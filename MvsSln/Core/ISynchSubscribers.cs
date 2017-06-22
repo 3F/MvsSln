@@ -22,45 +22,63 @@
  * THE SOFTWARE.
 */
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace net.r_eg.MvsSln.Core
 {
-    public sealed class SlnResult
+    public interface ISynchSubscribers<T>: IEnumerable, IEnumerable<T>
+        where T: IHandler
     {
         /// <summary>
-        /// Full path to root solution directory.
+        /// Number of elements contained in the thread-safe collection.
         /// </summary>
-        public string solutionDir;
+        int Count { get; }
 
         /// <summary>
-        /// Processed type for result.
+        /// Gets the object used to synchronize access to the thread-safe collection.
         /// </summary>
-        public SlnItems type;
+        object SyncRoot { get; }
 
         /// <summary>
-        /// Solution configurations with platforms.
+        /// Adds an listener to thread-safe collection.
         /// </summary>
-        public List<ConfigSln> solutionConfigs;
+        /// <param name="listener"></param>
+        /// <returns></returns>
+        bool register(T listener);
 
         /// <summary>
-        /// Project configurations with platforms.
+        /// Removes specified listener from the collection.
         /// </summary>
-        public List<ConfigPrj> projectConfigs;
+        /// <param name="listener"></param>
+        /// <returns></returns>
+        bool unregister(T listener);
 
         /// <summary>
-        /// All found projects in solution.
+        /// Reset all collection.
         /// </summary>
-        public List<ProjectItem> projectItems;
+        void reset();
 
         /// <summary>
-        /// Default Configuration and Platform for current solution.
+        /// Determines whether the collection contains an listener.
         /// </summary>
-        public ConfigItem defaultConfig;
+        /// <param name="listener"></param>
+        /// <returns></returns>
+        bool contains(T listener);
 
         /// <summary>
-        /// All available global properties for solution.
+        /// Checks existence of listener by Guid.
         /// </summary>
-        public Dictionary<string, string> properties;
+        /// <param name="id"></param>
+        /// <returns></returns>
+        bool exists(Guid id);
+
+        /// <summary>
+        /// Get listener by specific id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>null if not found.</returns>
+        T getById(Guid id);
     }
 }

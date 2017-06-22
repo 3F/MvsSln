@@ -22,45 +22,23 @@
  * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
+using net.r_eg.MvsSln.Core.SlnHandlers;
 
 namespace net.r_eg.MvsSln.Core
 {
-    public sealed class SlnResult
+    public interface ISlnContainer
     {
         /// <summary>
-        /// Full path to root solution directory.
+        /// Available solution handlers.
         /// </summary>
-        public string solutionDir;
+        SynchSubscribers<ISlnHandler> SlnHandlers { get; }
 
         /// <summary>
-        /// Processed type for result.
+        /// Parse of selected .sln file
         /// </summary>
-        public SlnItems type;
-
-        /// <summary>
-        /// Solution configurations with platforms.
-        /// </summary>
-        public List<ConfigSln> solutionConfigs;
-
-        /// <summary>
-        /// Project configurations with platforms.
-        /// </summary>
-        public List<ConfigPrj> projectConfigs;
-
-        /// <summary>
-        /// All found projects in solution.
-        /// </summary>
-        public List<ProjectItem> projectItems;
-
-        /// <summary>
-        /// Default Configuration and Platform for current solution.
-        /// </summary>
-        public ConfigItem defaultConfig;
-
-        /// <summary>
-        /// All available global properties for solution.
-        /// </summary>
-        public Dictionary<string, string> properties;
+        /// <param name="sln">Solution file</param>
+        /// <param name="type">Allowed type of operations.</param>
+        /// <returns></returns>
+        SlnResult Parse(string sln, SlnItems type);
     }
 }
