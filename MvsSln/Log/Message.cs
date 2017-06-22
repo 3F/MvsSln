@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2013-2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
+ * Copyright (c) 2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,51 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
 */
+/*
+ * origin: net.r_eg.Conari.Log :: Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
+*/
 
 using System;
-using System.Diagnostics;
 
-namespace net.r_eg.vsSBE.Sln
+namespace net.r_eg.MvsSln.Log
 {
-    /// <summary>
-    /// Project Configuration
-    /// </summary>
-    [DebuggerDisplay("{format()} [{pGuid}]")]
-    public struct ConfigPrj
+    [Serializable]
+    public class Message: EventArgs
     {
-        /// <summary>
-        /// Project Guid
-        /// </summary>
-        public string pGuid;
+        public DateTime stamp;
 
-        public string configuration;
+        public string content;
 
-        public string platform;
+        public Exception exception;
 
-        public bool includeInBuild;
+        public object data;
 
-        public ConfigSln sln;
+        public Level type;
 
-        public static string Format(string configuration, string platform)
+        public enum Level
         {
-            return $"{configuration}|{platform}";
+            Trace,
+            Debug,
+            Info,
+            Warn,
+            Error,
+            Fatal
         }
 
-        public string format()
+        public Message(string msg, Level type = Level.Debug)
         {
-            return Format(configuration, platform);
+            content     = msg;
+            this.type   = type;
+            stamp       = DateTime.Now;
         }
 
-        public ConfigPrj(string formatted)
-            : this()
+        public Message(string msg, Exception ex, Level type = Level.Error)
+            : this(msg, type)
         {
-            string[] cfg = formatted.Split('|');
-            if(cfg.Length < 2) {
-                throw new ArgumentException($"The format `{formatted}` of configuration is not supported.");
-            }
+            exception = ex;
+        }
 
-            configuration   = cfg[0];
-            platform        = cfg[1];
+        public Message(string msg, object data, Level type = Level.Debug)
+            : this(msg, type)
+        {
+            this.data = data;
         }
     }
 }

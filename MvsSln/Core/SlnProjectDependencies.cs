@@ -27,16 +27,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using net.r_eg.vsSBE.Bridge;
 
-namespace net.r_eg.vsSBE.SBEScripts.Components.Build
+namespace net.r_eg.MvsSln.Core
 {
     /// <summary>
-    /// Detects the first / last project of build-order in solution of Visual Studio.
-    /// Based on https://gist.github.com/3F/a77129e3978841241927
-    /// And represents final box-solution from Sample 1 - http://vssbe.r-eg.net/doc/Examples/Demo/#sample-1
+    /// Project Build Order from .sln file.
+    /// 
+    /// Please note: initially it was part of https://github.com/3F/vsSolutionBuildEvent
+    /// Today it just re-licensed and separated into new project 'as is'. Thus:
+    /// TODO: after import - abstraction layer, and scalable items 
     /// </summary>
-    public class ProjectsMap
+    public class SlnProjectDependencies: ISlnProjectDependencies
     {
         /// <summary>
         /// Guid of Solution Folder.
@@ -44,14 +45,14 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         public const string GUID_SLN_FOLDER = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
 
         /// <summary>
-        /// Map of projects in direct order.
+        /// Direct order of identifiers.
         /// </summary>
         protected List<string> order = new List<string>();
 
         /// <summary>
-        /// Map of projects by Guid.
+        /// Map of projects.
         /// </summary>
-        protected Dictionary<string, Project> projects = new Dictionary<string, Project>();
+        public Dictionary<string, List<string>> map = new Dictionary<string, List<string>>();
 
         /// <summary>
         /// Pattern of 'Project(' line - based on crackProjectLine from Microsoft.Build.BuildEngine.Shared.SolutionParser
@@ -64,34 +65,8 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         protected Regex rProperty = new Regex("^(?<PName>[^=]*)\\s*=\\s*(?<PValue>[^=]*)$");
 
         /// <summary>
-        /// Container of project data.
-        /// </summary>
-        public struct Project
-        {
-            /// <summary>
-            /// The name of project.
-            /// </summary>
-            public string name;
-
-            /// <summary>
-            /// Path to project.
-            /// </summary>
-            public string path;
-
-            /// <summary>
-            /// Type of project.
-            /// </summary>
-            public string type;
-
-            /// <summary>
-            /// Guid of project.
-            /// </summary>
-            public string guid;
-        }
-
-        /// <summary>
-        /// Get list of project Guids.
-        /// In direct order of definition.
+        /// List of project Guids.
+        /// In direct order of definitions with considering of ProjectDependencies.
         /// </summary>
         public List<string> GuidList
         {
@@ -101,32 +76,49 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         }
 
         /// <summary>
-        /// Get first project from defined list.
-        /// Ignores used Build type.
+        /// Projects and their dependencies.
         /// </summary>
-        public Project First
+        public Dictionary<string, List<string>> ProjectDependencies
+        {
+            get {
+                return map;
+            }
+        }
+
+        /// <summary>
+        /// List of projects by Guid.
+        /// </summary>
+        public Dictionary<string, ProjectItem> Projects
+        {
+            get;
+            protected set;
+        } = new Dictionary<string, ProjectItem>();
+
+        /// <summary>
+        /// Get first project from defined list.
+        /// </summary>
+        public ProjectItem FirstProject
         {
             get
             {
                 if(order.Count < 1) {
-                    return new Project() { name = "The First project is Undefined", path = "?" };
+                    return new ProjectItem() { name = "The First project is Undefined", path = "?" };
                 }
-                return projects[order[0]];
+                return Projects[order[0]];
             }
         }
 
         /// <summary>
         /// Get last project from defined list.
-        /// Ignores used Build type.
         /// </summary>
-        public Project Last
+        public ProjectItem LastProject
         {
             get
             {
                 if(order.Count < 1) {
-                    return new Project() { name = "The Last project is Undefined", path = "?" };
+                    return new ProjectItem() { name = "The Last project is Undefined", path = "?" };
                 }
-                return projects[order[order.Count - 1]];
+                return Projects[order[order.Count - 1]];
             }
         }
 
@@ -135,7 +127,7 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public Project FirstBy(BuildType type)
+        public ProjectItem FirstBy(BuildType type)
         {
             switch(type)
             {
@@ -143,10 +135,10 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
                 case BuildType.CleanCtx:
                 case BuildType.CleanOnlyProject:
                 case BuildType.CleanSelection: {
-                    return Last; // it should be in reverse order for 'Clean' types
+                    return LastProject; // it should be in reverse order for 'Clean' types
                 }
             }
-            return First;
+            return FirstProject;
         }
 
         /// <summary>
@@ -154,7 +146,7 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public Project LastBy(BuildType type)
+        public ProjectItem LastBy(BuildType type)
         {
             switch(type)
             {
@@ -162,10 +154,10 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
                 case BuildType.CleanCtx:
                 case BuildType.CleanOnlyProject:
                 case BuildType.CleanSelection: {
-                    return First; // it should be in reverse order for 'Clean' types
+                    return FirstProject; // it should be in reverse order for 'Clean' types
                 }
             }
-            return Last;
+            return LastProject;
         }
 
         /// <summary>
@@ -173,9 +165,9 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         /// </summary>
         /// <param name="guid">Identifier of project.</param>
         /// <returns></returns>
-        public Project getProjectBy(string guid)
+        public ProjectItem GetProjectBy(string guid)
         {
-            return projects[guid];
+            return Projects[guid];
         }
 
         /// <summary>
@@ -183,20 +175,20 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         /// </summary>
         /// <param name="sln">Full path to solution</param>
         /// <param name="flush">Resets prev. data if true.</param>
-        public void detect(string sln, bool flush = false)
+        public void Detect(string sln, bool flush = false)
         {
             if(flush) {
-                projects.Clear();
+                Projects.Clear();
                 order.Clear();
             }
 
-            Dictionary<string, List<string>> map = new Dictionary<string, List<string>>();
+            map.Clear();
             using(StreamReader reader = new StreamReader(sln, Encoding.Default))
             {
                 string line;
                 while((line = reader.ReadLine()) != null)
                 {
-                    extract(reader, line.Trim(), ref map);
+                    Extract(reader, line.Trim(), ref map);
                 }
             }
 
@@ -222,15 +214,15 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         }
 
         /// <param name="sln">Full path to solution</param>
-        public ProjectsMap(string sln)
+        public SlnProjectDependencies(string sln)
         {
-            detect(sln);
+            Detect(sln);
         }
 
         /// <summary>
-        /// Only to initialize analyzer.
+        /// To initialize analyzer only.
         /// </summary>
-        public ProjectsMap()
+        public SlnProjectDependencies()
         {
 
         }
@@ -238,7 +230,7 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
         /// <param name="reader">Used reader.</param>
         /// <param name="line">Current line.</param>
         /// <param name="map">Container of projects.</param>
-        protected void extract(StreamReader reader, string line, ref Dictionary<string, List<string>> map)
+        protected void Extract(StreamReader reader, string line, ref Dictionary<string, List<string>> map)
         {
             if(!line.StartsWith("Project(", StringComparison.Ordinal)) {
                 return;
@@ -256,12 +248,12 @@ namespace net.r_eg.vsSBE.SBEScripts.Components.Build
             string pGuid    = m.Groups["Guid"].Value.Trim();
             map[pGuid]      = new List<string>();
 
-            projects[pGuid] = new Project()
+            Projects[pGuid] = new ProjectItem()
             { 
-                name = m.Groups["Name"].Value,
-                path = m.Groups["Path"].Value,
-                type = m.Groups["TypeGuid"].Value,
-                guid = pGuid
+                name    = m.Groups["Name"].Value,
+                path    = m.Groups["Path"].Value,
+                type    = m.Groups["TypeGuid"].Value,
+                pGuid   = pGuid
             };
 
             while((line = reader.ReadLine()) != null && (line != "EndProject"))

@@ -22,77 +22,35 @@
  * THE SOFTWARE.
 */
 
-using System;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Core
 {
-    [Guid("6445BCC6-B722-43C9-A230-003D8B4FFED2")]
-    public enum BuildType
+    public struct SlnResult
     {
         /// <summary>
-        /// Common context - any type or type by default
+        /// Solution configurations with platforms.
         /// </summary>
-        Common = Int32.MaxValue,
+        public List<ConfigSln> solutionConfigs;
 
         /// <summary>
-        /// 'build' action
+        /// Project configurations with platforms.
         /// </summary>
-        Build = 100,
+        public List<ConfigPrj> projectConfigs;
 
         /// <summary>
-        /// 'rebuild' action
+        /// All found projects in solution.
         /// </summary>
-        Rebuild = 101,
+        public List<ProjectItem> projectItems;
 
         /// <summary>
-        /// 'clean' action
+        /// Default Configuration and Platform for current solution.
         /// </summary>
-        Clean = 102,
+        public ConfigItem defaultConfig;
 
         /// <summary>
-        /// 'build' action for selection
+        /// All available global properties for solution.
         /// </summary>
-        BuildSelection = 200,
-
-        /// <summary>
-        /// 'rebuild' action for selection
-        /// </summary>
-        RebuildSelection = 201,
-
-        /// <summary>
-        /// 'clean' action for selection
-        /// </summary>
-        CleanSelection = 202,
-
-        /// <summary>
-        /// 'build' action for project
-        /// </summary>
-        BuildOnlyProject = 205,
-
-        /// <summary>
-        /// 'rebuild' action for project
-        /// </summary>
-        RebuildOnlyProject = 206,
-
-        /// <summary>
-        /// 'clean' action for project
-        /// </summary>
-        CleanOnlyProject = 207,
-
-        /// <summary>
-        /// 'build' action for project
-        /// </summary>
-        BuildCtx = 302,
-
-        /// <summary>
-        /// 'rebuild' action for project
-        /// </summary>
-        RebuildCtx = 303,
-
-        /// <summary>
-        /// 'clean' action for project
-        /// </summary>
-        CleanCtx = 304,
+        public Dictionary<string, string> properties;
     }
 }

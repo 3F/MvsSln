@@ -22,41 +22,51 @@
  * THE SOFTWARE.
 */
 
-using System;
-using System.Diagnostics;
+using net.r_eg.MvsSln.Core;
 
-namespace net.r_eg.vsSBE.Sln
+namespace net.r_eg.MvsSln
 {
-    /// <summary>
-    /// Solution Configuration
-    /// </summary>
-    [DebuggerDisplay("{format()}")]
-    public struct ConfigSln
+    public sealed class Sln
     {
-        public string configuration;
+        private SlnParser parser = new SlnParser();
+        private string file;
 
-        public string platform;
-
-        public static string Format(string configuration, string platform)
+        public SlnItems Handler
         {
-            return $"{configuration}|{platform}";
+            get;
+            private set;
         }
 
-        public string format()
+        /// <summary>
+        /// Prepared solution data.
+        /// </summary>
+        public SlnResult SlnResult
         {
-            return Format(configuration, platform);
+            get;
+            private set;
         }
 
-        public ConfigSln(string formatted)
-            : this()
+        /// <summary>
+        /// Solution Project Dependencies handler.
+        /// </summary>
+        public ISlnProjectDependencies SlnProjectDependencies
         {
-            string[] cfg = formatted.Split('|');
-            if(cfg.Length < 2) {
-                throw new ArgumentException($"The format `{formatted}` of configuration is not supported.");
+            get;
+            private set;
+        }
+
+        /// <param name="file">.sln file</param>
+        /// <param name="type">Type of handler.</param>
+        public Sln(string file, SlnItems type)
+        {
+            Handler     = type;
+            this.file   = file;
+
+            SlnResult = parser.Parse(file, type);
+
+            if((type & SlnItems.SlnProjectDependencies) != 0) {
+                SlnProjectDependencies = new SlnProjectDependencies(file);
             }
-
-            configuration   = cfg[0];
-            platform        = cfg[1];
         }
     }
 }

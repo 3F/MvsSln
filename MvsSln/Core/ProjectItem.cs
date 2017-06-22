@@ -22,71 +22,39 @@
  * THE SOFTWARE.
 */
 
-using System;
-using Microsoft.Build.Framework;
+using System.Diagnostics;
 
-namespace net.r_eg.vsSBE.CI.MSBuild
+namespace net.r_eg.MvsSln.Core
 {
     /// <summary>
-    /// temp stub ...
+    /// Properties of project in solution file
     /// </summary>
-    internal class Log: ILog
+    [DebuggerDisplay("{name} [{pGuid}] = {fullPath}")]
+    public struct ProjectItem
     {
         /// <summary>
-        /// Flag of Diagnostic mode
+        /// Project type GUID
         /// </summary>
-        public bool IsDiagnostic
-        {
-            get {
-                return (level == LoggerVerbosity.Diagnostic);
-            }
-        }
+        public string type;
 
         /// <summary>
-        /// Level for this instance.
+        /// Project name
         /// </summary>
-        protected LoggerVerbosity level;
-
-        public static void Trace(string message, params object[] args)
-        {
-            Msg(message, args);
-        }
-
-        public static void Debug(string message, params object[] args)
-        {
-            Msg(message, args);
-        }
-
-        public static void Msg(string message, params object[] args)
-        {
-            Console.WriteLine(message, args);
-        }
+        public string name;
 
         /// <summary>
-        /// Writes message for information level.
+        /// Relative path to project
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
-        public void info(string message, params object[] args)
-        {
-            Msg(message, args);
-        }
+        public string path;
 
         /// <summary>
-        /// Writes message for debug level.
+        /// Full path to project 
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
-        public void debug(string message, params object[] args)
-        {
-            if(IsDiagnostic) {
-                info(message, args);
-            }
-        }
+        public string fullPath;
 
-        public Log(LoggerVerbosity level)
-        {
-            this.level = level;
-        }
+        /// <summary>
+        /// Project GUID
+        /// </summary>
+        public string pGuid;
     }
 }

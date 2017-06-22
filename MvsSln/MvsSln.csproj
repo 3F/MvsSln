@@ -44,15 +44,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
-    <Compile Include="ILog.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="ProjectsMap.cs" />
+    <Compile Include="Core\IConfPlatform.cs" />
+    <Compile Include="Core\ConfigItem.cs" />
+    <Compile Include="Core\ISlnProjectDependencies.cs" />
+    <Compile Include="Core\SlnResult.cs" />
+    <Compile Include="Log\ISender.cs" />
+    <Compile Include="Log\LSender.cs" />
+    <Compile Include="Log\Message.cs" />
+    <Compile Include="SlnItems.cs" />
+    <Compile Include="Sln.cs" />
+    <Compile Include="Core\SlnProjectDependencies.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sln\ConfigPrj.cs" />
-    <Compile Include="Sln\ConfigSln.cs" />
-    <Compile Include="Sln\Parser.cs" />
-    <Compile Include="Sln\Project.cs" />
-    <Compile Include="SolutionProperties.cs" />
+    <Compile Include="Core\ConfigPrj.cs" />
+    <Compile Include="Core\ConfigSln.cs" />
+    <Compile Include="Core\SlnParser.cs" />
+    <Compile Include="Core\ProjectItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

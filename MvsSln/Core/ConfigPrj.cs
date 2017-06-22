@@ -22,27 +22,61 @@
  * THE SOFTWARE.
 */
 
-namespace net.r_eg.vsSBE.CI.MSBuild
+using System.Diagnostics;
+
+namespace net.r_eg.MvsSln.Core
 {
-    internal interface ILog
+    /// <summary>
+    /// Project Configuration
+    /// </summary>
+    [DebuggerDisplay("{Format()} [{PGuid}]")]
+    public sealed class ConfigPrj: ConfigItem, IConfPlatform
     {
         /// <summary>
-        /// Flag of Diagnostic mode
+        /// Project Guid.
         /// </summary>
-        bool IsDiagnostic { get; }
+        public string PGuid
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
-        /// Message for information level.
+        /// Existence of `.Build.0` to activate project for build:
+        /// {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Build.0 = Release|Any CPU
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
-        void info(string message, params object[] args);
+        public bool IncludeInBuild
+        {
+            get;
+            private set;
+        }
 
         /// <summary>
-        /// Message for debug level.
+        /// Link to solution configuration.
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
-        void debug(string message, params object[] args);
+        public ConfigSln Sln
+        {
+            get;
+            private set;
+        }
+
+        public ConfigPrj(string name, string platform, string pGuid, bool build, ConfigSln sln)
+            : base(name, platform)
+        {
+            Set(pGuid, build, sln);
+        }
+
+        public ConfigPrj(string formatted, string pGuid, bool build, ConfigSln sln)
+            : base(formatted)
+        {
+            Set(pGuid, build, sln);
+        }
+
+        private void Set(string pGuid, bool build, ConfigSln sln)
+        {
+            PGuid           = pGuid;
+            IncludeInBuild  = build;
+            Sln             = sln;
+        }
     }
 }

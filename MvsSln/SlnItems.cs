@@ -23,76 +23,39 @@
 */
 
 using System;
-using System.Runtime.InteropServices;
 
 namespace net.r_eg.MvsSln
 {
-    [Guid("6445BCC6-B722-43C9-A230-003D8B4FFED2")]
-    public enum BuildType
+    public enum SlnItems: UInt32
     {
-        /// <summary>
-        /// Common context - any type or type by default
-        /// </summary>
-        Common = Int32.MaxValue,
+        None,
 
         /// <summary>
-        /// 'build' action
+        /// All supported data.
         /// </summary>
-        Build = 100,
+        All = Projects 
+                | SolutionConfPlatforms 
+                | ProjectConfPlatforms 
+                | SlnProjectDependencies,
 
         /// <summary>
-        /// 'rebuild' action
+        /// All found projects from solution.
         /// </summary>
-        Rebuild = 101,
+        Projects = 0x0001,
 
         /// <summary>
-        /// 'clean' action
+        /// Solution configurations with platforms.
         /// </summary>
-        Clean = 102,
+        SolutionConfPlatforms = 0x0002,
 
         /// <summary>
-        /// 'build' action for selection
+        /// Project configurations with platforms.
         /// </summary>
-        BuildSelection = 200,
+        ProjectConfPlatforms = 0x0004,
 
         /// <summary>
-        /// 'rebuild' action for selection
+        /// Project Build Order from .sln file.
         /// </summary>
-        RebuildSelection = 201,
-
-        /// <summary>
-        /// 'clean' action for selection
-        /// </summary>
-        CleanSelection = 202,
-
-        /// <summary>
-        /// 'build' action for project
-        /// </summary>
-        BuildOnlyProject = 205,
-
-        /// <summary>
-        /// 'rebuild' action for project
-        /// </summary>
-        RebuildOnlyProject = 206,
-
-        /// <summary>
-        /// 'clean' action for project
-        /// </summary>
-        CleanOnlyProject = 207,
-
-        /// <summary>
-        /// 'build' action for project
-        /// </summary>
-        BuildCtx = 302,
-
-        /// <summary>
-        /// 'rebuild' action for project
-        /// </summary>
-        RebuildCtx = 303,
-
-        /// <summary>
-        /// 'clean' action for project
-        /// </summary>
-        CleanCtx = 304,
+        SlnProjectDependencies = 0x0008,
     }
 }

@@ -22,39 +22,57 @@
  * THE SOFTWARE.
 */
 
-using System.Diagnostics;
+using System.Collections.Generic;
 
-namespace net.r_eg.vsSBE.Sln
+namespace net.r_eg.MvsSln.Core
 {
-    /// <summary>
-    /// Properties of project in solution file
-    /// </summary>
-    [DebuggerDisplay("{name} [{pGuid}] = {fullPath}")]
-    public struct Project
+    public interface ISlnProjectDependencies
     {
         /// <summary>
-        /// Project type GUID
+        /// List of project Guids.
+        /// In direct order of definitions with considering of ProjectDependencies.
         /// </summary>
-        public string type;
+        List<string> GuidList { get; }
 
         /// <summary>
-        /// Project name
+        /// Get first project from defined list.
         /// </summary>
-        public string name;
+        ProjectItem FirstProject { get; }
 
         /// <summary>
-        /// Relative path to project
+        /// Get last project from defined list.
         /// </summary>
-        public string path;
+        ProjectItem LastProject { get; }
 
         /// <summary>
-        /// Full path to project 
+        /// Get first project in Project Build Order.
         /// </summary>
-        public string fullPath;
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ProjectItem FirstBy(BuildType type);
 
         /// <summary>
-        /// Project GUID
+        /// Get last project in Project Build Order.
         /// </summary>
-        public string pGuid;
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ProjectItem LastBy(BuildType type);
+
+        /// <summary>
+        /// Get project by Guid string.
+        /// </summary>
+        /// <param name="guid">Identifier of project.</param>
+        /// <returns></returns>
+        ProjectItem GetProjectBy(string guid);
+
+        /// <summary>
+        /// List of projects by Guid.
+        /// </summary>
+        Dictionary<string, ProjectItem> Projects { get; }
+
+        /// <summary>
+        /// Projects and their dependencies.
+        /// </summary>
+        Dictionary<string, List<string>> ProjectDependencies { get; }
     }
 }
