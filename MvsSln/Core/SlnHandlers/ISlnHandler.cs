@@ -28,9 +28,26 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
     public interface ISlnHandler: IHandler
     {
+        /// <summary>
+        /// The logic before processing file.
+        /// </summary>
+        /// <param name="file">Solution file.</param>
+        /// <param name="rsln">Handled solution data.</param>
+        void PreProcessing(string file, SlnResult rsln);
+
+        /// <summary>
+        /// New position in stream.
+        /// </summary>
         /// <param name="stream">Used stream.</param>
         /// <param name="line">Received line.</param>
         /// <param name="rsln">Handled solution data.</param>
         void Positioned(StreamReader stream, string line, SlnResult rsln);
+
+        /// <summary>
+        /// The logic after processing file.
+        /// </summary>
+        /// <param name="file">Solution file.</param>
+        /// <param name="rsln">Handled solution data.</param>
+        void PostProcessing(string file, SlnResult rsln);
     }
 }

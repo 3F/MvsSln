@@ -36,7 +36,7 @@ namespace net.r_eg.MvsSln
         All = Projects 
                 | SolutionConfPlatforms 
                 | ProjectConfPlatforms 
-                | SlnProjectDependencies,
+                | ProjectDependencies,
 
         /// <summary>
         /// All found projects from solution.
@@ -56,6 +56,6 @@ namespace net.r_eg.MvsSln
         /// <summary>
         /// Project Build Order from .sln file.
         /// </summary>
-        SlnProjectDependencies = 0x0008,
+        ProjectDependencies = 0x0008,
     }
 }

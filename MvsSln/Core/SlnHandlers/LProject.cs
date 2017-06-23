@@ -32,6 +32,9 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
     public class LProject: LAbstract, ISlnHandler
     {
+        /// <summary>
+        /// New position in stream.
+        /// </summary>
         /// <param name="stream">Used stream.</param>
         /// <param name="line">Received line.</param>
         /// <param name="rsln">Handled solution data.</param>

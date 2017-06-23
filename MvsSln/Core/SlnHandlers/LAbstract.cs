@@ -29,6 +29,9 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
     public abstract class LAbstract: ISlnHandler
     {
+        /// <summary>
+        /// New position in stream.
+        /// </summary>
         /// <param name="stream">Used stream.</param>
         /// <param name="line">Received line.</param>
         /// <param name="rsln">Handled solution data.</param>
@@ -41,6 +44,26 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         {
             get;
             protected set;
+        }
+
+        /// <summary>
+        /// The logic before processing file.
+        /// </summary>
+        /// <param name="file">Solution file.</param>
+        /// <param name="rsln">Handled solution data.</param>
+        public virtual void PreProcessing(string file, SlnResult rsln)
+        {
+
+        }
+
+        /// <summary>
+        /// The logic after processing file.
+        /// </summary>
+        /// <param name="file">Solution file.</param>
+        /// <param name="rsln">Handled solution data.</param>
+        public virtual void PostProcessing(string file, SlnResult rsln)
+        {
+
         }
 
         public LAbstract()

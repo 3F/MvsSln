@@ -62,5 +62,10 @@ namespace net.r_eg.MvsSln.Core
         /// All available global properties for solution.
         /// </summary>
         public Dictionary<string, string> properties;
+
+        /// <summary>
+        /// Solution Project Dependencies.
+        /// </summary>
+        public ISlnProjectDependencies projectDependencies;
     }
 }

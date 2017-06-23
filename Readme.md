@@ -1,13 +1,30 @@
 # [MvsSln](https://github.com/3F/MvsSln)
 
-The MvsSln provides logic for complex support of the Visual Studio .sln files and its projects.
+MvsSln provides logic for complex support of the Visual Studio .sln files and its projects.
 
 It was as a part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) projects, but now it extracted into the new specially for [DllExport](https://github.com/3F/DllExport/issues/38) and for others.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/if1t4rhhntpf6ut3/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln/branch/master)
+[![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
+[![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
+
+**Download:** [/releases](https://github.com/3F/MvsSln/releases) ( [latest](https://github.com/3F/MvsSln/releases/latest) )
+
+## License
+
+The [MIT License (MIT)](https://github.com/3F/MvsSln/blob/master/License.txt)
+
+```
+Copyright (c) 2013-2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
+```
+
+## Why MvsSln ?
+
+...
 
 ## Roadmap
 
-* It will be re-licensed (LGPLv3 -> MIT) and restructured for common using soon !
+* It has been re-licensed now (LGPLv3 -> MIT) and will be restructured for common using soon !
 
 Contact with me via github if you have a questions.
 

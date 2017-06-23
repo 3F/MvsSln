@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSln", "MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
 EndProject
@@ -10,18 +10,41 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSlnTest", "MvsSlnTest\Mv
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D} = {F905DFB2-2E67-4FF7-9001-924F6F2D645D}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{297F83DE-F9C9-427B-94E8-2568A28BB784}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.version = .version
+		build.bat = build.bat
+		changelog.txt = changelog.txt
+		License.txt = License.txt
+		packages.config = packages.config
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{600BF727-4AAF-4BC9-B5D8-4F06DB2E9CF6}"
+	ProjectSection(SolutionItems) = preProject
+		tools\gnt.bat = tools\gnt.bat
+		tools\hMSBuild.bat = tools\hMSBuild.bat
+		tools\MvsSln.nuspec = tools\MvsSln.nuspec
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		PublicRelease|Any CPU = PublicRelease|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

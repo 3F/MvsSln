@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Core.SlnHandlers;
 
-namespace net.r_eg.vsSBE.Test.SBEScripts.Components
+namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
 {
     [TestClass]
     public class ProjectsMapTest
@@ -63,7 +64,7 @@ namespace net.r_eg.vsSBE.Test.SBEScripts.Components
             Assert.AreEqual("{55555555-5555-5555-5555-555555555555}", target.LastBy(BuildType.Build).type);
         }
 
-        private class SProjectsMap: SlnProjectDependencies
+        private class SProjectsMap: LProjectDependencies
         {
             public SProjectsMap()
             {

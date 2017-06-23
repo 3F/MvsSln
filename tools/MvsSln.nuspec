@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>MvsSln</id>
+    <version>1.0.0</version>
+    <title>[ MvsSln ] Binder of Unmanaged code for .NET</title>
+    <authors>github.com/3F/MvsSln</authors>
+    <owners>reg</owners>
+    <licenseUrl>https://github.com/3F/MvsSln/blob/master/License.txt</licenseUrl>
+    <projectUrl>https://github.com/3F/MvsSln</projectUrl>
+    <iconUrl></iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+    
+        MvsSln provides logic for complex support of the Visual Studio .sln files and its projects.
+
+        It was as a part of the https://github.com/3F/vsSolutionBuildEvent projects, but now it extracted into the new specially for [DllExport](https://github.com/3F/DllExport/issues/38) and for others.
+        _ _ _ _ _ _
+        Source code and all details here: https://github.com/3F/MvsSln
+        
+        ~~~~~~~~
+        Get it via GetNuTool:
+        ==========================================
+        gnt /p:ngpackages="MvsSln/1.0.0"
+        ==========================================
+        * https://github.com/3F/GetNuTool         
+        
+    </description>
+    <summary>MvsSln provides logic for complex support of the Visual Studio .sln files and its projects. ... https://github.com/3F/MvsSln</summary>
+    <tags>sln visual-studio projects visualstudio sln-files csproj vcxproj vs vs2015 vs2017 MvsSln</tags>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright (c) 2013-2017  Denis Kuzmin [entry.reg@gmail.com] :: github.com/3F </copyright>
+    <references>
+      <reference file="MvsSln.dll" />
+    </references>
+  </metadata>
+</package>

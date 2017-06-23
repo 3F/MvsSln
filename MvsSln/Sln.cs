@@ -26,47 +26,22 @@ using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.MvsSln
 {
-    public sealed class Sln
+    /// <summary>
+    /// Wrapper of the default solution parser.
+    /// </summary>
+    public static class Sln
     {
-        private SlnParser parser = new SlnParser();
-        private string file;
-
-        public SlnItems Handler
-        {
-            get;
-            private set;
-        }
+        private static ISlnContainer parser = new SlnParser();
 
         /// <summary>
-        /// Prepared solution data.
+        /// Parse of selected .sln file
         /// </summary>
-        public SlnResult SlnResult
+        /// <param name="file">Solution file</param>
+        /// <param name="type">Allowed type of operations.</param>
+        /// <returns>Parsed solution data.</returns>
+        public static SlnResult Parse(string file, SlnItems type)
         {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Solution Project Dependencies handler.
-        /// </summary>
-        public ISlnProjectDependencies SlnProjectDependencies
-        {
-            get;
-            private set;
-        }
-
-        /// <param name="file">.sln file</param>
-        /// <param name="type">Type of handler.</param>
-        public Sln(string file, SlnItems type)
-        {
-            Handler     = type;
-            this.file   = file;
-
-            SlnResult = parser.Parse(file, type);
-
-            if((type & SlnItems.SlnProjectDependencies) != 0) {
-                SlnProjectDependencies = new SlnProjectDependencies(file);
-            }
+            return parser.Parse(file, type);
         }
     }
 }

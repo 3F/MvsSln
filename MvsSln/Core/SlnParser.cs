@@ -34,14 +34,6 @@ namespace net.r_eg.MvsSln.Core
     /// Parser for basic elements from .sln files.
     /// 
     /// Please note: initially it was part of https://github.com/3F/vsSolutionBuildEvent
-    /// for work with EnvDTE and ProjectCollection without DTE-context for Isolated Environment.
-    /// i.e. alternative to:
-    /// * deprecated Microsoft.Build.BuildEngine.Project
-    /// * access via reflection to the internal SolutionParser from Microsoft.Build.Construction/BuildEngine.Shared
-    ///   -> void ParseProject(string firstLine)
-    ///      -> void ParseFirstProjectLine(string firstLine, ProjectInSolution proj)
-    ///      -> crackProjectLine -> PROJECTNAME + RELATIVEPATH
-    /// etc.
     /// </summary>
     public class SlnParser: ISlnContainer
     {
@@ -62,23 +54,24 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public SlnResult Parse(string sln, SlnItems type)
         {
+            if(String.IsNullOrWhiteSpace(sln)) {
+                throw new ArgumentNullException("sln", "Value cannot be null or empty");
+            }
+
             var data = new SlnResult() {
                 solutionDir = GetPathFrom(sln),
                 type = type,
             };
 
+            HandlePreProcessing(sln, data);
             using(var reader = new StreamReader(sln, Encoding.Default))
             {
                 string line;
-                while((line = reader.ReadLine()) != null)
-                {
-                    line = line.Trim();
-
-                    foreach(ISlnHandler h in SlnHandlers) {
-                        h.Positioned(reader, line, data);
-                    }
+                while((line = reader.ReadLine()) != null) {
+                    HandlePositioned(reader, line.Trim(), data);
                 }
             }
+            HandlePostProcessing(sln, data);
 
             if(data.solutionConfigs != null)
             {
@@ -89,7 +82,6 @@ namespace net.r_eg.MvsSln.Core
             }
 
             data.properties = GlobalProperties(sln, data.defaultConfig?.Configuration, data.defaultConfig?.Platform);
-
             return data;
         }
 
@@ -98,6 +90,28 @@ namespace net.r_eg.MvsSln.Core
             SlnHandlers.register(new LProject());
             SlnHandlers.register(new LProjectConfigurationPlatforms());
             SlnHandlers.register(new LSolutionConfigurationPlatforms());
+            SlnHandlers.register(new LProjectDependencies());
+        }
+
+        protected virtual void HandlePreProcessing(string file, SlnResult data)
+        {
+            foreach(ISlnHandler h in SlnHandlers) {
+                h.PreProcessing(file, data);
+            }
+        }
+
+        protected virtual void HandlePositioned(StreamReader reader, string line, SlnResult data)
+        {
+            foreach(ISlnHandler h in SlnHandlers) {
+                h.Positioned(reader, line, data);
+            }
+        }
+
+        protected virtual void HandlePostProcessing(string file, SlnResult data)
+        {
+            foreach(ISlnHandler h in SlnHandlers) {
+                h.PostProcessing(file, data);
+            }
         }
 
         protected Dictionary<string, string> GlobalProperties(string sln, string configuration, string platform)

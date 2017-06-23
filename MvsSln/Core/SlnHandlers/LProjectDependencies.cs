@@ -28,16 +28,14 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace net.r_eg.MvsSln.Core
+namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
     /// <summary>
     /// Project Build Order from .sln file.
     /// 
     /// Please note: initially it was part of https://github.com/3F/vsSolutionBuildEvent
-    /// Today it just re-licensed and separated into new project 'as is'. Thus:
-    /// TODO: after import - abstraction layer, and scalable items 
     /// </summary>
-    public class SlnProjectDependencies: ISlnProjectDependencies
+    public class LProjectDependencies: LAbstract, ISlnHandler, ISlnProjectDependencies
     {
         /// <summary>
         /// Guid of Solution Folder.
@@ -171,67 +169,32 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
-        /// Detect projects from solution file.
+        /// The logic before processing file.
         /// </summary>
-        /// <param name="sln">Full path to solution</param>
-        /// <param name="flush">Resets prev. data if true.</param>
-        public void Detect(string sln, bool flush = false)
+        /// <param name="file">Solution file.</param>
+        /// <param name="rsln">Handled solution data.</param>
+        public override void PreProcessing(string file, SlnResult rsln)
         {
-            if(flush) {
-                Projects.Clear();
-                order.Clear();
-            }
+            //if(flush) {
+            //    Projects.Clear();
+            //    order.Clear();
+            //}
 
             map.Clear();
-            using(StreamReader reader = new StreamReader(sln, Encoding.Default))
-            {
-                string line;
-                while((line = reader.ReadLine()) != null)
-                {
-                    Extract(reader, line.Trim(), ref map);
-                }
-            }
-
-            // Build order
-
-            Func<string, bool> h = null;
-            h = delegate(string id)
-            {
-                map[id].ForEach(dep => h(dep));
-                if(!order.Contains(id)) {
-                    order.Add(id);
-                }
-                return true;
-            };
-
-            foreach(KeyValuePair<string, List<string>> project in map)
-            {
-                h(project.Key);
-                if(!order.Contains(project.Key)) {
-                    order.Add(project.Key);
-                }
-            }
-        }
-
-        /// <param name="sln">Full path to solution</param>
-        public SlnProjectDependencies(string sln)
-        {
-            Detect(sln);
         }
 
         /// <summary>
-        /// To initialize analyzer only.
+        /// New position in stream.
         /// </summary>
-        public SlnProjectDependencies()
+        /// <param name="stream">Used stream.</param>
+        /// <param name="line">Received line.</param>
+        /// <param name="rsln">Handled solution data.</param>
+        public override void Positioned(StreamReader stream, string line, SlnResult rsln)
         {
+            if((rsln.type & SlnItems.ProjectDependencies) == 0) {
+                return;
+            }
 
-        }
-
-        /// <param name="reader">Used reader.</param>
-        /// <param name="line">Current line.</param>
-        /// <param name="map">Container of projects.</param>
-        protected void Extract(StreamReader reader, string line, ref Dictionary<string, List<string>> map)
-        {
             if(!line.StartsWith("Project(", StringComparison.Ordinal)) {
                 return;
             }
@@ -256,19 +219,49 @@ namespace net.r_eg.MvsSln.Core
                 pGuid   = pGuid
             };
 
-            while((line = reader.ReadLine()) != null && (line != "EndProject"))
+            while((line = stream.ReadLine()) != null && (line != "EndProject"))
             {
                 line = line.Trim();
                 if(!line.StartsWith("ProjectSection(ProjectDependencies)", StringComparison.Ordinal)) {
                     continue;
                 }
 
-                for(line = reader.ReadLine(); line != null; line = reader.ReadLine()) {
+                for(line = stream.ReadLine(); line != null; line = stream.ReadLine()) {
                     line = line.Trim();
                     if(line.StartsWith("EndProjectSection", StringComparison.Ordinal)) {
                         break;
                     }
                     map[pGuid].Add(rProperty.Match(line).Groups["PName"].Value.Trim());
+                }
+            }
+
+            rsln.projectDependencies = this;
+        }
+
+        /// <summary>
+        /// The logic after processing file.
+        /// </summary>
+        /// <param name="file">Solution file.</param>
+        /// <param name="rsln">Handled solution data.</param>
+        public override void PostProcessing(string file, SlnResult rsln)
+        {
+            // Build order
+
+            Func<string, bool> h = null;
+            h = delegate(string id)
+            {
+                map[id].ForEach(dep => h(dep));
+                if(!order.Contains(id)) {
+                    order.Add(id);
+                }
+                return true;
+            };
+
+            foreach(KeyValuePair<string, List<string>> project in map)
+            {
+                h(project.Key);
+                if(!order.Contains(project.Key)) {
+                    order.Add(project.Key);
                 }
             }
         }
