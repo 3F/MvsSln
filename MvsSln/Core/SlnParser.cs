@@ -135,9 +135,9 @@ namespace net.r_eg.MvsSln.Core
             return ret;
         }
 
-        protected string ExtractDefaultConfiguration(List<ConfigSln> cfg)
+        protected string ExtractDefaultConfiguration(List<IConfPlatform> cfg)
         {
-            foreach(ConfigSln c in cfg) {
+            foreach(IConfPlatform c in cfg) {
                 if(c.Configuration.Equals("Debug", StringComparison.OrdinalIgnoreCase)) {
                     return c.Configuration;
                 }
@@ -150,9 +150,9 @@ namespace net.r_eg.MvsSln.Core
         }
 
 
-        protected string ExtractDefaultPlatform(List<ConfigSln> cfg)
+        protected string ExtractDefaultPlatform(List<IConfPlatform> cfg)
         {
-            foreach(ConfigSln c in cfg)
+            foreach(IConfPlatform c in cfg)
             {
                 if(c.Platform.Equals("Mixed Platforms", StringComparison.OrdinalIgnoreCase)) {
                     return c.Platform;

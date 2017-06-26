@@ -48,7 +48,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             }
 
             if(rsln.solutionConfigs == null) {
-                rsln.solutionConfigs = new List<ConfigSln>();
+                rsln.solutionConfigs = new List<IConfPlatform>();
             }
 
             string _line;

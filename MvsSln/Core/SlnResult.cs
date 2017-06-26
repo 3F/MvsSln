@@ -41,12 +41,12 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
-        public List<ConfigSln> solutionConfigs;
+        public List<IConfPlatform> solutionConfigs;
 
         /// <summary>
         /// Project configurations with platforms.
         /// </summary>
-        public List<ConfigPrj> projectConfigs;
+        public List<IConfPlatformPrj> projectConfigs;
 
         /// <summary>
         /// All found projects in solution.
@@ -56,7 +56,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Default Configuration and Platform for current solution.
         /// </summary>
-        public ConfigItem defaultConfig;
+        public IConfPlatform defaultConfig;
 
         /// <summary>
         /// All available global properties for solution.

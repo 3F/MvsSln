@@ -30,7 +30,7 @@ namespace net.r_eg.MvsSln.Core
     /// Solution Configuration
     /// </summary>
     [DebuggerDisplay("{Format()}")]
-    public sealed class ConfigSln: ConfigItem, IConfPlatform
+    public class ConfigSln: ConfigItem, IConfPlatform
     {
         public ConfigSln(string configuration, string platform)
             : base(configuration, platform)

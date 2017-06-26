@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
+    <Compile Include="Core\IConfPlatformPrj.cs" />
     <Compile Include="Core\IConfPlatform.cs" />
     <Compile Include="Core\ConfigItem.cs" />
     <Compile Include="Core\ISlnProjectDependencies.cs" />

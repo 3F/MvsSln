@@ -125,6 +125,40 @@
     },
     {
       "Enabled": true,
+      "Name": "ActUpdVersions",
+      "Caption": "Update version number ...",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": false,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[( $(Configuration) != \"PublicRelease\" ) {\r\n    #[IO replace.Regex(\"$(pDir)/MvsSlnVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\r\n}]\r\n\r\n#[IO replace.Regex(\"tools/MvsSln.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\r\n#[IO replace.Regex(\"tools/MvsSln.nuspec\", \"\\\"MvsSln/[0-9.]+\\\"\", \"\\\"MvsSln/$(pVer)\\\"\")]",
+        "Command__": [
+          "#[( $(Configuration) != \"PublicRelease\" ) {",
+          "    #[IO replace.Regex(\"$(pDir)/MvsSlnVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]",
+          "}]",
+          "",
+          "#[IO replace.Regex(\"tools/MvsSln.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]",
+          "#[IO replace.Regex(\"tools/MvsSln.nuspec\", \"\\\"MvsSln/[0-9.]+\\\"\", \"\\\"MvsSln/$(pVer)\\\"\")]"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
       "Name": "ActVersion",
       "Caption": "Update Version",
       "SupportMSBuild": true,

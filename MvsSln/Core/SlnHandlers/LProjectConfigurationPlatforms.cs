@@ -31,6 +31,44 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
     public class LProjectConfigurationPlatforms: LAbstract, ISlnHandler
     {
+        protected class EqCortegeComparer: IEqualityComparer<Cortege>
+        {
+            public bool Equals(Cortege a, Cortege b)
+            {
+                if(a.pGuid != b.pGuid 
+                    || a.csln != b.csln 
+                    || a.cprj != b.cprj
+                    )
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            public int GetHashCode(Cortege obj)
+            {
+                Func<int, int, int> polynom = delegate(int r, int x) {
+                    unchecked {
+                        return (r << 5) + r ^ x;
+                    }
+                };
+
+                int h = 0;
+                h = polynom(h, obj.pGuid.GetHashCode());
+                h = polynom(h, obj.csln.GetHashCode());
+                h = polynom(h, obj.cprj.GetHashCode());
+
+                return h;
+            }
+        }
+
+        protected struct Cortege
+        {
+            public string pGuid;
+            public string csln;
+            public string cprj;
+        }
+
         /// <summary>
         /// New position in stream.
         /// </summary>
@@ -48,7 +86,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             }
 
             if(rsln.projectConfigs == null) {
-                rsln.projectConfigs = new List<ConfigPrj>();
+                rsln.projectConfigs = new List<IConfPlatformPrj>();
             }
 
             /*
@@ -57,6 +95,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Build.0 = Release|Any CPU     - flag of build  (this line exists only when this flag is true)
             */
             string _line;
+
+            var cortege = new Dictionary<Cortege, ConfigPrj>(new EqCortegeComparer());
             while((_line = stream.ReadLine()) != null && _line.Trim() != "EndGlobalSection")
             {
                 int x, y;
@@ -72,17 +112,34 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 
                 string cprj = _line.Substring(x + 1).Trim();
 
-                if(!type.Equals("ActiveCfg", StringComparison.OrdinalIgnoreCase)) {
-                    LSender.Send(this, $"SolutionParser: Project Configuration has been ignored for line '{_line}'", Message.Level.Debug);
+                bool isActiveCfg    = type.Equals("ActiveCfg", StringComparison.OrdinalIgnoreCase);
+                bool isBuild0       = type.Equals("Build.0", StringComparison.OrdinalIgnoreCase);
+
+                if(!isActiveCfg && !isBuild0) {
+                    LSender.Send(this, $"Project Configuration has been ignored for line '{_line}'", Message.Level.Debug);
                     continue;
                 }
 
-                LSender.Send(this, $"SolutionParser: Project Configuration `{pGuid}`, `{csln}` = `{cprj}`", Message.Level.Trace);
+                var ident = new Cortege() {
+                    pGuid   = pGuid,
+                    csln    = csln,
+                    cprj    = cprj,
+                };
 
-                // TODO: IncludeInBuild = true -> check existence of .Build.0
-                rsln.projectConfigs.Add(
-                    new ConfigPrj(cprj, pGuid, true, new ConfigSln(csln))
-                );
+                if(!cortege.ContainsKey(ident))
+                {
+                    LSender.Send(this, $"New Project Configuration `{pGuid}`, `{csln}` = `{cprj}` /{type}", Message.Level.Debug);
+                    cortege[ident] = new ConfigPrj(cprj, pGuid, isBuild0, new ConfigSln(csln));
+                    rsln.projectConfigs.Add(cortege[ident]);
+                    continue;
+                }
+
+                if(isBuild0)
+                {
+                    LSender.Send(this, $"Project Configuration, update Build.0  `{pGuid}`", Message.Level.Debug);
+                    cortege[ident].IncludeInBuild = true;
+                    continue;
+                }
             }
         }
     }
