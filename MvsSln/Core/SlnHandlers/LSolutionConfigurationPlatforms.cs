@@ -65,7 +65,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                     continue;
                 }
 
-                LSender.Send(this, $"SolutionParser: Solution Configuration ->['{cfg[0]}' ; '{cfg[1]}']", Message.Level.Trace);
+                LSender.Send(this, $"Solution Configuration ->['{cfg[0]}' ; '{cfg[1]}']", Message.Level.Trace);
                 rsln.solutionConfigs.Add(new ConfigSln(cfg[0], cfg[1]));
             }
         }

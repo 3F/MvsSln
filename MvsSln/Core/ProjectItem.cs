@@ -22,20 +22,29 @@
  * THE SOFTWARE.
 */
 
+using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text.RegularExpressions;
+using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core
 {
     /// <summary>
     /// Properties of project in solution file
     /// </summary>
-    [DebuggerDisplay("{name} [{pGuid}] = {fullPath}")]
+    [DebuggerDisplay("{name} [{pGuid}] = {path}")]
     public struct ProjectItem
     {
         /// <summary>
+        /// Project GUID
+        /// </summary>
+        public string pGuid;
+
+        /// <summary>
         /// Project type GUID
         /// </summary>
-        public string type;
+        public string pType;
 
         /// <summary>
         /// Project name
@@ -52,9 +61,30 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public string fullPath;
 
-        /// <summary>
-        /// Project GUID
-        /// </summary>
-        public string pGuid;
+        /// <param name="line">Initialize data from raw line.</param>
+        /// <param name="solutionDir">Path to solution directory.</param>
+        public ProjectItem(string line, string solutionDir)
+            : this()
+        {
+            Match m = RPatterns.ProjectLine.Match(line);
+            if(!m.Success) {
+                LSender.Send(this, $"ProjectItem: incorrect line :: '{line}'", Message.Level.Warn);
+                return;
+            }
+
+            pType   = m.Groups["TypeGuid"].Value.Trim();
+            name    = m.Groups["Name"].Value.Trim();
+            path    = m.Groups["Path"].Value.Trim();
+            pGuid   = m.Groups["Guid"].Value.Trim();
+
+            if(Path.IsPathRooted(path)) {
+                fullPath = path;
+            }
+            else {
+                fullPath = (!String.IsNullOrEmpty(path))? Path.Combine(solutionDir, path) : path;
+            }
+
+            LSender.Send(this, $"ProjectItem ->['{pGuid}'; '{name}'; '{path}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
+        }
     }
 }

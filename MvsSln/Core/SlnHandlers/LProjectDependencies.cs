@@ -25,8 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
+using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
@@ -38,11 +37,6 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
     public class LProjectDependencies: LAbstract, ISlnHandler, ISlnProjectDependencies
     {
         /// <summary>
-        /// Guid of Solution Folder.
-        /// </summary>
-        public const string GUID_SLN_FOLDER = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
-
-        /// <summary>
         /// Direct order of identifiers.
         /// </summary>
         protected List<string> order = new List<string>();
@@ -50,17 +44,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// Map of projects.
         /// </summary>
-        public Dictionary<string, List<string>> map = new Dictionary<string, List<string>>();
-
-        /// <summary>
-        /// Pattern of 'Project(' line - based on crackProjectLine from Microsoft.Build.BuildEngine.Shared.SolutionParser
-        /// </summary>
-        protected Regex rProject = new Regex("^Project\\(\"(?<TypeGuid>.*)\"\\)\\s*=\\s*\"(?<Name>.*)\"\\s*,\\s*\"(?<Path>.*)\"\\s*,\\s*\"(?<Guid>.*)\"$");
-
-        /// <summary>
-        /// Pattern of 'ProjectSection(ProjectDependencies)' lines - based on crackPropertyLine from Microsoft.Build.BuildEngine.Shared.SolutionParser
-        /// </summary>
-        protected Regex rProperty = new Regex("^(?<PName>[^=]*)\\s*=\\s*(?<PValue>[^=]*)$");
+        protected Dictionary<string, List<string>> map = new Dictionary<string, List<string>>();
 
         /// <summary>
         /// List of project Guids.
@@ -171,9 +155,9 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// The logic before processing file.
         /// </summary>
-        /// <param name="file">Solution file.</param>
+        /// <param name="stream">Used stream.</param>
         /// <param name="rsln">Handled solution data.</param>
-        public override void PreProcessing(string file, SlnResult rsln)
+        public override void PreProcessing(StreamReader stream, SlnResult rsln)
         {
             //if(flush) {
             //    Projects.Clear();
@@ -199,25 +183,20 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return;
             }
 
-            Match m = rProject.Match(line);
-            if(!m.Success) {
-                throw new Exception("incorrect line");
+            var pItem = new ProjectItem(line, rsln.solutionDir);
+            if(pItem.pGuid == null) {
+                //throw new Exception();
+                LSender.Send(this, $"The Guid is null empty for line :: '{line}'", Message.Level.Error);
+                return;
             }
 
-            if(String.Equals(GUID_SLN_FOLDER, m.Groups["TypeGuid"].Value.Trim(), StringComparison.OrdinalIgnoreCase)) {
-                return; //SolutionFolder
+            if(String.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase)) {
+                LSender.Send(this, $"{pItem.name} has been ignored as solution-folder :: '{line}'", Message.Level.Debug);
+                return;
             }
 
-            string pGuid    = m.Groups["Guid"].Value.Trim();
-            map[pGuid]      = new List<string>();
-
-            Projects[pGuid] = new ProjectItem()
-            { 
-                name    = m.Groups["Name"].Value,
-                path    = m.Groups["Path"].Value,
-                type    = m.Groups["TypeGuid"].Value,
-                pGuid   = pGuid
-            };
+            Projects[pItem.pGuid]   = pItem;
+            map[pItem.pGuid]        = new List<string>();
 
             while((line = stream.ReadLine()) != null && (line != "EndProject"))
             {
@@ -226,12 +205,13 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                     continue;
                 }
 
-                for(line = stream.ReadLine(); line != null; line = stream.ReadLine()) {
+                for(line = stream.ReadLine(); line != null; line = stream.ReadLine())
+                {
                     line = line.Trim();
                     if(line.StartsWith("EndProjectSection", StringComparison.Ordinal)) {
                         break;
                     }
-                    map[pGuid].Add(rProperty.Match(line).Groups["PName"].Value.Trim());
+                    map[pItem.pGuid].Add(RPatterns.PropertyLine.Match(line).Groups["PName"].Value.Trim());
                 }
             }
 
@@ -241,9 +221,9 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// The logic after processing file.
         /// </summary>
-        /// <param name="file">Solution file.</param>
+        /// <param name="stream">Used stream.</param>
         /// <param name="rsln">Handled solution data.</param>
-        public override void PostProcessing(string file, SlnResult rsln)
+        public override void PostProcessing(StreamReader stream, SlnResult rsln)
         {
             // Build order
 

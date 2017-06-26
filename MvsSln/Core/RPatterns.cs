@@ -22,53 +22,26 @@
  * THE SOFTWARE.
 */
 
-using System;
-using System.IO;
+using System.Text.RegularExpressions;
 
-namespace net.r_eg.MvsSln.Core.SlnHandlers
+namespace net.r_eg.MvsSln.Core
 {
-    public abstract class LAbstract: ISlnHandler
+    public sealed class RPatterns
     {
         /// <summary>
-        /// New position in stream.
+        /// Pattern of 'Project(' line - based on crackProjectLine from Microsoft.Build.BuildEngine.Shared.SolutionParser
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="line">Received line.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public abstract void Positioned(StreamReader stream, string line, SlnResult rsln);
-
-        /// <summary>
-        /// Gets unique id of listener.
-        /// </summary>
-        public Guid Id
+        public static Regex ProjectLine
         {
             get;
-            protected set;
-        }
+        } = new Regex("^Project\\(\"(?<TypeGuid>.*)\"\\)\\s*=\\s*\"(?<Name>.*)\"\\s*,\\s*\"(?<Path>.*)\"\\s*,\\s*\"(?<Guid>.*)\"$", RegexOptions.Compiled);
 
         /// <summary>
-        /// The logic before processing file.
+        /// Pattern of 'ProjectSection(ProjectDependencies)' lines - based on crackPropertyLine from Microsoft.Build.BuildEngine.Shared.SolutionParser
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public virtual void PreProcessing(StreamReader stream, SlnResult rsln)
+        public static Regex PropertyLine
         {
-
-        }
-
-        /// <summary>
-        /// The logic after processing file.
-        /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public virtual void PostProcessing(StreamReader stream, SlnResult rsln)
-        {
-
-        }
-
-        public LAbstract()
-        {
-            Id = GetType().GUID;
-        }
+            get;
+        } = new Regex("^(?<PName>[^=]*)\\s*=\\s*(?<PValue>[^=]*)$", RegexOptions.Compiled);
     }
 }

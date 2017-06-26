@@ -22,6 +22,7 @@
  * THE SOFTWARE.
 */
 
+using System.IO;
 using net.r_eg.MvsSln.Core.SlnHandlers;
 
 namespace net.r_eg.MvsSln.Core
@@ -34,11 +35,19 @@ namespace net.r_eg.MvsSln.Core
         SynchSubscribers<ISlnHandler> SlnHandlers { get; }
 
         /// <summary>
-        /// Parse of selected .sln file
+        /// Parse of selected .sln file.
         /// </summary>
         /// <param name="sln">Solution file</param>
         /// <param name="type">Allowed type of operations.</param>
         /// <returns></returns>
         SlnResult Parse(string sln, SlnItems type);
+
+        /// <summary>
+        /// To parse data from used stream.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="type">Allowed type of operations.</param>
+        /// <returns></returns>
+        SlnResult Parse(StreamReader reader, SlnItems type);
     }
 }

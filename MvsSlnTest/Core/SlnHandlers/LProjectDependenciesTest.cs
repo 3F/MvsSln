@@ -24,12 +24,12 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
             Assert.AreEqual("Project1", target.FirstProject.name);
             Assert.AreEqual("path\\to.sln", target.FirstProject.path);
             Assert.AreEqual(EXIST_GUID, target.FirstProject.pGuid);
-            Assert.AreEqual("{22222222-2222-2222-2222-222222222222}", target.FirstProject.type);
+            Assert.AreEqual("{22222222-2222-2222-2222-222222222222}", target.FirstProject.pType);
 
             Assert.AreEqual("Project3", target.LastProject.name);
             Assert.AreEqual("path\\to3.sln", target.LastProject.path);
             Assert.AreEqual(EXIST_GUID3, target.LastProject.pGuid);
-            Assert.AreEqual("{55555555-5555-5555-5555-555555555555}", target.LastProject.type);
+            Assert.AreEqual("{55555555-5555-5555-5555-555555555555}", target.LastProject.pType);
         }
 
         [TestMethod]
@@ -40,12 +40,12 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
             Assert.AreEqual("Project3", target.FirstBy(BuildType.Clean).name);
             Assert.AreEqual("path\\to3.sln", target.FirstBy(BuildType.Clean).path);
             Assert.AreEqual(EXIST_GUID3, target.FirstBy(BuildType.Clean).pGuid);
-            Assert.AreEqual("{55555555-5555-5555-5555-555555555555}", target.FirstBy(BuildType.Clean).type);
+            Assert.AreEqual("{55555555-5555-5555-5555-555555555555}", target.FirstBy(BuildType.Clean).pType);
 
             Assert.AreEqual("Project1", target.FirstBy(BuildType.Build).name);
             Assert.AreEqual("path\\to.sln", target.FirstBy(BuildType.Build).path);
             Assert.AreEqual(EXIST_GUID, target.FirstBy(BuildType.Build).pGuid);
-            Assert.AreEqual("{22222222-2222-2222-2222-222222222222}", target.FirstBy(BuildType.Build).type);
+            Assert.AreEqual("{22222222-2222-2222-2222-222222222222}", target.FirstBy(BuildType.Build).pType);
         }
 
         [TestMethod]
@@ -56,12 +56,12 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
             Assert.AreEqual("Project1", target.LastBy(BuildType.Clean).name);
             Assert.AreEqual("path\\to.sln", target.LastBy(BuildType.Clean).path);
             Assert.AreEqual(EXIST_GUID, target.LastBy(BuildType.Clean).pGuid);
-            Assert.AreEqual("{22222222-2222-2222-2222-222222222222}", target.LastBy(BuildType.Clean).type);
+            Assert.AreEqual("{22222222-2222-2222-2222-222222222222}", target.LastBy(BuildType.Clean).pType);
 
             Assert.AreEqual("Project3", target.LastBy(BuildType.Build).name);
             Assert.AreEqual("path\\to3.sln", target.LastBy(BuildType.Build).path);
             Assert.AreEqual(EXIST_GUID3, target.LastBy(BuildType.Build).pGuid);
-            Assert.AreEqual("{55555555-5555-5555-5555-555555555555}", target.LastBy(BuildType.Build).type);
+            Assert.AreEqual("{55555555-5555-5555-5555-555555555555}", target.LastBy(BuildType.Build).pType);
         }
 
         private class SProjectsMap: LProjectDependencies
@@ -73,7 +73,7 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
                     pGuid   = EXIST_GUID,
                     name    = "Project1",
                     path    = "path\\to.sln",
-                    type    = "{22222222-2222-2222-2222-222222222222}",
+                    pType    = "{22222222-2222-2222-2222-222222222222}",
                 };
                 order.Add(EXIST_GUID);
 
@@ -82,7 +82,7 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
                     pGuid   = EXIST_GUID2,
                     name    = "Project2",
                     path    = "path\\to2.sln",
-                    type    = "{22222222-2222-2222-2222-222222222222}",
+                    pType    = "{22222222-2222-2222-2222-222222222222}",
                 };
                 order.Add(EXIST_GUID2);
 
@@ -91,7 +91,7 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
                     pGuid   = EXIST_GUID3,
                     name    = "Project3",
                     path    = "path\\to3.sln",
-                    type    = "{55555555-5555-5555-5555-555555555555}",
+                    pType    = "{55555555-5555-5555-5555-555555555555}",
                 };
                 order.Add(EXIST_GUID3);
             }

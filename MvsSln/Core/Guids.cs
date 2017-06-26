@@ -22,32 +22,13 @@
  * THE SOFTWARE.
 */
 
-using System.IO;
-
-namespace net.r_eg.MvsSln.Core.SlnHandlers
+namespace net.r_eg.MvsSln.Core
 {
-    public interface ISlnHandler: IHandler
+    public struct Guids
     {
         /// <summary>
-        /// The logic before processing file.
+        /// Solution Folder.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        void PreProcessing(StreamReader stream, SlnResult rsln);
-
-        /// <summary>
-        /// New position in stream.
-        /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="line">Received line.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        void Positioned(StreamReader stream, string line, SlnResult rsln);
-
-        /// <summary>
-        /// The logic after processing file.
-        /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        void PostProcessing(StreamReader stream, SlnResult rsln);
+        public const string SLN_FOLDER = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
     }
 }

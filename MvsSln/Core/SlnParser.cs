@@ -47,7 +47,7 @@ namespace net.r_eg.MvsSln.Core
         } = new SynchSubscribers<ISlnHandler>();
 
         /// <summary>
-        /// Parse of selected .sln file
+        /// Parse of selected .sln file.
         /// </summary>
         /// <param name="sln">Solution file</param>
         /// <param name="type">Allowed type of operations.</param>
@@ -55,23 +55,41 @@ namespace net.r_eg.MvsSln.Core
         public SlnResult Parse(string sln, SlnItems type)
         {
             if(String.IsNullOrWhiteSpace(sln)) {
-                throw new ArgumentNullException("sln", "Value cannot be null or empty");
+                throw new ArgumentNullException("sln", "Value cannot be null or empty.");
             }
+
+            using(var reader = new StreamReader(sln, Encoding.Default)) {
+                return Parse(reader, type);
+            }
+        }
+
+        /// <summary>
+        /// To parse data from used stream.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="type">Allowed type of operations.</param>
+        /// <returns></returns>
+        public SlnResult Parse(StreamReader reader, SlnItems type)
+        {
+            if(reader == null) {
+                throw new ArgumentNullException("reader", "Value cannot be null.");
+            }
+
+            string sln = ((FileStream)reader.BaseStream).Name;
 
             var data = new SlnResult() {
                 solutionDir = GetPathFrom(sln),
                 type = type,
             };
 
-            HandlePreProcessing(sln, data);
-            using(var reader = new StreamReader(sln, Encoding.Default))
+            HandlePreProcessing(reader, data);
             {
                 string line;
                 while((line = reader.ReadLine()) != null) {
                     HandlePositioned(reader, line.Trim(), data);
                 }
             }
-            HandlePostProcessing(sln, data);
+            HandlePostProcessing(reader, data);
 
             if(data.solutionConfigs != null)
             {
@@ -93,10 +111,10 @@ namespace net.r_eg.MvsSln.Core
             SlnHandlers.register(new LProjectDependencies());
         }
 
-        protected virtual void HandlePreProcessing(string file, SlnResult data)
+        protected virtual void HandlePreProcessing(StreamReader stream, SlnResult data)
         {
             foreach(ISlnHandler h in SlnHandlers) {
-                h.PreProcessing(file, data);
+                h.PreProcessing(stream, data);
             }
         }
 
@@ -107,10 +125,10 @@ namespace net.r_eg.MvsSln.Core
             }
         }
 
-        protected virtual void HandlePostProcessing(string file, SlnResult data)
+        protected virtual void HandlePostProcessing(StreamReader stream, SlnResult data)
         {
             foreach(ISlnHandler h in SlnHandlers) {
-                h.PostProcessing(file, data);
+                h.PostProcessing(stream, data);
             }
         }
 

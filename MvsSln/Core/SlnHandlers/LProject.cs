@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
@@ -52,41 +51,18 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 rsln.projectItems = new List<ProjectItem>();
             }
 
-            // Pattern based on crackProjectLine from Microsoft.Build.BuildEngine.Shared.SolutionParser.
-            string pattern = "^Project\\(\"(?<TypeGuid>.*)\"\\)\\s*=\\s*\"(?<Name>.*)\"\\s*,\\s*\"(?<Path>.*)\"\\s*,\\s*\"(?<Guid>.*)\"$";
-            Match m = Regex.Match(line, pattern);
-            if(!m.Success) {
-                LSender.Send(this, $"SolutionParser: incorrect line for pattern :: '{line}'", Message.Level.Warn);
+            var pItem = new ProjectItem(line, rsln.solutionDir);
+            if(pItem.pGuid == null) {
+                LSender.Send(this, $"LProject: The Guid is null empty for line :: '{line}'", Message.Level.Error);
                 return;
             }
 
-            string pType = m.Groups["TypeGuid"].Value.Trim();
-            
-            if(String.Equals("{2150E333-8FDC-42A3-9474-1A3956D46DE8}", pType, StringComparison.OrdinalIgnoreCase)) {
-                LSender.Send(this, "SolutionParser: ignored as SolutionFolder", Message.Level.Debug);
+            if(String.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase)) {
+                LSender.Send(this, $"{pItem.name} has been ignored as solution-folder :: '{line}'", Message.Level.Debug);
                 return;
             }
 
-            string pName = m.Groups["Name"].Value.Trim();
-            string pPath = m.Groups["Path"].Value.Trim();
-            string pGuid = m.Groups["Guid"].Value.Trim();
-
-            string fullPath;
-            if(Path.IsPathRooted(pPath)) {
-                fullPath = pPath;
-            }
-            else {
-                fullPath = (!String.IsNullOrEmpty(pPath))? Path.Combine(rsln.solutionDir, pPath) : pPath;
-            }
-
-            LSender.Send(this, $"SolutionParser: project ->['{pGuid}'; '{pName}'; '{pPath}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
-            rsln.projectItems.Add(new ProjectItem() {
-                type        = pType,
-                name        = pName,
-                path        = pPath,
-                fullPath    = fullPath,
-                pGuid       = pGuid
-            });
+            rsln.projectItems.Add(pItem);
         }
     }
 }

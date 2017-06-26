@@ -54,6 +54,8 @@
     <Compile Include="Core\ConfigItem.cs" />
     <Compile Include="Core\ISlnProjectDependencies.cs" />
     <Compile Include="Core\ISlnContainer.cs" />
+    <Compile Include="Core\Guids.cs" />
+    <Compile Include="Core\RPatterns.cs" />
     <Compile Include="Core\SlnHandlers\LProjectDependencies.cs" />
     <Compile Include="Core\SlnResult.cs" />
     <Compile Include="Core\IHandler.cs" />
