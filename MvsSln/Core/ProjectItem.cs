@@ -61,6 +61,54 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public string fullPath;
 
+        /// <summary>
+        /// Evaluated project type.
+        /// </summary>
+        public ProjectType EpType
+        {
+            get => ProjectTypeBy(pType);
+        }
+
+        /// <summary>
+        /// Evaluate project type via Guid.
+        /// </summary>
+        /// <param name="guid">Project type Guid.</param>
+        /// <returns></returns>
+        public static ProjectType ProjectTypeBy(string guid)
+        {
+            switch(guid)
+            {
+                case Guids.PROJECT_CS: {
+                    return ProjectType.Cs;
+                }
+                case Guids.PROJECT_DB: {
+                    return ProjectType.Db;
+                }
+                case Guids.PROJECT_FS: {
+                    return ProjectType.Fs;
+                }
+                case Guids.PROJECT_VB: {
+                    return ProjectType.Vb;
+                }
+                case Guids.PROJECT_VC: {
+                    return ProjectType.Vc;
+                }
+                case Guids.PROJECT_VJ: {
+                    return ProjectType.Vj;
+                }
+                case Guids.PROJECT_WD: {
+                    return ProjectType.Wd;
+                }
+                case Guids.PROJECT_WEB: {
+                    return ProjectType.Web;
+                }
+                case Guids.SLN_FOLDER: {
+                    return ProjectType.SlnFolder;
+                }
+            }
+            return ProjectType.Unknown;
+        }
+
         /// <param name="line">Initialize data from raw line.</param>
         /// <param name="solutionDir">Path to solution directory.</param>
         public ProjectItem(string line, string solutionDir)
@@ -83,6 +131,8 @@ namespace net.r_eg.MvsSln.Core
             else {
                 fullPath = (!String.IsNullOrEmpty(path))? Path.Combine(solutionDir, path) : path;
             }
+
+            fullPath = Path.GetFullPath(fullPath); // D:\a\b\c\..\..\MvsSlnTest.csproj -> D:\a\MvsSlnTest.csproj
 
             LSender.Send(this, $"ProjectItem ->['{pGuid}'; '{name}'; '{path}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
         }

@@ -22,26 +22,35 @@
  * THE SOFTWARE.
 */
 
-using net.r_eg.MvsSln.Core;
+using System;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Extensions
 {
-    /// <summary>
-    /// Wrapper of the default solution parser.
-    /// </summary>
-    public static class Sln
+    public static class ObjectExtension
     {
-        private static ISlnContainer parser = new SlnParser();
+        /// <summary>
+        /// Execute action separately from result.
+        /// </summary>
+        /// <typeparam name="T">The type of value that should be returned.</typeparam>
+        /// <param name="obj">Unspecified object.</param>
+        /// <param name="act">Any action that should be executed.</param>
+        /// <returns>Same value from selected object as T type.</returns>
+        public static T E<T>(this object obj, Action act)
+        {
+            act();
+            return (T)obj;
+        }
 
         /// <summary>
-        /// Parse of selected .sln file
+        /// Execute action separately from result.
+        /// Alias to `E&lt;object&gt;()`
         /// </summary>
-        /// <param name="file">Solution file</param>
-        /// <param name="type">Allowed type of operations.</param>
-        /// <returns>Parsed solution data.</returns>
-        public static ISlnResult Parse(string file, SlnItems type)
+        /// <param name="obj">Unspecified object.</param>
+        /// <param name="act">Any action that should be executed.</param>
+        /// <returns>Same value from selected object.</returns>
+        public static object E(this object obj, Action act)
         {
-            return parser.Parse(file, type);
+            return E<object>(obj, act);
         }
     }
 }

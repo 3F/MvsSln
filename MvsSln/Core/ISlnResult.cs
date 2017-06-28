@@ -22,46 +22,65 @@
  * THE SOFTWARE.
 */
 
-using System;
+using System.Collections.Generic;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Core
 {
-    public enum SlnItems: UInt32
+    public interface ISlnResult
     {
-        None,
+        /// <summary>
+        /// Full path to root solution directory.
+        /// </summary>
+        string SolutionDir { get; }
 
         /// <summary>
-        /// All supported data.
+        /// Processed type for result.
         /// </summary>
-        All = Projects 
-                | SolutionConfPlatforms 
-                | ProjectConfPlatforms 
-                | ProjectDependencies
-                | Env,
-
-        /// <summary>
-        /// All found projects from solution.
-        /// </summary>
-        Projects = 0x0001,
+        SlnItems ResultType { get; }
 
         /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
-        SolutionConfPlatforms = 0x0002,
+        IEnumerable<IConfPlatform> SolutionConfigs { get; }
 
         /// <summary>
         /// Project configurations with platforms.
         /// </summary>
-        ProjectConfPlatforms = 0x0004,
+        IEnumerable<IConfPlatformPrj> ProjectConfigs { get; }
 
         /// <summary>
-        /// Project Build Order from .sln file.
+        /// Alias of the relation of solution configuration to project configurations.
         /// </summary>
-        ProjectDependencies = 0x0008,
+        RoProperties<IConfPlatform, IConfPlatformPrj[]> ProjectConfigurationPlatforms { get; }
 
         /// <summary>
-        /// To prepare environment.
+        /// All found projects in solution.
         /// </summary>
-        Env = 0x0010 | Projects | SolutionConfPlatforms,
+        IEnumerable<ProjectItem> ProjectItems { get; }
+
+        /// <summary>
+        /// Alias for ProjectItems and its configurations.
+        /// </summary>
+        IEnumerable<ProjectItemCfg> ProjectItemsConfigs { get; }
+
+        /// <summary>
+        /// Default Configuration and Platform for current solution.
+        /// </summary>
+        IConfPlatform DefaultConfig { get; }
+
+        /// <summary>
+        /// All available global properties for solution.
+        /// </summary>
+        RoProperties Properties { get; }
+
+        /// <summary>
+        /// Solution Project Dependencies.
+        /// </summary>
+        ISlnProjectDependencies ProjectDependencies { get; }
+
+        /// <summary>
+        /// Environment for current data.
+        /// </summary>
+        IEnvironment Env { get; }
     }
 }

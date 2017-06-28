@@ -45,6 +45,45 @@ namespace net.r_eg.MvsSln.Core
             protected set;
         }
 
+        public static bool operator ==(ConfigItem a, ConfigItem b)
+        {
+            if(Object.ReferenceEquals(a, null)) {
+                return Object.ReferenceEquals(b, null);
+            }
+            return a.Equals(b);
+        }
+
+        public static bool operator !=(ConfigItem a, ConfigItem b)
+        {
+            return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(Object.ReferenceEquals(obj, null) || GetType() != obj.GetType()) {
+                return false;
+            }
+
+            var b = (ConfigItem)obj;
+            return (Configuration == b.Configuration) && (Platform == b.Platform);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked {
+                return (Configuration.GetHashCode() << 5) + Configuration.GetHashCode() ^ Platform.GetHashCode();
+            }
+        }
+
+        public override string ToString()
+        {
+            return Format();
+        }
+
+        /// <summary>
+        /// Compatible format: 'configname'|'platformname'
+        /// http://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.interop.ivscfg.get_displayname.aspx
+        /// </summary>
         public static string Format(string configuration, string platform)
         {
             return $"{configuration}|{platform}";

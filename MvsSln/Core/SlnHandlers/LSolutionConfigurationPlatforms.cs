@@ -39,7 +39,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="rsln">Handled solution data.</param>
         public override void Positioned(StreamReader stream, string line, SlnResult rsln)
         {
-            if((rsln.type & SlnItems.SolutionConfPlatforms) == 0) {
+            if((rsln.ResultType & SlnItems.SolutionConfPlatforms) != SlnItems.SolutionConfPlatforms) {
                 return;
             }
 
@@ -47,8 +47,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return;
             }
 
-            if(rsln.solutionConfigs == null) {
-                rsln.solutionConfigs = new List<IConfPlatform>();
+            if(rsln.SolutionConfigList == null) {
+                rsln.SolutionConfigList = new List<IConfPlatform>();
             }
 
             string _line;
@@ -66,7 +66,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 }
 
                 LSender.Send(this, $"Solution Configuration ->['{cfg[0]}' ; '{cfg[1]}']", Message.Level.Trace);
-                rsln.solutionConfigs.Add(new ConfigSln(cfg[0], cfg[1]));
+                rsln.SolutionConfigList.Add(new ConfigSln(cfg[0], cfg[1]));
             }
         }
     }

@@ -22,26 +22,27 @@
  * THE SOFTWARE.
 */
 
-using net.r_eg.MvsSln.Core;
+using System.Diagnostics;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Core
 {
     /// <summary>
-    /// Wrapper of the default solution parser.
+    /// Aggregates links to ProjectItem and its configurations.
     /// </summary>
-    public static class Sln
+    [DebuggerDisplay("{project.name} ({projectConfig}) [{project.pGuid}]")]
+    public struct ProjectItemCfg
     {
-        private static ISlnContainer parser = new SlnParser();
+        public ProjectItem project;
 
-        /// <summary>
-        /// Parse of selected .sln file
-        /// </summary>
-        /// <param name="file">Solution file</param>
-        /// <param name="type">Allowed type of operations.</param>
-        /// <returns>Parsed solution data.</returns>
-        public static ISlnResult Parse(string file, SlnItems type)
+        public IConfPlatform solutionConfig;
+
+        public IConfPlatformPrj projectConfig;
+
+        public ProjectItemCfg(ProjectItem item, IConfPlatform sln, IConfPlatformPrj prj)
         {
-            return parser.Parse(file, type);
+            project         = item;
+            solutionConfig  = sln;
+            projectConfig   = prj;
         }
     }
 }

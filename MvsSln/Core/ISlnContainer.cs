@@ -40,7 +40,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="sln">Solution file</param>
         /// <param name="type">Allowed type of operations.</param>
         /// <returns></returns>
-        SlnResult Parse(string sln, SlnItems type);
+        ISlnResult Parse(string sln, SlnItems type);
 
         /// <summary>
         /// To parse data from used stream.
@@ -48,6 +48,6 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="reader"></param>
         /// <param name="type">Allowed type of operations.</param>
         /// <returns></returns>
-        SlnResult Parse(StreamReader reader, SlnItems type);
+        ISlnResult Parse(StreamReader reader, SlnItems type);
     }
 }

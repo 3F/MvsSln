@@ -26,46 +26,129 @@ using System.Collections.Generic;
 
 namespace net.r_eg.MvsSln.Core
 {
-    public sealed class SlnResult
+    public sealed class SlnResult: ISlnResult
     {
         /// <summary>
         /// Full path to root solution directory.
         /// </summary>
-        public string solutionDir;
+        public string SolutionDir
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Processed type for result.
         /// </summary>
-        public SlnItems type;
+        public SlnItems ResultType
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
-        public List<IConfPlatform> solutionConfigs;
+        public IEnumerable<IConfPlatform> SolutionConfigs
+        {
+            get => SolutionConfigList;
+        }
 
         /// <summary>
         /// Project configurations with platforms.
         /// </summary>
-        public List<IConfPlatformPrj> projectConfigs;
+        public IEnumerable<IConfPlatformPrj> ProjectConfigs
+        {
+            get => ProjectConfigList;
+        }
+
+        /// <summary>
+        /// Alias of the relation of solution configuration to project configurations.
+        /// </summary>
+        public RoProperties<IConfPlatform, IConfPlatformPrj[]> ProjectConfigurationPlatforms
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// All found projects in solution.
         /// </summary>
-        public List<ProjectItem> projectItems;
+        public IEnumerable<ProjectItem> ProjectItems
+        {
+            get => ProjectItemList;
+        }
+
+        /// <summary>
+        /// Alias for ProjectItems and its configurations.
+        /// </summary>
+        public IEnumerable<ProjectItemCfg> ProjectItemsConfigs
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Default Configuration and Platform for current solution.
         /// </summary>
-        public IConfPlatform defaultConfig;
+        public IConfPlatform DefaultConfig
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// All available global properties for solution.
         /// </summary>
-        public Dictionary<string, string> properties;
+        public RoProperties Properties
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Solution Project Dependencies.
         /// </summary>
-        public ISlnProjectDependencies projectDependencies;
+        public ISlnProjectDependencies ProjectDependencies
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Environment for current data.
+        /// </summary>
+        public IEnvironment Env
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Solution configurations with platforms.
+        /// </summary>
+        internal List<IConfPlatform> SolutionConfigList
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Project configurations with platforms.
+        /// </summary>
+        internal List<IConfPlatformPrj> ProjectConfigList
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// All found projects in solution.
+        /// </summary>
+        internal List<ProjectItem> ProjectItemList
+        {
+            get;
+            set;
+        }
     }
 }

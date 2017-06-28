@@ -39,7 +39,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="rsln">Handled solution data.</param>
         public override void Positioned(StreamReader stream, string line, SlnResult rsln)
         {
-            if((rsln.type & SlnItems.Projects) == 0) {
+            if((rsln.ResultType & SlnItems.Projects) != SlnItems.Projects) {
                 return;
             }
 
@@ -47,13 +47,13 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return;
             }
 
-            if(rsln.projectItems == null) {
-                rsln.projectItems = new List<ProjectItem>();
+            if(rsln.ProjectItemList == null) {
+                rsln.ProjectItemList = new List<ProjectItem>();
             }
 
-            var pItem = new ProjectItem(line, rsln.solutionDir);
+            var pItem = new ProjectItem(line, rsln.SolutionDir);
             if(pItem.pGuid == null) {
-                LSender.Send(this, $"LProject: The Guid is null empty for line :: '{line}'", Message.Level.Error);
+                LSender.Send(this, $"LProject: The Guid is null or empty for line :: '{line}'", Message.Level.Error);
                 return;
             }
 
@@ -62,7 +62,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return;
             }
 
-            rsln.projectItems.Add(pItem);
+            rsln.ProjectItemList.Add(pItem);
         }
     }
 }

@@ -84,7 +84,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             get
             {
                 if(order.Count < 1) {
-                    return new ProjectItem() { name = "The First project is Undefined", path = "?" };
+                    return default(ProjectItem);
                 }
                 return Projects[order[0]];
             }
@@ -98,7 +98,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             get
             {
                 if(order.Count < 1) {
-                    return new ProjectItem() { name = "The Last project is Undefined", path = "?" };
+                    return default(ProjectItem);
                 }
                 return Projects[order[order.Count - 1]];
             }
@@ -175,7 +175,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="rsln">Handled solution data.</param>
         public override void Positioned(StreamReader stream, string line, SlnResult rsln)
         {
-            if((rsln.type & SlnItems.ProjectDependencies) == 0) {
+            if((rsln.ResultType & SlnItems.ProjectDependencies) != SlnItems.ProjectDependencies) {
                 return;
             }
 
@@ -183,10 +183,10 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return;
             }
 
-            var pItem = new ProjectItem(line, rsln.solutionDir);
+            var pItem = new ProjectItem(line, rsln.SolutionDir);
             if(pItem.pGuid == null) {
                 //throw new Exception();
-                LSender.Send(this, $"The Guid is null empty for line :: '{line}'", Message.Level.Error);
+                LSender.Send(this, $"The Guid is null or empty for line :: '{line}'", Message.Level.Error);
                 return;
             }
 
@@ -215,7 +215,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 }
             }
 
-            rsln.projectDependencies = this;
+            rsln.ProjectDependencies = this;
         }
 
         /// <summary>

@@ -22,26 +22,17 @@
  * THE SOFTWARE.
 */
 
-using net.r_eg.MvsSln.Core;
+using System;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Exceptions
 {
-    /// <summary>
-    /// Wrapper of the default solution parser.
-    /// </summary>
-    public static class Sln
+    [Serializable]
+    public class NotFoundException: CommonException
     {
-        private static ISlnContainer parser = new SlnParser();
-
-        /// <summary>
-        /// Parse of selected .sln file
-        /// </summary>
-        /// <param name="file">Solution file</param>
-        /// <param name="type">Allowed type of operations.</param>
-        /// <returns>Parsed solution data.</returns>
-        public static ISlnResult Parse(string file, SlnItems type)
+        public NotFoundException(string message)
+            : base(message)
         {
-            return parser.Parse(file, type);
+
         }
     }
 }

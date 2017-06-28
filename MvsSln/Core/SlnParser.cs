@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using net.r_eg.MvsSln.Core.SlnHandlers;
 
@@ -52,10 +53,10 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="sln">Solution file</param>
         /// <param name="type">Allowed type of operations.</param>
         /// <returns></returns>
-        public SlnResult Parse(string sln, SlnItems type)
+        public ISlnResult Parse(string sln, SlnItems type)
         {
             if(String.IsNullOrWhiteSpace(sln)) {
-                throw new ArgumentNullException("sln", "Value cannot be null or empty.");
+                throw new ArgumentNullException(nameof(sln), "Value cannot be null or empty.");
             }
 
             using(var reader = new StreamReader(sln, Encoding.Default)) {
@@ -69,17 +70,17 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="reader"></param>
         /// <param name="type">Allowed type of operations.</param>
         /// <returns></returns>
-        public SlnResult Parse(StreamReader reader, SlnItems type)
+        public ISlnResult Parse(StreamReader reader, SlnItems type)
         {
             if(reader == null) {
-                throw new ArgumentNullException("reader", "Value cannot be null.");
+                throw new ArgumentNullException(nameof(reader), "Value cannot be null.");
             }
 
             string sln = ((FileStream)reader.BaseStream).Name;
 
             var data = new SlnResult() {
-                solutionDir = GetPathFrom(sln),
-                type = type,
+                SolutionDir = GetPathFrom(sln),
+                ResultType  = type,
             };
 
             HandlePreProcessing(reader, data);
@@ -91,15 +92,25 @@ namespace net.r_eg.MvsSln.Core
             }
             HandlePostProcessing(reader, data);
 
-            if(data.solutionConfigs != null)
+            if(data.SolutionConfigs != null)
             {
-                data.defaultConfig = new ConfigItem(
-                    ExtractDefaultConfiguration(data.solutionConfigs), 
-                    ExtractDefaultPlatform(data.solutionConfigs)
+                data.DefaultConfig = new ConfigItem(
+                    ExtractDefaultConfiguration(data.SolutionConfigs), 
+                    ExtractDefaultPlatform(data.SolutionConfigs)
                 );
             }
 
-            data.properties = GlobalProperties(sln, data.defaultConfig?.Configuration, data.defaultConfig?.Platform);
+            data.Properties = GlobalProperties(
+                sln, 
+                data.DefaultConfig?.Configuration, 
+                data.DefaultConfig?.Platform
+            );
+
+            Aliases(data);
+
+            if((type & SlnItems.Env) == SlnItems.Env) {
+                data.Env = new IsolatedEnv(data);
+            }
             return data;
         }
 
@@ -132,9 +143,57 @@ namespace net.r_eg.MvsSln.Core
             }
         }
 
-        protected Dictionary<string, string> GlobalProperties(string sln, string configuration, string platform)
+        /// <summary>
+        /// TODO: another way to manage aliases for data.
+        /// </summary>
+        /// <param name="data"></param>
+        protected void Aliases(SlnResult data)
         {
-            Dictionary<string, string> ret = new Dictionary<string, string>();
+            SetProjectConfigurationPlatforms(data);
+            SetProjectItemsConfigs(data);
+        }
+
+        protected void SetProjectConfigurationPlatforms(SlnResult data)
+        {
+            if(data.SolutionConfigs == null || data.ProjectConfigs == null) {
+                return;
+            }
+
+            var ret = new Dictionary<IConfPlatform, IConfPlatformPrj[]>();
+            foreach(var sln in data.SolutionConfigs) {
+                ret[sln] = data.ProjectConfigs.Where(p => (ConfigItem)p.Sln == (ConfigItem)sln).ToArray();
+            }
+
+            data.ProjectConfigurationPlatforms = new RoProperties<IConfPlatform, IConfPlatformPrj[]>(ret);
+        }
+
+        protected void SetProjectItemsConfigs(SlnResult data)
+        {
+            if(data.ProjectConfigurationPlatforms == null) {
+                return;
+            }
+
+            var ret = new List<ProjectItemCfg>();
+            foreach(var slnConf in data.ProjectConfigurationPlatforms)
+            {
+                foreach(var prjConf in slnConf.Value)
+                {
+                    var link = new ProjectItemCfg(
+                        data.ProjectItems
+                            .Where(p => p.pGuid == prjConf.PGuid)
+                            .FirstOrDefault(),
+                        slnConf.Key,
+                        prjConf
+                    );
+                    ret.Add(link);
+                }
+            }
+            data.ProjectItemsConfigs = ret;
+        }
+
+        protected RoProperties GlobalProperties(string sln, string configuration, string platform)
+        {
+            var ret = new Dictionary<string, string>();
 
             string dir = Path.GetDirectoryName(sln);
             if(dir[dir.Length - 1] != Path.DirectorySeparatorChar) {
@@ -150,10 +209,10 @@ namespace net.r_eg.MvsSln.Core
             ret["Configuration"]    = configuration;
             ret["Platform"]         = platform;
 
-            return ret;
+            return new RoProperties(ret);
         }
 
-        protected string ExtractDefaultConfiguration(List<IConfPlatform> cfg)
+        protected virtual string ExtractDefaultConfiguration(IEnumerable<IConfPlatform> cfg)
         {
             foreach(IConfPlatform c in cfg) {
                 if(c.Configuration.Equals("Debug", StringComparison.OrdinalIgnoreCase)) {
@@ -161,14 +220,13 @@ namespace net.r_eg.MvsSln.Core
                 }
             }
 
-            if(cfg.Count > 0) {
-                return cfg[0].Configuration;
+            foreach(IConfPlatform c in cfg) {
+                return c.Configuration;
             }
-            return String.Empty;
+            return null;
         }
 
-
-        protected string ExtractDefaultPlatform(List<IConfPlatform> cfg)
+        protected virtual string ExtractDefaultPlatform(IEnumerable<IConfPlatform> cfg)
         {
             foreach(IConfPlatform c in cfg)
             {
@@ -181,10 +239,10 @@ namespace net.r_eg.MvsSln.Core
                 }
             }
 
-            if(cfg.Count > 0) {
-                return cfg[0].Platform;
+            foreach(IConfPlatform c in cfg) {
+                return c.Platform;
             }
-            return String.Empty;
+            return null;
         }
 
         protected string GetPathFrom(string file)

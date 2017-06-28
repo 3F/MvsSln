@@ -77,7 +77,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="rsln">Handled solution data.</param>
         public override void Positioned(StreamReader stream, string line, SlnResult rsln)
         {
-            if((rsln.type & SlnItems.ProjectConfPlatforms) == 0) {
+            if((rsln.ResultType & SlnItems.ProjectConfPlatforms) != SlnItems.ProjectConfPlatforms) {
                 return;
             }
 
@@ -85,8 +85,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return;
             }
 
-            if(rsln.projectConfigs == null) {
-                rsln.projectConfigs = new List<IConfPlatformPrj>();
+            if(rsln.ProjectConfigList == null) {
+                rsln.ProjectConfigList = new List<IConfPlatformPrj>();
             }
 
             /*
@@ -130,7 +130,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 {
                     LSender.Send(this, $"New Project Configuration `{pGuid}`, `{csln}` = `{cprj}` /{type}", Message.Level.Debug);
                     cortege[ident] = new ConfigPrj(cprj, pGuid, isBuild0, new ConfigSln(csln));
-                    rsln.projectConfigs.Add(cortege[ident]);
+                    rsln.ProjectConfigList.Add(cortege[ident]);
                     continue;
                 }
 

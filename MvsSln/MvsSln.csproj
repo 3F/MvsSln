@@ -46,17 +46,25 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
     <Compile Include="Core\IConfPlatformPrj.cs" />
     <Compile Include="Core\IConfPlatform.cs" />
     <Compile Include="Core\ConfigItem.cs" />
+    <Compile Include="Core\IEnvironment.cs" />
+    <Compile Include="Core\ProjectItemCfg.cs" />
+    <Compile Include="Core\ProjectType.cs" />
+    <Compile Include="Core\XProject.cs" />
+    <Compile Include="Core\RoProperties.cs" />
+    <Compile Include="Core\IsolatedEnv.cs" />
     <Compile Include="Core\ISlnProjectDependencies.cs" />
     <Compile Include="Core\ISlnContainer.cs" />
     <Compile Include="Core\Guids.cs" />
     <Compile Include="Core\RPatterns.cs" />
     <Compile Include="Core\SlnHandlers\LProjectDependencies.cs" />
+    <Compile Include="Core\ISlnResult.cs" />
     <Compile Include="Core\SlnResult.cs" />
     <Compile Include="Core\IHandler.cs" />
     <Compile Include="Core\ISynchSubscribers.cs" />
@@ -65,6 +73,9 @@
     <Compile Include="Core\SlnHandlers\LProject.cs" />
     <Compile Include="Core\SlnHandlers\LProjectConfigurationPlatforms.cs" />
     <Compile Include="Core\SlnHandlers\LSolutionConfigurationPlatforms.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
+    <Compile Include="Exceptions\CommonException.cs" />
+    <Compile Include="Extensions\ObjectExtension.cs" />
     <Compile Include="Log\ISender.cs" />
     <Compile Include="Log\LSender.cs" />
     <Compile Include="Log\Message.cs" />

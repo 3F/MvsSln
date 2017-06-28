@@ -22,26 +22,51 @@
  * THE SOFTWARE.
 */
 
-using net.r_eg.MvsSln.Core;
+using System;
+using System.Diagnostics;
+using Microsoft.Build.Evaluation;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Core
 {
-    /// <summary>
-    /// Wrapper of the default solution parser.
-    /// </summary>
-    public static class Sln
+    [DebuggerDisplay("{ProjectName}: [{ProjectItem.projectConfig}] {ProjectGuid}")]
+    public class XProject
     {
-        private static ISlnContainer parser = new SlnParser();
-
-        /// <summary>
-        /// Parse of selected .sln file
-        /// </summary>
-        /// <param name="file">Solution file</param>
-        /// <param name="type">Allowed type of operations.</param>
-        /// <returns>Parsed solution data.</returns>
-        public static ISlnResult Parse(string file, SlnItems type)
+        public Project Project
         {
-            return parser.Parse(file, type);
+            get;
+            protected set;
+        }
+
+        public ProjectItemCfg ProjectItem
+        {
+            get;
+            protected set;
+        }
+
+        public string ProjectGuid
+        {
+            get => GetProjectGuid(Project);
+        }
+
+        public string ProjectName
+        {
+            get => GetProjectName(Project);
+        }
+
+        public XProject(ProjectItemCfg pItem, Project prj)
+        {
+            ProjectItem = pItem;
+            Project     = prj ?? throw new ArgumentNullException(nameof(prj), "Value cannot be null.");
+        }
+
+        protected virtual string GetProjectGuid(Project eProject)
+        {
+            return eProject.GetPropertyValue("ProjectGuid");
+        }
+
+        protected virtual string GetProjectName(Project eProject)
+        {
+            return eProject.GetPropertyValue("ProjectName");
         }
     }
 }
