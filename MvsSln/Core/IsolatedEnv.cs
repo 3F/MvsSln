@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Exceptions;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core
@@ -36,7 +37,7 @@ namespace net.r_eg.MvsSln.Core
     /// 
     /// Please note: initially it was part of https://github.com/3F/vsSolutionBuildEvent
     /// </summary>
-    public class IsolatedEnv: IEnvironment
+    public class IsolatedEnv: IEnvironment, IDisposable
     {
         /// <summary>
         /// Default value for all undefined properties.
@@ -59,7 +60,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// List of evaluated projects.
         /// </summary>
-        public IEnumerable<XProject> Projects
+        public IEnumerable<IXProject> Projects
         {
             get;
             set;
@@ -71,6 +72,54 @@ namespace net.r_eg.MvsSln.Core
         public ProjectCollection PrjCollection
         {
             get => ProjectCollection.GlobalProjectCollection;
+        }
+
+        /// <summary>
+        /// Find project by Guid.
+        /// </summary>
+        /// <param name="guid">Guid of project.</param>
+        /// <param name="cfg">Specific configuration.</param>
+        /// <returns></returns>
+        public IXProject XProjectByGuid(string guid, IConfPlatform cfg)
+        {
+            return Projects?.Where(p => 
+                Eq(p.ProjectItem.projectConfig, cfg) && (p.ProjectGuid == guid)
+            )
+            .FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Find project by Guid.
+        /// </summary>
+        /// <param name="guid">Guid of project.</param>
+        /// <returns></returns>
+        public IXProject[] XProjectsByGuid(string guid)
+        {
+            return Projects?.Where(p => p.ProjectGuid == guid).ToArray();
+        }
+
+        /// <summary>
+        /// Find projects by name.
+        /// </summary>
+        /// <param name="name">ProjectName.</param>
+        /// <param name="cfg">Specific configuration.</param>
+        /// <returns></returns>
+        public IXProject[] XProjectsByName(string name, IConfPlatform cfg)
+        {
+            return Projects?.Where(
+                p => Eq(p.ProjectItem.projectConfig, cfg) && p.ProjectName == name
+            )
+            .ToArray();
+        }
+
+        /// <summary>
+        /// Find projects by name.
+        /// </summary>
+        /// <param name="name">ProjectName.</param>
+        /// <returns></returns>
+        public IXProject[] XProjectsByName(string name)
+        {
+            return Projects?.Where(p => p.ProjectName == name).ToArray();
         }
 
         /// <summary>
@@ -88,11 +137,16 @@ namespace net.r_eg.MvsSln.Core
         /// Get or firstly load into collection the project.
         /// </summary>
         /// <param name="pItem">Specific project.</param>
-        /// <param name="conf">Configuration of project to load.</param>
+        /// <param name="cfg">Configuration of project to load.</param>
         /// <returns></returns>
-        public Project GetOrLoadProject(ProjectItem pItem, IConfPlatform conf)
+        public Project GetOrLoadProject(ProjectItem pItem, IConfPlatform cfg)
         {
-            return GetOrLoadProject(pItem, DefProperties(conf, slnProperties));
+            var xprj = XProjectByGuid(pItem.pGuid, cfg);
+            if(xprj != null) {
+                return xprj.Project;
+            }
+
+            return GetOrLoadProject(pItem, DefProperties(cfg, slnProperties));
         }
 
         /// <summary>
@@ -115,7 +169,7 @@ namespace net.r_eg.MvsSln.Core
             {
                 LSender.Send(this, $"Find in projects collection: `{pItem.pGuid}`", Message.Level.Trace);
 
-                if(GetProjectGuid(eProject) != pItem.pGuid) {
+                if(eProject.GetProjectGuid() != pItem.pGuid) {
                     continue;
                 }
 
@@ -174,7 +228,7 @@ namespace net.r_eg.MvsSln.Core
                 return slnProps;
             }
 
-            string platform = PlatformName(cfg.Platform);
+            string platform = cfg.PlatformByRule;
             LSender.Send(this, $"-> prj['{cfg.Configuration}'; '{platform}']", Message.Level.Debug);
 
             var ret = new Dictionary<string, string>(slnProps);
@@ -185,6 +239,16 @@ namespace net.r_eg.MvsSln.Core
             return ret;
         }
 
+        /// <summary>
+        /// Load available projects via configurations.
+        /// </summary>
+        /// <param name="pItems">Specific list or null value to load all available.</param>
+        public virtual void LoadProjects(IEnumerable<ProjectItemCfg> pItems = null)
+        {
+            Projects = Load(pItems ?? sln.ProjectItemsConfigs);
+        }
+
+        /// <param name="data">Prepared data from solution parser.</param>
         public IsolatedEnv(ISlnResult data)
         {
             sln = data;
@@ -194,26 +258,20 @@ namespace net.r_eg.MvsSln.Core
             );
 
             foreach(var property in slnProperties) {
-                ProjectCollection.GlobalProjectCollection.SetGlobalProperty(property.Key, property.Value);
+                PrjCollection.SetGlobalProperty(property.Key, property.Value);
             }
-
-            Projects = Load();
         }
 
-        protected IEnumerable<XProject> Load()
+        /// <param name="pItems"></param>
+        /// <returns>List of loaded.</returns>
+        protected virtual IEnumerable<IXProject> Load(IEnumerable<ProjectItemCfg> pItems)
         {
-            var xprojects = new List<XProject>();
-            foreach(var pItem in sln.ProjectItemsConfigs)
-            {
+            var xprojects = new List<IXProject>();
+            foreach(var pItem in pItems) {
                 Project eProject = GetOrLoadProject(pItem.project, pItem.projectConfig);
                 xprojects.Add(new XProject(pItem, eProject));
             }
             return xprojects;
-        }
-
-        protected virtual string GetProjectGuid(Project eProject)
-        {
-            return eProject.GetPropertyValue("ProjectGuid");
         }
 
         /// <summary>
@@ -238,27 +296,47 @@ namespace net.r_eg.MvsSln.Core
             };
 
             _set(P_CONFIG, conf?.Configuration);
-            _set(P_PLATFORM, PlatformName(conf?.Platform));
+            _set(P_PLATFORM, conf?.PlatformByRule);
 
             return ret;
         }
 
-        /// <summary>
-        /// Rules of platform names, for example: 'Any CPU' to 'AnyCPU'
-        /// see MS Connect Issue #503935 + https://github.com/3F/vsSolutionBuildEvent/issues/14
-        /// </summary>
-        /// <param name="platform"></param>
-        /// <returns></returns>
-        protected virtual string PlatformName(string platform)
+        protected bool Eq(IConfPlatformPrj a, IConfPlatform b)
         {
-            if(platform == null) {
-                return null;
-            }
-
-            if(String.Compare(platform, "Any CPU", StringComparison.OrdinalIgnoreCase) == 0) {
-                return "AnyCPU";
-            }
-            return platform;
+            return (ConfigItem)a == (ConfigItem)b;
         }
+
+        //TODO: user option along with `LoadProjects` func
+        protected bool Free()
+        {
+            foreach(var xp in Projects) {
+                PrjCollection.UnloadProject(xp.Project);
+            }
+            return true;
+        }
+
+        #region IDisposable
+
+        // To detect redundant calls
+        private bool disposed = false;
+
+        // To correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposed) {
+                return;
+            }
+            disposed = true;
+
+            //...
+            Free();
+        }
+
+        #endregion
     }
 }

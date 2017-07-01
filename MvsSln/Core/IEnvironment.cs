@@ -30,17 +30,47 @@ using Microsoft.Build.Evaluation;
 namespace net.r_eg.MvsSln.Core
 {
     [Guid("818233C6-5BFE-47D5-929D-668C70EA25D5")]
-    public interface IEnvironment
+    public interface IEnvironment: IDisposable
     {
         /// <summary>
         /// List of evaluated projects.
         /// </summary>
-        IEnumerable<XProject> Projects { get; }
+        IEnumerable<IXProject> Projects { get; }
 
         /// <summary>
         /// Access to GlobalProjectCollection
         /// </summary>
         ProjectCollection PrjCollection { get; }
+
+        /// <summary>
+        /// Find project by Guid.
+        /// </summary>
+        /// <param name="guid">Guid of project.</param>
+        /// <param name="cfg">Specific configuration.</param>
+        /// <returns></returns>
+        IXProject XProjectByGuid(string guid, IConfPlatform cfg);
+
+        /// <summary>
+        /// Find project by Guid.
+        /// </summary>
+        /// <param name="guid">Guid of project.</param>
+        /// <returns></returns>
+        IXProject[] XProjectsByGuid(string guid);
+
+        /// <summary>
+        /// Find projects by name.
+        /// </summary>
+        /// <param name="name">ProjectName.</param>
+        /// <param name="cfg">Specific configuration.</param>
+        /// <returns></returns>
+        IXProject[] XProjectsByName(string name, IConfPlatform cfg);
+
+        /// <summary>
+        /// Find projects by name.
+        /// </summary>
+        /// <param name="name">ProjectName.</param>
+        /// <returns></returns>
+        IXProject[] XProjectsByName(string name);
 
         /// <summary>
         /// Get or firstly load into collection the project. 
@@ -73,5 +103,11 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="slnProps">Solution properties.</param>
         /// <returns></returns>
         IDictionary<string, string> GetProjectProperties(ProjectItem pItem, IDictionary<string, string> slnProps);
+
+        /// <summary>
+        /// Load available projects via configurations.
+        /// </summary>
+        /// <param name="pItems">Specific list or null value to load all available.</param>
+        void LoadProjects(IEnumerable<ProjectItemCfg> pItems = null);
     }
 }

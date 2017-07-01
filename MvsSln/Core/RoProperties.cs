@@ -68,44 +68,50 @@ namespace net.r_eg.MvsSln.Core
             dict = data ?? throw new ArgumentNullException(nameof(data), "Value cannot be null.");
         }
 
+        #region ExplicitImpl
+
+        void IDictionary<T, T2>.Add(T key, T2 value) => Add(key, value);
+
+        void ICollection<KeyValuePair<T, T2>>.Add(KeyValuePair<T, T2> item) => Add(item);
+
+        void ICollection<KeyValuePair<T, T2>>.Clear() => Clear();
+
+        bool ICollection<KeyValuePair<T, T2>>.Contains(KeyValuePair<T, T2> item) => Contains(item);
+
+        bool IDictionary<T, T2>.Remove(T key) => Remove(key);
+
+        bool ICollection<KeyValuePair<T, T2>>.Remove(KeyValuePair<T, T2> item) => Remove(item);
+
+        #endregion
+
         #region NotSupported
 
-        void IDictionary<T, T2>.Add(T key, T2 value)
+        protected void Add(T key, T2 value)
         {
             throw new NotSupportedException();
         }
 
-        void ICollection<KeyValuePair<T, T2>>.Add(KeyValuePair<T, T2> item)
+        protected void Add(KeyValuePair<T, T2> item)
         {
             throw new NotSupportedException();
         }
 
-        void ICollection<KeyValuePair<T, T2>>.Clear()
+        protected void Clear()
         {
             throw new NotSupportedException();
         }
 
-        bool ICollection<KeyValuePair<T, T2>>.Contains(KeyValuePair<T, T2> item)
+        protected bool Contains(KeyValuePair<T, T2> item)
         {
             throw new NotSupportedException();
         }
 
-        void ICollection<KeyValuePair<T, T2>>.CopyTo(KeyValuePair<T, T2>[] array, int arrayIndex)
+        protected bool Remove(T key)
         {
             throw new NotSupportedException();
         }
 
-        IEnumerator<KeyValuePair<T, T2>> IEnumerable<KeyValuePair<T, T2>>.GetEnumerator()
-        {
-            throw new NotSupportedException();
-        }
-
-        bool IDictionary<T, T2>.Remove(T key)
-        {
-            throw new NotSupportedException();
-        }
-
-        bool ICollection<KeyValuePair<T, T2>>.Remove(KeyValuePair<T, T2> item)
+        protected bool Remove(KeyValuePair<T, T2> item)
         {
             throw new NotSupportedException();
         }

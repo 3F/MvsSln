@@ -33,16 +33,32 @@ namespace net.r_eg.MvsSln.Core
     [DebuggerDisplay("{Format()}")]
     public class ConfigItem: IConfPlatform
     {
+        public IRuleOfConfig Rule
+        {
+            get;
+            set;
+        } = new RuleOfConfig();
+
         public string Configuration
         {
             get;
             protected set;
         }
 
+        public string ConfigurationByRule
+        {
+            get => Rule?.Configuration(Configuration);
+        }
+
         public string Platform
         {
             get;
             protected set;
+        }
+
+        public string PlatformByRule
+        {
+            get => Rule?.Platform(Platform);
         }
 
         public static bool operator ==(ConfigItem a, ConfigItem b)
@@ -60,12 +76,12 @@ namespace net.r_eg.MvsSln.Core
 
         public override bool Equals(object obj)
         {
-            if(Object.ReferenceEquals(obj, null) || GetType() != obj.GetType()) {
+            if(Object.ReferenceEquals(obj, null) || !(obj is ConfigItem)) {
                 return false;
             }
 
             var b = (ConfigItem)obj;
-            return (Configuration == b.Configuration) && (Platform == b.Platform);
+            return (ConfigurationByRule == b.ConfigurationByRule) && (PlatformByRule == b.PlatformByRule);
         }
 
         public override int GetHashCode()

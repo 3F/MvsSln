@@ -108,8 +108,12 @@ namespace net.r_eg.MvsSln.Core
 
             Aliases(data);
 
-            if((type & SlnItems.Env) == SlnItems.Env) {
+            if((type & SlnItems.Env) == SlnItems.Env)
+            {
                 data.Env = new IsolatedEnv(data);
+                if((type & SlnItems.EnvWithProjects) == SlnItems.EnvWithProjects) {
+                    data.Env.LoadProjects();
+                }
             }
             return data;
         }

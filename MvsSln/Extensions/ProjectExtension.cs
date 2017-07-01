@@ -22,60 +22,20 @@
  * THE SOFTWARE.
 */
 
-using System;
-using net.r_eg.MvsSln.Core;
+using Microsoft.Build.Evaluation;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Extensions
 {
-    /// <summary>
-    /// Wrapper of the default solution parser.
-    /// </summary>
-    public sealed class Sln: IDisposable
+    public static class ProjectExtension
     {
-        private static ISlnContainer parser = new SlnParser();
-
-        /// <summary>
-        /// Parsed solution data.
-        /// </summary>
-        public ISlnResult Result
+        public static string GetProjectGuid(this Project eProject)
         {
-            get;
-            private set;
+            return eProject?.GetPropertyValue("ProjectGuid");
         }
 
-        /// <param name="file">Solution file</param>
-        /// <param name="type">Allowed type of operations.</param>
-        public Sln(string file, SlnItems type)
+        public static string GetProjectName(this Project eProject)
         {
-            Result = parser.Parse(file, type);
+            return eProject?.GetPropertyValue("ProjectName");
         }
-
-        private void Free()
-        {
-            Result.Env.Dispose();
-        }
-
-        #region IDisposable
-
-        // To detect redundant calls
-        private bool disposed = false;
-
-        // To correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if(disposed) {
-                return;
-            }
-            disposed = true;
-
-            Free();
-        }
-
-        #endregion
     }
 }

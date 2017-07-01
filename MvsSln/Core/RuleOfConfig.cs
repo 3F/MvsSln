@@ -23,59 +23,38 @@
 */
 
 using System;
-using net.r_eg.MvsSln.Core;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Core
 {
-    /// <summary>
-    /// Wrapper of the default solution parser.
-    /// </summary>
-    public sealed class Sln: IDisposable
+    public class RuleOfConfig: IRuleOfConfig
     {
-        private static ISlnContainer parser = new SlnParser();
+        /// <summary>
+        /// Rules of platform names.
+        /// details: https://github.com/3F/vsSolutionBuildEvent/issues/14
+        ///        + MS Connect Issue #503935
+        /// </summary>
+        /// <param name="name">Platform name.</param>
+        /// <returns></returns>
+        public string Platform(string name)
+        {
+            if(name == null) {
+                return null;
+            }
+
+            if(String.Compare(name, "Any CPU", StringComparison.OrdinalIgnoreCase) == 0) {
+                return "AnyCPU";
+            }
+            return name;
+        }
 
         /// <summary>
-        /// Parsed solution data.
+        /// Rules of configuration names.
         /// </summary>
-        public ISlnResult Result
+        /// <param name="name">Configuration name.</param>
+        /// <returns></returns>
+        public string Configuration(string name)
         {
-            get;
-            private set;
+            return name;
         }
-
-        /// <param name="file">Solution file</param>
-        /// <param name="type">Allowed type of operations.</param>
-        public Sln(string file, SlnItems type)
-        {
-            Result = parser.Parse(file, type);
-        }
-
-        private void Free()
-        {
-            Result.Env.Dispose();
-        }
-
-        #region IDisposable
-
-        // To detect redundant calls
-        private bool disposed = false;
-
-        // To correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if(disposed) {
-                return;
-            }
-            disposed = true;
-
-            Free();
-        }
-
-        #endregion
     }
 }

@@ -26,8 +26,14 @@ namespace net.r_eg.MvsSln.Core
 {
     public interface IConfPlatform
     {
+        IRuleOfConfig Rule { get; }
+
         string Configuration { get; }
 
+        string ConfigurationByRule { get; }
+
         string Platform { get; }
+
+        string PlatformByRule { get; }
     }
 }

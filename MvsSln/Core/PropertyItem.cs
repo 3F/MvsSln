@@ -22,57 +22,58 @@
  * THE SOFTWARE.
 */
 
-using System;
+using Microsoft.Build.Evaluation;
+using System.Diagnostics;
 
-namespace net.r_eg.MvsSln
+namespace net.r_eg.MvsSln.Core
 {
-    public enum SlnItems: UInt32
+    [DebuggerDisplay("{name} = {evaluatedValue} [{unevaluatedValue}]")]
+    public struct PropertyItem
     {
-        None,
+        /// <summary>
+        /// The name of the property.
+        /// </summary>
+        public string name;
 
         /// <summary>
-        /// All supported data.
+        /// the evaluated property value, which is never null.
         /// </summary>
-        All = Projects 
-                | SolutionConfPlatforms 
-                | ProjectConfPlatforms 
-                | ProjectDependencies
-                | Env
-                | LoadDefaultData,
+        public string evaluatedValue;
 
         /// <summary>
-        /// All found projects from solution.
+        /// The unevaluated property value.
         /// </summary>
-        Projects = 0x0001,
+        public string unevaluatedValue;
 
         /// <summary>
-        /// Solution configurations with platforms.
+        /// True if the property originated from an environment variable.
         /// </summary>
-        SolutionConfPlatforms = 0x0002,
+        public bool isEnvironmentProperty;
 
         /// <summary>
-        /// Project configurations with platforms.
+        /// True if the property is a global property.
         /// </summary>
-        ProjectConfPlatforms = 0x0004,
+        public bool isGlobalProperty;
 
         /// <summary>
-        /// Project Build Order from .sln file.
+        /// True if the property is a reserved property, for example 'MSBuildProjectFile'.
         /// </summary>
-        ProjectDependencies = 0x0008,
+        public bool isReservedProperty;
 
         /// <summary>
-        /// To prepare environment without loading projects.
+        /// True if the property originates from an imported file 
+        /// and not from an environment variable, a global property, or a reserved property.
         /// </summary>
-        Env = 0x0010 | Projects | SolutionConfPlatforms,
+        public bool isImported;
 
         /// <summary>
-        /// To load default data.
+        /// Link to Microsoft.Build.Evaluation.ProjectProperty.
         /// </summary>
-        LoadDefaultData = 0x0020,
+        public ProjectProperty parentProperty;
 
         /// <summary>
-        /// To prepare environment with loaded projects by default.
+        /// Link to parent container.
         /// </summary>
-        EnvWithProjects = Env | LoadDefaultData,
+        public IXProject parentProject;
     }
 }

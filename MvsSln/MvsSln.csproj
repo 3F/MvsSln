@@ -50,12 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
+    <Compile Include="Core\IRuleOfConfig.cs" />
     <Compile Include="Core\IConfPlatformPrj.cs" />
     <Compile Include="Core\IConfPlatform.cs" />
     <Compile Include="Core\ConfigItem.cs" />
     <Compile Include="Core\IEnvironment.cs" />
+    <Compile Include="Core\PropertyItem.cs" />
     <Compile Include="Core\ProjectItemCfg.cs" />
     <Compile Include="Core\ProjectType.cs" />
+    <Compile Include="Core\RuleOfConfig.cs" />
+    <Compile Include="Core\IXProject.cs" />
     <Compile Include="Core\XProject.cs" />
     <Compile Include="Core\RoProperties.cs" />
     <Compile Include="Core\IsolatedEnv.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Core\SlnHandlers\LSolutionConfigurationPlatforms.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Exceptions\CommonException.cs" />
+    <Compile Include="Extensions\ProjectExtension.cs" />
     <Compile Include="Extensions\ObjectExtension.cs" />
     <Compile Include="Log\ISender.cs" />
     <Compile Include="Log\LSender.cs" />
