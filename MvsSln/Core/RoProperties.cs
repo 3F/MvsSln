@@ -63,6 +63,11 @@ namespace net.r_eg.MvsSln.Core
 
         IEnumerator IEnumerable.GetEnumerator() => dict.GetEnumerator();
 
+        public static implicit operator RoProperties<T, T2>(Dictionary<T, T2> dict)
+        {
+            return new RoProperties<T, T2>(dict);
+        }
+
         public RoProperties(IDictionary<T, T2> data)
         {
             dict = data ?? throw new ArgumentNullException(nameof(data), "Value cannot be null.");

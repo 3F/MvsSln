@@ -58,12 +58,21 @@ namespace net.r_eg.MvsSln.Core
         protected ISlnResult sln;
 
         /// <summary>
-        /// List of evaluated projects.
+        /// List of all evaluated projects at current time 
+        /// with unique configuration for each instance.
         /// </summary>
         public IEnumerable<IXProject> Projects
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// List of evaluated projects that filtered by Guid.
+        /// </summary>
+        public IEnumerable<IXProject> UniqueByGuidProjects
+        {
+            get => Projects.GroupBy(p => p.ProjectItem.project.pGuid).Select(p => p.First());
         }
 
         /// <summary>
@@ -269,7 +278,7 @@ namespace net.r_eg.MvsSln.Core
             var xprojects = new List<IXProject>();
             foreach(var pItem in pItems) {
                 Project eProject = GetOrLoadProject(pItem.project, pItem.projectConfig);
-                xprojects.Add(new XProject(pItem, eProject));
+                xprojects.Add(new XProject(sln, pItem, eProject));
             }
             return xprojects;
         }

@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
@@ -44,7 +45,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// Map of projects.
         /// </summary>
-        protected Dictionary<string, List<string>> map = new Dictionary<string, List<string>>();
+        protected Dictionary<string, HashSet<string>> map = new Dictionary<string, HashSet<string>>();
 
         /// <summary>
         /// List of project Guids.
@@ -60,7 +61,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// Projects and their dependencies.
         /// </summary>
-        public Dictionary<string, List<string>> ProjectDependencies
+        public Dictionary<string, HashSet<string>> ProjectDependencies
         {
             get {
                 return map;
@@ -86,7 +87,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 if(order.Count < 1) {
                     return default(ProjectItem);
                 }
-                return Projects[order[0]];
+                return GetProjectBy(order[0]);
             }
         }
 
@@ -100,7 +101,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 if(order.Count < 1) {
                     return default(ProjectItem);
                 }
-                return Projects[order[order.Count - 1]];
+                return GetProjectBy(order[order.Count - 1]);
             }
         }
 
@@ -149,6 +150,9 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <returns></returns>
         public ProjectItem GetProjectBy(string guid)
         {
+            if(String.IsNullOrWhiteSpace(guid) || !Projects.ContainsKey(guid)) {
+                return default(ProjectItem);
+            }
             return Projects[guid];
         }
 
@@ -159,11 +163,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="rsln">Handled solution data.</param>
         public override void PreProcessing(StreamReader stream, SlnResult rsln)
         {
-            //if(flush) {
-            //    Projects.Clear();
-            //    order.Clear();
-            //}
-
+            Projects.Clear();
+            order.Clear();
             map.Clear();
         }
 
@@ -196,7 +197,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             }
 
             Projects[pItem.pGuid]   = pItem;
-            map[pItem.pGuid]        = new List<string>();
+            map[pItem.pGuid]        = new HashSet<string>();
 
             while((line = stream.ReadLine()) != null && (line != "EndProject"))
             {
@@ -211,7 +212,10 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                     if(line.StartsWith("EndProjectSection", StringComparison.Ordinal)) {
                         break;
                     }
-                    map[pItem.pGuid].Add(RPatterns.PropertyLine.Match(line).Groups["PName"].Value.Trim());
+
+                    map[pItem.pGuid].Add(
+                        FormatGuid(RPatterns.PropertyLine.Match(line).Groups["PName"].Value)
+                    );
                 }
             }
 
@@ -225,10 +229,12 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="rsln">Handled solution data.</param>
         public override void PostProcessing(StreamReader stream, SlnResult rsln)
         {
-            // Build order
+            BuildOrder();
+        }
 
-            Func<string, bool> h = null;
-            h = delegate(string id)
+        protected void BuildOrder()
+        {
+            bool h(string id)
             {
                 map[id].ForEach(dep => h(dep));
                 if(!order.Contains(id)) {
@@ -237,13 +243,18 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return true;
             };
 
-            foreach(KeyValuePair<string, List<string>> project in map)
+            foreach(KeyValuePair<string, HashSet<string>> project in map)
             {
                 h(project.Key);
                 if(!order.Contains(project.Key)) {
                     order.Add(project.Key);
                 }
             }
+        }
+
+        protected string FormatGuid(string guid)
+        {
+            return guid.Trim().ToUpperInvariant();
         }
     }
 }

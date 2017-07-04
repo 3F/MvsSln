@@ -22,10 +22,11 @@
  * THE SOFTWARE.
 */
 
-using Microsoft.Build.Evaluation;
 using System.Diagnostics;
+using Microsoft.Build.Evaluation;
+using net.r_eg.MvsSln.Core;
 
-namespace net.r_eg.MvsSln.Core
+namespace net.r_eg.MvsSln.Projects
 {
     [DebuggerDisplay("{name} = {evaluatedValue} [{unevaluatedValue}]")]
     public struct PropertyItem
@@ -44,6 +45,11 @@ namespace net.r_eg.MvsSln.Core
         /// The unevaluated property value.
         /// </summary>
         public string unevaluatedValue;
+
+        /// <summary>
+        /// 'Condition' attr if defined.
+        /// </summary>
+        public string condition;
 
         /// <summary>
         /// True if the property originated from an environment variable.
@@ -67,6 +73,11 @@ namespace net.r_eg.MvsSln.Core
         public bool isImported;
 
         /// <summary>
+        /// True if the property has been defined locally by user via available constructor.
+        /// </summary>
+        public bool isUserDef;
+
+        /// <summary>
         /// Link to Microsoft.Build.Evaluation.ProjectProperty.
         /// </summary>
         public ProjectProperty parentProperty;
@@ -75,5 +86,17 @@ namespace net.r_eg.MvsSln.Core
         /// Link to parent container.
         /// </summary>
         public IXProject parentProject;
+
+        /// <param name="name">The name of property.</param>
+        /// <param name="value">Unevaluated value.</param>
+        /// <param name="condition">Optional 'Condition' attr.</param>
+        public PropertyItem(string name, string value, string condition = null)
+            : this()
+        {
+            this.name           = name;
+            this.condition      = condition;
+            unevaluatedValue    = value;
+            isUserDef           = true;
+        }
     }
 }

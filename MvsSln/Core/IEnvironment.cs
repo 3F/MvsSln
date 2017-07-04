@@ -33,9 +33,15 @@ namespace net.r_eg.MvsSln.Core
     public interface IEnvironment: IDisposable
     {
         /// <summary>
-        /// List of evaluated projects.
+        /// List of all evaluated projects at current time 
+        /// with unique configuration for each instance.
         /// </summary>
         IEnumerable<IXProject> Projects { get; }
+
+        /// <summary>
+        /// List of evaluated projects that filtered by Guid.
+        /// </summary>
+        IEnumerable<IXProject> UniqueByGuidProjects { get; }
 
         /// <summary>
         /// Access to GlobalProjectCollection

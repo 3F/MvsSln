@@ -23,56 +23,65 @@
 */
 
 using System.Collections.Generic;
+using System.Diagnostics;
+using net.r_eg.MvsSln.Core;
 
-namespace net.r_eg.MvsSln.Core
+namespace net.r_eg.MvsSln.Projects
 {
-    public interface ISlnProjectDependencies
+    [DebuggerDisplay("{type} = {evaluatedInclude} [{unevaluatedInclude}]")]
+    public struct Item
     {
         /// <summary>
-        /// List of project Guids.
-        /// In direct order of definitions with considering of ProjectDependencies.
+        /// The item type.
         /// </summary>
-        List<string> GuidList { get; }
+        public string type;
 
         /// <summary>
-        /// Get first project from defined list.
+        /// The unevaluated value of the Include attribute.
         /// </summary>
-        ProjectItem FirstProject { get; }
+        public string unevaluatedInclude;
 
         /// <summary>
-        /// Get last project from defined list.
+        /// The evaluated value of the Include attribute.
         /// </summary>
-        ProjectItem LastProject { get; }
+        public string evaluatedInclude;
 
         /// <summary>
-        /// Get first project in Project Build Order.
+        /// True if this item originates from an imported file.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        ProjectItem FirstBy(BuildType type);
+        public bool isImported;
 
         /// <summary>
-        /// Get last project in Project Build Order.
+        /// All the metadata for this item by name.
         /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        ProjectItem LastBy(BuildType type);
+        public RoProperties<string, Metadata> meta;
+
+        public struct Metadata
+        {
+            /// <summary>
+            /// The name of the metadata.
+            /// </summary>
+            public string name;
+
+            /// <summary>
+            /// The evaluated metadata value.
+            /// </summary>
+            public string evaluated;
+
+            /// <summary>
+            /// The unevaluated metadata value.
+            /// </summary>
+            public string unevaluated;
+        }
 
         /// <summary>
-        /// Get project by Guid string.
+        /// Link to parent Microsoft.Build.Evaluation.ProjectItem.
         /// </summary>
-        /// <param name="guid">Identifier of project.</param>
-        /// <returns></returns>
-        ProjectItem GetProjectBy(string guid);
+        public Microsoft.Build.Evaluation.ProjectItem parentItem;
 
         /// <summary>
-        /// List of projects by Guid.
+        /// Link to parent container.
         /// </summary>
-        Dictionary<string, ProjectItem> Projects { get; }
-
-        /// <summary>
-        /// Projects and their dependencies.
-        /// </summary>
-        Dictionary<string, HashSet<string>> ProjectDependencies { get; }
+        public IXProject parentProject;
     }
 }

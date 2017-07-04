@@ -40,7 +40,7 @@ namespace net.r_eg.MvsSln.Core
     {
         /// <summary>
         /// justification: A common using of SynchSubscribers should be as an only sequential accessing to all elements at once - that is O(1).
-        ///                And most important - it's a ordered container, because we need to save priority by listeners.
+        ///                And most important - it's contiguous storage in order of adding of elements, because we need to save priority by listeners.
         /// But for any single accessing it should be O(n), thus we also use O(1) accessor below to improve performance of the List type.
         /// </summary>
         protected List<T> listeners = new List<T>();

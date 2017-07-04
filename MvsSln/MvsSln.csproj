@@ -55,7 +55,10 @@
     <Compile Include="Core\IConfPlatform.cs" />
     <Compile Include="Core\ConfigItem.cs" />
     <Compile Include="Core\IEnvironment.cs" />
-    <Compile Include="Core\PropertyItem.cs" />
+    <Compile Include="Core\ProjectReferences.cs" />
+    <Compile Include="Extensions\CollectionExtension.cs" />
+    <Compile Include="Projects\Item.cs" />
+    <Compile Include="Projects\PropertyItem.cs" />
     <Compile Include="Core\ProjectItemCfg.cs" />
     <Compile Include="Core\ProjectType.cs" />
     <Compile Include="Core\RuleOfConfig.cs" />
@@ -97,5 +100,6 @@
   <ItemGroup>
     <None Include="key.snk" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
