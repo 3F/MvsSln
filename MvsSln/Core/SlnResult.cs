@@ -108,6 +108,7 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// Solution Project Dependencies.
+        /// See also `ProjectReferences` class if you need additional work with project references.
         /// </summary>
         public ISlnProjectDependencies ProjectDependencies
         {

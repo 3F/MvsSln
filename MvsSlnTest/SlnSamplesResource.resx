@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="regXwild" xml:space="preserve">
+    <value>Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
+MinimumVisualStudioVersion = 10.0.30319.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{571DA510-79F7-48C0-9024-9632E16353DF}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.version = .version
+		build.bat = build.bat
+		changelog.txt = changelog.txt
+		gnt.core = gnt.core
+		LICENSE = LICENSE
+		packages.config = packages.config
+		Readme.md = Readme.md
+		regXwild.nuspec = regXwild.nuspec
+		regXwild_native.targets = regXwild_native.targets
+		regXwild_net.targets = regXwild_net.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9390762C-88DF-4FF5-BD50-CCF3694BDFD9}"
+	ProjectSection(SolutionItems) = preProject
+		tools\gnt.bat = tools\gnt.bat
+		tools\hMSBuild.bat = tools\hMSBuild.bat
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "snet", "snet\snet.csproj", "{12B25935-229F-4128-B66B-7561A77ABC54}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74660324-42AA-41B6-9FDB-E0ED0D0144CE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{74660324-42AA-41B6-9FDB-E0ED0D0144CE}.Debug|Win32.Build.0 = Debug|Win32
+		{74660324-42AA-41B6-9FDB-E0ED0D0144CE}.Debug|x64.ActiveCfg = Debug|x64
+		{74660324-42AA-41B6-9FDB-E0ED0D0144CE}.Debug|x64.Build.0 = Debug|x64
+		{74660324-42AA-41B6-9FDB-E0ED0D0144CE}.Release|Win32.ActiveCfg = Release|Win32
+		{74660324-42AA-41B6-9FDB-E0ED0D0144CE}.Release|Win32.Build.0 = Release|Win32
+		{74660324-42AA-41B6-9FDB-E0ED0D0144CE}.Release|x64.ActiveCfg = Release|x64
+		{74660324-42AA-41B6-9FDB-E0ED0D0144CE}.Release|x64.Build.0 = Release|x64
+		{B43C60C4-7B0D-466B-BE85-11298000062A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B43C60C4-7B0D-466B-BE85-11298000062A}.Debug|Win32.Build.0 = Debug|Win32
+		{B43C60C4-7B0D-466B-BE85-11298000062A}.Debug|x64.ActiveCfg = Debug|x64
+		{B43C60C4-7B0D-466B-BE85-11298000062A}.Debug|x64.Build.0 = Debug|x64
+		{B43C60C4-7B0D-466B-BE85-11298000062A}.Release|Win32.ActiveCfg = Release|Win32
+		{B43C60C4-7B0D-466B-BE85-11298000062A}.Release|Win32.Build.0 = Release|Win32
+		{B43C60C4-7B0D-466B-BE85-11298000062A}.Release|x64.ActiveCfg = Release|x64
+		{B43C60C4-7B0D-466B-BE85-11298000062A}.Release|x64.Build.0 = Release|x64
+		{7571CD36-4A3C-446F-96B1-951261274B78}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7571CD36-4A3C-446F-96B1-951261274B78}.Debug|Win32.Build.0 = Debug|Win32
+		{7571CD36-4A3C-446F-96B1-951261274B78}.Debug|x64.ActiveCfg = Debug|x64
+		{7571CD36-4A3C-446F-96B1-951261274B78}.Debug|x64.Build.0 = Debug|x64
+		{7571CD36-4A3C-446F-96B1-951261274B78}.Release|Win32.ActiveCfg = Release|Win32
+		{7571CD36-4A3C-446F-96B1-951261274B78}.Release|Win32.Build.0 = Release|Win32
+		{7571CD36-4A3C-446F-96B1-951261274B78}.Release|x64.ActiveCfg = Release|x64
+		{7571CD36-4A3C-446F-96B1-951261274B78}.Release|x64.Build.0 = Release|x64
+		{12B25935-229F-4128-B66B-7561A77ABC54}.Debug|Win32.ActiveCfg = Debug|x86
+		{12B25935-229F-4128-B66B-7561A77ABC54}.Debug|Win32.Build.0 = Debug|x86
+		{12B25935-229F-4128-B66B-7561A77ABC54}.Debug|x64.ActiveCfg = Debug|x64
+		{12B25935-229F-4128-B66B-7561A77ABC54}.Debug|x64.Build.0 = Debug|x64
+		{12B25935-229F-4128-B66B-7561A77ABC54}.Release|Win32.ActiveCfg = Release|x86
+		{12B25935-229F-4128-B66B-7561A77ABC54}.Release|Win32.Build.0 = Release|x86
+		{12B25935-229F-4128-B66B-7561A77ABC54}.Release|x64.ActiveCfg = Release|x64
+		{12B25935-229F-4128-B66B-7561A77ABC54}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal</value>
+    <comment>modified for test</comment>
+  </data>
+  <data name="vsSolutionBuildEvent" xml:space="preserve">
+    <value>Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.30319.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CIMLib", "CIMLib\CIMLib.csproj", "{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vsSolutionBuildEvent", "vsSolutionBuildEvent\vsSolutionBuildEvent.csproj", "{32E44995-F621-4E77-B46A-8F65D64E7FEA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{73919171-44B6-4536-B892-F1FCA653887C} = {73919171-44B6-4536-B892-F1FCA653887C}
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4} = {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vsSolutionBuildEventTest", "vsSolutionBuildEventTest\vsSolutionBuildEventTest.csproj", "{C00D04E8-8101-42F5-89DA-CBAD205CC1D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge", "Bridge\Bridge.csproj", "{73919171-44B6-4536-B892-F1FCA653887C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devenv", "Devenv\Devenv.csproj", "{56437CBB-4AE5-4405-B928-600009D60E2D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{73919171-44B6-4536-B892-F1FCA653887C} = {73919171-44B6-4536-B892-F1FCA653887C}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CI.MSBuild", "CI.MSBuild\CI.MSBuild.csproj", "{97F0E2FF-42DB-4506-856D-8694DD99F827}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider", "Provider\Provider.csproj", "{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientDemo", "ClientDemo\ClientDemo.csproj", "{9673A8FC-07E1-4BB3-A97E-020481A5275E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{7ADBBB81-2FA7-45CA-B97D-486C3A6624D3}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.vssbe = .vssbe
+		3rd-party = 3rd-party
+		appveyor.yml = appveyor.yml
+		AUTHORS = AUTHORS
+		build_[CI_Debug].bat = build_[CI_Debug].bat
+		build_[CI_Release].bat = build_[CI_Release].bat
+		changelog.txt = changelog.txt
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".gnt", ".gnt", "{65FF5D56-E814-4956-89BD-7C53EC557BFE}"
+	ProjectSection(SolutionItems) = preProject
+		.gnt\gnt.core = .gnt\gnt.core
+		.gnt\packages.config = .gnt\packages.config
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{849DD790-F856-493C-A19E-2560A21F6AF1}"
+	ProjectSection(SolutionItems) = preProject
+		tools\gnt.bat = tools\gnt.bat
+		tools\msbuild.bat = tools\msbuild.bat
+		tools\powershell.bat = tools\powershell.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VsixLib", "VsixLib", "{A6FD95A3-7093-47C2-9183-5629ABC4A955}"
+	ProjectSection(SolutionItems) = preProject
+		VsixLib.targets = VsixLib.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CI_Debug_net45|Any CPU = CI_Debug_net45|Any CPU
+		CI_Debug|Any CPU = CI_Debug|Any CPU
+		CI_Release_net45|Any CPU = CI_Release_net45|Any CPU
+		CI_Release|Any CPU = CI_Release|Any CPU
+		Debug_net45|Any CPU = Debug_net45|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release_net45|Any CPU = Release_net45|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.ActiveCfg = Release_net45|x64
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug|Any CPU.ActiveCfg = Release|x64
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug|Any CPU.Build.0 = Release|x64
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release_net45|Any CPU.ActiveCfg = Release_net45|Any CPU
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Build.0 = Release|Any CPU
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.Debug|Any CPU.Build.0 = Debug|x86
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal</value>
+    <comment>modified for test</comment>
+  </data>
+</root>

@@ -70,7 +70,7 @@ namespace net.r_eg.MvsSln.Core
 
         public RoProperties(IDictionary<T, T2> data)
         {
-            dict = data ?? throw new ArgumentNullException(nameof(data), "Value cannot be null.");
+            dict = data ?? throw new ArgumentNullException(nameof(data), MsgResource.ValueNoEmptyOrNull);
         }
 
         #region ExplicitImpl

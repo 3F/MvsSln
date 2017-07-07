@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Extensions;
@@ -269,6 +270,19 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Adds 'Reference' item.
         /// </summary>
+        /// <param name="asm">Assembly for adding.</param>
+        /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
+        /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
+        /// <param name="spec">Meta 'SpecificVersion'.</param>
+        /// <returns></returns>
+        public bool AddReference(Assembly asm, bool local, bool? embed = null, bool? spec = null)
+        {
+            return AddReference(asm.ToString(), Sln.SolutionDir.MakeRelativePath(asm.Location), local, embed, spec);
+        }
+
+        /// <summary>
+        /// Adds 'Reference' item.
+        /// </summary>
         /// <param name="inc">Include attribute.</param>
         /// <param name="path">Meta 'HintPath'.</param>
         /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
@@ -296,17 +310,32 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Adds 'ProjectReference' item.
         /// </summary>
+        /// <param name="project">Information about project.</param>
+        /// <returns></returns>
+        public bool AddProjectReference(ProjectItem project)
+        {
+            var path = Sln.SolutionDir.MakeRelativePath(project.fullPath) ?? project.path;
+            return AddProjectReference(path, project.pGuid, project.name, false);
+        }
+
+        /// <summary>
+        /// Adds 'ProjectReference' item.
+        /// </summary>
         /// <param name="path">Path to project file.</param>
         /// <param name="guid">The Guid of project.</param>
         /// <param name="name">The name of project.</param>
+        /// <param name="makeRelative">Make relative path.</param>
         /// <returns></returns>
-        public bool AddProjectReference(string path, string guid, string name)
+        public bool AddProjectReference(string path, string guid, string name, bool makeRelative = false)
         {
             var meta = new Dictionary<string, string>() {
                 { "Project", guid },
                 { "Name", name }
             };
 
+            if(makeRelative) {
+                path = Sln.SolutionDir.MakeRelativePath(path);
+            }
             return AddItem("ProjectReference", path, meta);
         }
 
@@ -452,7 +481,7 @@ namespace net.r_eg.MvsSln.Core
         {
             Sln         = data;
             ProjectItem = pItem;
-            Project     = prj ?? throw new ArgumentNullException(nameof(prj), "Value cannot be null.");
+            Project     = prj ?? throw new ArgumentNullException(nameof(prj), MsgResource.ValueNoEmptyOrNull);
         }
 
         protected virtual string GetProjectGuid(Project eProject)

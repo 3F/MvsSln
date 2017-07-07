@@ -33,6 +33,11 @@ namespace net.r_eg.MvsSln.Core
     public interface IEnvironment: IDisposable
     {
         /// <summary>
+        /// Access to Solution data.
+        /// </summary>
+        ISlnResult Sln { get; }
+
+        /// <summary>
         /// List of all evaluated projects at current time 
         /// with unique configuration for each instance.
         /// </summary>

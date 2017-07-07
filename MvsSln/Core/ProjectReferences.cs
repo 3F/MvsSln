@@ -30,6 +30,9 @@ using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.MvsSln.Core
 {
+    /// <summary>
+    /// Use it for additional work with project references and it's dependencies in ISlnProjectDependencies manner.
+    /// </summary>
     public class ProjectReferences: LProjectDependencies
     {
         /// <summary>
@@ -79,7 +82,7 @@ namespace net.r_eg.MvsSln.Core
             Parent      = slndep;
             XProjects   = xprojects;
 
-            map         = Parent.ProjectDependencies;
+            map         = Parent.Dependencies;
             Projects    = Parent.Projects;
 
             InitReferences();

@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using net.r_eg.MvsSln.Core.SlnHandlers;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -39,6 +40,16 @@ namespace net.r_eg.MvsSln.Core
     public class SlnParser: ISlnContainer
     {
         /// <summary>
+        /// The name of file if used stream from memory.
+        /// </summary>
+        public const string MEM_FILE = "$None.sln$";
+
+        /// <summary>
+        /// To use specific Encoding by default for some operations with data.
+        /// </summary>
+        protected Encoding encoding = Encoding.Default;
+
+        /// <summary>
         /// Available solution handlers.
         /// </summary>
         public SynchSubscribers<ISlnHandler> SlnHandlers
@@ -46,6 +57,16 @@ namespace net.r_eg.MvsSln.Core
             get;
             protected set;
         } = new SynchSubscribers<ISlnHandler>();
+
+        /// <summary>
+        /// Dictionary of raw xml projects by Guid.
+        /// Will be used if projects cannot be accessed from filesystem.
+        /// </summary>
+        public IDictionary<string, RawText> RawXmlProjects
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Parse of selected .sln file.
@@ -56,10 +77,10 @@ namespace net.r_eg.MvsSln.Core
         public ISlnResult Parse(string sln, SlnItems type)
         {
             if(String.IsNullOrWhiteSpace(sln)) {
-                throw new ArgumentNullException(nameof(sln), "Value cannot be null or empty.");
+                throw new ArgumentNullException(nameof(sln), MsgResource.ValueNoEmptyOrNull);
             }
 
-            using(var reader = new StreamReader(sln, Encoding.Default)) {
+            using(var reader = new StreamReader(sln, encoding)) {
                 return Parse(reader, type);
             }
         }
@@ -73,13 +94,13 @@ namespace net.r_eg.MvsSln.Core
         public ISlnResult Parse(StreamReader reader, SlnItems type)
         {
             if(reader == null) {
-                throw new ArgumentNullException(nameof(reader), "Value cannot be null.");
+                throw new ArgumentNullException(nameof(reader), MsgResource.ValueNoEmptyOrNull);
             }
 
-            string sln = ((FileStream)reader.BaseStream).Name;
+            string sln = (reader.BaseStream is FileStream) ? ((FileStream)reader.BaseStream).Name : MEM_FILE;
 
             var data = new SlnResult() {
-                SolutionDir = GetPathFrom(sln),
+                SolutionDir = GetDirectoryFromFile(sln),
                 ResultType  = type,
             };
 
@@ -110,7 +131,7 @@ namespace net.r_eg.MvsSln.Core
 
             if((type & SlnItems.Env) == SlnItems.Env)
             {
-                data.Env = new IsolatedEnv(data);
+                data.Env = new IsolatedEnv(data, RawXmlProjects);
                 if((type & SlnItems.EnvWithProjects) == SlnItems.EnvWithProjects) {
                     data.Env.LoadProjects();
                 }
@@ -199,12 +220,7 @@ namespace net.r_eg.MvsSln.Core
         {
             var ret = new Dictionary<string, string>();
 
-            string dir = Path.GetDirectoryName(sln);
-            if(dir[dir.Length - 1] != Path.DirectorySeparatorChar) {
-                dir += Path.DirectorySeparatorChar;
-            }
-
-            ret["SolutionDir"]      = dir;
+            ret["SolutionDir"]      = GetDirectoryFromFile(sln);
             ret["SolutionExt"]      = Path.GetExtension(sln);
             ret["SolutionFileName"] = Path.GetFileName(sln);
             ret["SolutionName"]     = Path.GetFileNameWithoutExtension(sln);
@@ -249,13 +265,9 @@ namespace net.r_eg.MvsSln.Core
             return null;
         }
 
-        protected string GetPathFrom(string file)
+        protected string GetDirectoryFromFile(string file)
         {
-            string dir = Path.GetDirectoryName(file);
-            if(dir[dir.Length - 1] != Path.DirectorySeparatorChar) {
-                dir += Path.DirectorySeparatorChar;
-            }
-            return dir;
+            return Path.GetDirectoryName(file).DirectoryPathFormat();
         }
     }
 }

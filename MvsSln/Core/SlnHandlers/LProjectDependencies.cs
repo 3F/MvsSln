@@ -61,7 +61,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// Projects and their dependencies.
         /// </summary>
-        public Dictionary<string, HashSet<string>> ProjectDependencies
+        public Dictionary<string, HashSet<string>> Dependencies
         {
             get {
                 return map;

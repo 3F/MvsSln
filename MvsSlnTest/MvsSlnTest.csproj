@@ -57,7 +57,23 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\ConfigItemTest.cs" />
+    <Compile Include="Core\SynchSubscribersTest.cs" />
+    <Compile Include="Core\ProjectItemTest.cs" />
+    <Compile Include="Extensions\StringExtensionTest.cs" />
+    <Compile Include="PrjSamplesResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PrjSamplesResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Projects\ItemTest.cs" />
     <Compile Include="Core\SlnHandlers\LProjectDependenciesTest.cs" />
+    <Compile Include="SlnSamplesResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SlnSamplesResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SlnTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +86,16 @@
       <Name>MvsSln</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="PrjSamplesResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PrjSamplesResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SlnSamplesResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>SlnSamplesResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

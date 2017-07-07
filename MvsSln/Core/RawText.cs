@@ -22,39 +22,29 @@
  * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
-using System.IO;
-using net.r_eg.MvsSln.Core.SlnHandlers;
+using System.Text;
 
 namespace net.r_eg.MvsSln.Core
 {
-    public interface ISlnContainer
+    public struct RawText
     {
-        /// <summary>
-        /// Available solution handlers.
-        /// </summary>
-        SynchSubscribers<ISlnHandler> SlnHandlers { get; }
+        public Encoding encoding;
 
-        /// <summary>
-        /// Dictionary of raw xml projects by Guid.
-        /// Will be used if projects cannot be accessed from filesystem.
-        /// </summary>
-        IDictionary<string, RawText> RawXmlProjects { get; set; }
+        public string data;
 
-        /// <summary>
-        /// Parse of selected .sln file.
-        /// </summary>
-        /// <param name="sln">Solution file</param>
-        /// <param name="type">Allowed type of operations.</param>
-        /// <returns></returns>
-        ISlnResult Parse(string sln, SlnItems type);
+        /// <param name="data"></param>
+        public RawText(string data)
+        {
+            this.data   = data;
+            encoding    = Encoding.UTF8;
+        }
 
-        /// <summary>
-        /// To parse data from used stream.
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <param name="type">Allowed type of operations.</param>
-        /// <returns></returns>
-        ISlnResult Parse(StreamReader reader, SlnItems type);
+        /// <param name="data"></param>
+        /// <param name="enc"></param>
+        public RawText(string data, Encoding enc)
+        {
+            this.data   = data;
+            encoding    = enc;
+        }
     }
 }

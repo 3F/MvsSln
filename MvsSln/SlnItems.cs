@@ -73,6 +73,6 @@ namespace net.r_eg.MvsSln
         /// <summary>
         /// To prepare environment with loaded projects by default.
         /// </summary>
-        EnvWithProjects = Env | LoadDefaultData,
+        EnvWithProjects = Env | ProjectConfPlatforms | LoadDefaultData,
     }
 }

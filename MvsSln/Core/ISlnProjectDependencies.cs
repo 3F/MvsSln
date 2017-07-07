@@ -73,6 +73,6 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Projects and their dependencies.
         /// </summary>
-        Dictionary<string, HashSet<string>> ProjectDependencies { get; }
+        Dictionary<string, HashSet<string>> Dependencies { get; }
     }
 }

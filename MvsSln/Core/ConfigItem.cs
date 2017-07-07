@@ -33,11 +33,23 @@ namespace net.r_eg.MvsSln.Core
     [DebuggerDisplay("{Format()}")]
     public class ConfigItem: IConfPlatform
     {
+        /// <summary>
+        /// The custom rule of the Configuration and Platform names.
+        /// </summary>
         public IRuleOfConfig Rule
         {
             get;
             set;
         } = new RuleOfConfig();
+
+        /// <summary>
+        /// To use virtual `Sensitivity` method in comparing objects.
+        /// </summary>
+        public bool SensitivityComparing
+        {
+            get;
+            set;
+        } = true;
 
         public string Configuration
         {
@@ -50,6 +62,11 @@ namespace net.r_eg.MvsSln.Core
             get => Rule?.Configuration(Configuration);
         }
 
+        public string ConfigurationByRuleICase
+        {
+            get => Sensitivity(ConfigurationByRule);
+        }
+
         public string Platform
         {
             get;
@@ -59,6 +76,11 @@ namespace net.r_eg.MvsSln.Core
         public string PlatformByRule
         {
             get => Rule?.Platform(Platform);
+        }
+
+        public string PlatformByRuleICase
+        {
+            get => Sensitivity(PlatformByRule);
         }
 
         public static bool operator ==(ConfigItem a, ConfigItem b)
@@ -81,7 +103,8 @@ namespace net.r_eg.MvsSln.Core
             }
 
             var b = (ConfigItem)obj;
-            return (ConfigurationByRule == b.ConfigurationByRule) && (PlatformByRule == b.PlatformByRule);
+            return (ConfigurationByRuleICase == b.ConfigurationByRuleICase) 
+                    && (PlatformByRuleICase == b.PlatformByRuleICase);
         }
 
         public override int GetHashCode()
@@ -129,6 +152,14 @@ namespace net.r_eg.MvsSln.Core
 
             Configuration   = cfg[0];
             Platform        = cfg[1];
+        }
+
+        protected virtual string Sensitivity(string name)
+        {
+            if(!SensitivityComparing) {
+                return name;
+            }
+            return name.ToLowerInvariant();
         }
     }
 }

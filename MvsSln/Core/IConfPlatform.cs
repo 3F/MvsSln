@@ -26,14 +26,26 @@ namespace net.r_eg.MvsSln.Core
 {
     public interface IConfPlatform
     {
+        /// <summary>
+        /// The custom rule of the Configuration and Platform names.
+        /// </summary>
         IRuleOfConfig Rule { get; }
+
+        /// <summary>
+        /// To use virtual `Sensitivity` method to compare objects.
+        /// </summary>
+        bool SensitivityComparing { get; set; }
 
         string Configuration { get; }
 
         string ConfigurationByRule { get; }
 
+        string ConfigurationByRuleICase { get; }
+
         string Platform { get; }
 
         string PlatformByRule { get; }
+
+        string PlatformByRuleICase { get; }
     }
 }

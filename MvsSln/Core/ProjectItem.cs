@@ -114,7 +114,7 @@ namespace net.r_eg.MvsSln.Core
         public ProjectItem(string line, string solutionDir)
             : this()
         {
-            Match m = RPatterns.ProjectLine.Match(line);
+            Match m = RPatterns.ProjectLine.Match(line ?? String.Empty);
             if(!m.Success) {
                 LSender.Send(this, $"ProjectItem: incorrect line :: '{line}'", Message.Level.Warn);
                 return;
@@ -129,7 +129,7 @@ namespace net.r_eg.MvsSln.Core
                 fullPath = path;
             }
             else {
-                fullPath = (!String.IsNullOrEmpty(path))? Path.Combine(solutionDir, path) : path;
+                fullPath = (solutionDir != null && path != null) ? Path.Combine(solutionDir, path) : path;
             }
 
             fullPath = Path.GetFullPath(fullPath); // D:\a\b\c\..\..\MvsSlnTest.csproj -> D:\a\MvsSlnTest.csproj

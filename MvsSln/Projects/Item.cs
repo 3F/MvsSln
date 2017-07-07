@@ -22,8 +22,9 @@
  * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
+using System;
 using System.Diagnostics;
+using System.Reflection;
 using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.MvsSln.Projects
@@ -83,5 +84,23 @@ namespace net.r_eg.MvsSln.Projects
         /// Link to parent container.
         /// </summary>
         public IXProject parentProject;
+
+        /// <summary>
+        /// Try to extract assembly information, e.g.:
+        /// Include="DllExport, Version=1.5.1.35977, Culture=neutral, PublicKeyToken=8337224c9ad9e356, processorArchitecture=MSIL"
+        /// Include="System.Core"
+        /// ...
+        /// </summary>
+        public AssemblyName AssemblyInfo
+        {
+            get
+            {
+                string name = evaluatedInclude ?? unevaluatedInclude;
+                if(String.IsNullOrWhiteSpace(name) || name.IndexOfAny(new[] { '\\', '/' }) != -1) {
+                    return null;
+                }
+                return new AssemblyName(name);
+            }
+        }
     }
 }

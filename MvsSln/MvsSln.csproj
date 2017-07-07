@@ -55,8 +55,17 @@
     <Compile Include="Core\IConfPlatform.cs" />
     <Compile Include="Core\ConfigItem.cs" />
     <Compile Include="Core\IEnvironment.cs" />
+    <Compile Include="Core\MsgResource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MsgResource.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Core\RawText.cs" />
     <Compile Include="Core\ProjectReferences.cs" />
+    <Compile Include="EnvDTE\DProject.cs" />
+    <Compile Include="EnvDTE\DynDteProject.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Projects\Item.cs" />
     <Compile Include="Projects\PropertyItem.cs" />
     <Compile Include="Core\ProjectItemCfg.cs" />
@@ -100,6 +109,11 @@
   <ItemGroup>
     <None Include="key.snk" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Core\MsgResource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MsgResource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

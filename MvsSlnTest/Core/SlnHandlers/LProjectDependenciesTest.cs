@@ -14,7 +14,7 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
         private const string NOTEXIST_GUID  = "{00000000-0000-0000-0000-000000000000}";
 
         [TestMethod]
-        public void dataTest1()
+        public void DataTest1()
         {
             var target = new SProjectsMap();
             Assert.AreEqual(EXIST_GUID, target.GuidList[0]);
@@ -33,7 +33,7 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
         }
 
         [TestMethod]
-        public void dataTest2()
+        public void DataTest2()
         {
             var target = new SProjectsMap();
 
@@ -49,7 +49,7 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
         }
 
         [TestMethod]
-        public void dataTest3()
+        public void DataTest3()
         {
             var target = new SProjectsMap();
 
@@ -62,6 +62,16 @@ namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
             Assert.AreEqual("path\\to3.sln", target.LastBy(BuildType.Build).path);
             Assert.AreEqual(EXIST_GUID3, target.LastBy(BuildType.Build).pGuid);
             Assert.AreEqual("{55555555-5555-5555-5555-555555555555}", target.LastBy(BuildType.Build).pType);
+        }
+
+        [TestMethod]
+        public void GetProjectByTest1()
+        {
+            var target = new SProjectsMap();
+            Assert.AreEqual(null, target.GetProjectBy(null).pGuid);
+            Assert.AreEqual(null, target.GetProjectBy(string.Empty).pGuid);
+            Assert.AreEqual(EXIST_GUID, target.GetProjectBy(EXIST_GUID).pGuid);
+            Assert.AreEqual(EXIST_GUID2, target.GetProjectBy(EXIST_GUID2).pGuid);
         }
 
         private class SProjectsMap: LProjectDependencies

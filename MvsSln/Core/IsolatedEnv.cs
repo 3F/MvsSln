@@ -24,7 +24,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Xml;
 using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Exceptions;
 using net.r_eg.MvsSln.Extensions;
@@ -53,9 +55,19 @@ namespace net.r_eg.MvsSln.Core
         protected IDictionary<string, string> slnProperties;
 
         /// <summary>
-        /// Solution data
+        /// Dictionary of raw xml projects by Guid.
+        /// Will be used if projects cannot be accessed from filesystem.
         /// </summary>
-        protected ISlnResult sln;
+        protected IDictionary<string, RawText> rawXmlProjects;
+
+        /// <summary>
+        /// Access to Solution data.
+        /// </summary>
+        public ISlnResult Sln
+        {
+            get;
+            protected set;
+        }
 
         /// <summary>
         /// List of all evaluated projects at current time 
@@ -72,7 +84,7 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public IEnumerable<IXProject> UniqueByGuidProjects
         {
-            get => Projects.GroupBy(p => p.ProjectItem.project.pGuid).Select(p => p.First());
+            get => Projects?.GroupBy(p => p.ProjectItem.project.pGuid).Select(p => p.First());
         }
 
         /// <summary>
@@ -197,7 +209,7 @@ namespace net.r_eg.MvsSln.Core
                 throw new NotFoundException($"Path is empty to project ['{pItem.name}', '{pItem.pGuid}']");
             }
 
-            return new Project(pItem.fullPath, properties, null, PrjCollection);
+            return Load(pItem, properties);
         }
 
         /// <summary>
@@ -212,7 +224,7 @@ namespace net.r_eg.MvsSln.Core
                 throw new ArgumentException("Solution Configuration or Platform is not defined in used properties.");
             }
 
-            var cfg = sln
+            var cfg = Sln
                         .ProjectConfigs
                         .Where(c => 
                             c.PGuid == pItem.pGuid 
@@ -254,16 +266,19 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="pItems">Specific list or null value to load all available.</param>
         public virtual void LoadProjects(IEnumerable<ProjectItemCfg> pItems = null)
         {
-            Projects = Load(pItems ?? sln.ProjectItemsConfigs);
+            Projects = Load(pItems ?? Sln.ProjectItemsConfigs);
         }
 
         /// <param name="data">Prepared data from solution parser.</param>
-        public IsolatedEnv(ISlnResult data)
+        /// <param name="raw">Optional dictionary of raw xml projects by Guid.</param>
+        public IsolatedEnv(ISlnResult data, IDictionary<string, RawText> raw = null)
         {
-            sln = data;
+            Sln             = data;
+            rawXmlProjects  = raw;
+
             slnProperties = DefProperties(
-                sln.DefaultConfig,
-                sln.Properties.ExtractDictionary
+                Sln.DefaultConfig,
+                Sln.Properties.ExtractDictionary
             );
 
             foreach(var property in slnProperties) {
@@ -276,11 +291,29 @@ namespace net.r_eg.MvsSln.Core
         protected virtual IEnumerable<IXProject> Load(IEnumerable<ProjectItemCfg> pItems)
         {
             var xprojects = new List<IXProject>();
-            foreach(var pItem in pItems) {
+            foreach(var pItem in pItems)
+            {
+                if(pItem.project.pGuid == null) {
+                    LSender.Send(this, $"{pItem.solutionConfig} -> {pItem.projectConfig} does not have reference to project item.", Message.Level.Debug);
+                    continue;
+                }
                 Project eProject = GetOrLoadProject(pItem.project, pItem.projectConfig);
-                xprojects.Add(new XProject(sln, pItem, eProject));
+                xprojects.Add(new XProject(Sln, pItem, eProject));
             }
             return xprojects;
+        }
+
+        protected Project Load(ProjectItem pItem, IDictionary<string, string> properties)
+        {
+            if(rawXmlProjects != null && rawXmlProjects.ContainsKey(pItem.pGuid))
+            {
+                var raw = rawXmlProjects[pItem.pGuid];
+
+                using(var reader = XmlReader.Create(new StreamReader(raw.data.GetStream(raw.encoding), raw.encoding))) {
+                    return new Project(reader, properties, null, PrjCollection);
+                }
+            }
+            return new Project(pItem.fullPath, properties, null, PrjCollection);
         }
 
         /// <summary>
@@ -318,8 +351,22 @@ namespace net.r_eg.MvsSln.Core
         //TODO: user option along with `LoadProjects` func
         protected bool Free()
         {
-            foreach(var xp in Projects) {
-                PrjCollection.UnloadProject(xp.Project);
+            if(Projects == null) {
+                return true;
+            }
+
+            foreach(var xp in Projects)
+            {
+                if(xp.Project == null) {
+                    continue;
+                }
+
+                if(xp.Project.FullPath != null) {
+                    PrjCollection.UnloadProject(xp.Project);
+                }
+                else if(xp.Project.Xml != null) {
+                    PrjCollection.UnloadProject(xp.Project.Xml);
+                }
             }
             return true;
         }

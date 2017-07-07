@@ -23,6 +23,7 @@
 */
 
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Projects;
@@ -162,6 +163,16 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Adds 'Reference' item.
         /// </summary>
+        /// <param name="asm">Assembly for adding.</param>
+        /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
+        /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
+        /// <param name="spec">Meta 'SpecificVersion'.</param>
+        /// <returns></returns>
+        bool AddReference(Assembly asm, bool local, bool? embed = null, bool? spec = null);
+
+        /// <summary>
+        /// Adds 'Reference' item.
+        /// </summary>
         /// <param name="inc">Include attribute.</param>
         /// <param name="path">Meta 'HintPath'.</param>
         /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
@@ -173,11 +184,19 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Adds 'ProjectReference' item.
         /// </summary>
+        /// <param name="project">Information about project.</param>
+        /// <returns></returns>
+        bool AddProjectReference(ProjectItem project);
+
+        /// <summary>
+        /// Adds 'ProjectReference' item.
+        /// </summary>
         /// <param name="path">Path to project file.</param>
         /// <param name="guid">The Guid of project.</param>
         /// <param name="name">The name of project.</param>
+        /// <param name="makeRelative">Make relative path.</param>
         /// <returns></returns>
-        bool AddProjectReference(string path, string guid, string name);
+        bool AddProjectReference(string path, string guid, string name, bool makeRelative = false);
 
         /// <summary>
         /// Adds an item to the project.
