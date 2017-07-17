@@ -117,8 +117,16 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// Load available projects via configurations.
+        /// It will be added without unloading of previous.
         /// </summary>
         /// <param name="pItems">Specific list or null value to load all available.</param>
-        void LoadProjects(IEnumerable<ProjectItemCfg> pItems = null);
+        /// <returns>Loaded projects.</returns>
+        IEnumerable<IXProject> LoadProjects(IEnumerable<ProjectItemCfg> pItems = null);
+
+        /// <summary>
+        /// Load the only one configuration for each available project.
+        /// </summary>
+        /// <returns>Loaded projects.</returns>
+        IEnumerable<IXProject> LoadMinimalProjects();
     }
 }

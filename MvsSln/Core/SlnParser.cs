@@ -132,6 +132,9 @@ namespace net.r_eg.MvsSln.Core
             if((type & SlnItems.Env) == SlnItems.Env)
             {
                 data.Env = new IsolatedEnv(data, RawXmlProjects);
+                if((type & SlnItems.EnvWithMinimalProjects) == SlnItems.EnvWithMinimalProjects) {
+                    data.Env.LoadMinimalProjects();
+                }
                 if((type & SlnItems.EnvWithProjects) == SlnItems.EnvWithProjects) {
                     data.Env.LoadProjects();
                 }

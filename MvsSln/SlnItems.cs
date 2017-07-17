@@ -63,16 +63,28 @@ namespace net.r_eg.MvsSln
         /// <summary>
         /// To prepare environment without loading projects.
         /// </summary>
-        Env = 0x0010 | Projects | SolutionConfPlatforms,
+        Env = 0x0010 | Projects | SolutionConfPlatforms | ProjectConfPlatforms,
 
         /// <summary>
-        /// To load default data.
+        /// To load all possible default data.
         /// </summary>
         LoadDefaultData = 0x0020,
 
         /// <summary>
+        /// To load only minimal default data.
+        /// For example, the only one configuration for each project.
+        /// </summary>
+        LoadMinimalDefaultData = 0x0040,
+
+        /// <summary>
         /// To prepare environment with loaded projects by default.
         /// </summary>
-        EnvWithProjects = Env | ProjectConfPlatforms | LoadDefaultData,
+        EnvWithProjects = Env | LoadDefaultData,
+
+        /// <summary>
+        /// To prepare environment with minimal loaded projects.
+        /// The only one configuration for each project. 
+        /// </summary>
+        EnvWithMinimalProjects = Env | LoadMinimalDefaultData,
     }
 }

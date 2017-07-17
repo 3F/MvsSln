@@ -188,8 +188,6 @@ namespace net.r_eg.MvsSln.Core
 
             foreach(var eProject in PrjCollection.LoadedProjects)
             {
-                LSender.Send(this, $"Find in projects collection: `{pItem.pGuid}`", Message.Level.Trace);
-
                 if(eProject.GetProjectGuid() != pItem.pGuid) {
                     continue;
                 }
@@ -197,14 +195,13 @@ namespace net.r_eg.MvsSln.Core
                 var eCfg    = new ConfigItem(eProject.GetPropertyValue(P_CONFIG), eProject.GetPropertyValue(P_PLATFORM));
                 var propCfg = new ConfigItem(properties[P_CONFIG], properties[P_PLATFORM]);
 
-                LSender.Send(this, $" ? {propCfg} == {eCfg}", Message.Level.Trace);
-
                 if(eCfg == propCfg) {
+                    //LSender.Send(this, $"Found project from collection {pItem.pGuid}: {propCfg} == {eCfg}", Message.Level.Trace);
                     return eProject;
                 }
             }
 
-            LSender.Send(this, $"trying to load project :: '{pItem.name}' ('{pItem.fullPath}')", Message.Level.Trace);
+            LSender.Send(this, $"Load project {pItem.pGuid}:{properties[P_CONFIG]}|{properties[P_PLATFORM]} :: '{pItem.name}' ('{pItem.fullPath}')", Message.Level.Debug);
             if(String.IsNullOrWhiteSpace(pItem.fullPath)) {
                 throw new NotFoundException($"Path is empty to project ['{pItem.name}', '{pItem.pGuid}']");
             }
@@ -262,11 +259,24 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// Load available projects via configurations.
+        /// It will be added without unloading of previous.
         /// </summary>
         /// <param name="pItems">Specific list or null value to load all available.</param>
-        public virtual void LoadProjects(IEnumerable<ProjectItemCfg> pItems = null)
+        /// <returns>Loaded projects.</returns>
+        public virtual IEnumerable<IXProject> LoadProjects(IEnumerable<ProjectItemCfg> pItems = null)
         {
             Projects = Load(pItems ?? Sln.ProjectItemsConfigs);
+            return Projects;
+        }
+
+        /// <summary>
+        /// Load the only one configuration for each available project.
+        /// </summary>
+        /// <returns>Loaded projects.</returns>
+        public IEnumerable<IXProject> LoadMinimalProjects()
+        {
+            IConfPlatform slnCfg = Sln.SolutionConfigs.FirstOrDefault();
+            return LoadProjects(Sln.ProjectItemsConfigs.Where(p => p.solutionConfig == slnCfg));
         }
 
         /// <param name="data">Prepared data from solution parser.</param>
@@ -280,10 +290,6 @@ namespace net.r_eg.MvsSln.Core
                 Sln.DefaultConfig,
                 Sln.Properties.ExtractDictionary
             );
-
-            foreach(var property in slnProperties) {
-                PrjCollection.SetGlobalProperty(property.Key, property.Value);
-            }
         }
 
         /// <param name="pItems"></param>
@@ -355,19 +361,28 @@ namespace net.r_eg.MvsSln.Core
                 return true;
             }
 
+            LSender.Send(this, $"Release loaded projects for current environment (total: {PrjCollection.LoadedProjects.Count})", Message.Level.Debug);
             foreach(var xp in Projects)
             {
                 if(xp.Project == null) {
                     continue;
                 }
 
-                if(xp.Project.FullPath != null) {
-                    PrjCollection.UnloadProject(xp.Project);
+                try
+                {
+                    if(xp.Project.FullPath != null) {
+                        PrjCollection.UnloadProject(xp.Project);
+                    }
+                    else if(xp.Project.Xml != null) {
+                        PrjCollection.TryUnloadProject(xp.Project.Xml);
+                    }
                 }
-                else if(xp.Project.Xml != null) {
-                    PrjCollection.UnloadProject(xp.Project.Xml);
+                catch(Exception ex) {
+                    LSender.Send(this, $"Project '{xp.ProjectGuid}:{xp.ProjectItem.projectConfig}' was not unloaded: '{ex.Message}'", Message.Level.Trace);
                 }
             }
+
+            LSender.Send(this, $"Collection now contains '{PrjCollection.LoadedProjects.Count}' loaded projects.", Message.Level.Debug);
             return true;
         }
 

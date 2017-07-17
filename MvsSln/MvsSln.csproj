@@ -42,7 +42,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build" />
-    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
@@ -108,12 +107,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
+    <None Include="Resources\License.md" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Core\MsgResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MsgResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\MvsSln_v1_96px.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -29,7 +29,7 @@ namespace net.r_eg.MvsSln.Core
     /// <summary>
     /// Project Configuration
     /// </summary>
-    [DebuggerDisplay("{Format()} [{PGuid}]")]
+    [DebuggerDisplay("{Format()} -> {Sln} : [{PGuid}]")]
     public class ConfigPrj: ConfigItem, IConfPlatform, IConfPlatformPrj
     {
         /// <summary>

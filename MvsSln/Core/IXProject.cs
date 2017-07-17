@@ -58,6 +58,11 @@ namespace net.r_eg.MvsSln.Core
         string ProjectName { get; }
 
         /// <summary>
+        /// Access to global properties of project.
+        /// </summary>
+        IDictionary<string, string> GlobalProperties { get; }
+
+        /// <summary>
         /// Saves the project to the file system, if modified.
         /// </summary>
         void Save();
