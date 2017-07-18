@@ -251,6 +251,9 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public bool RemoveProperty(PropertyItem property)
         {
+            if(property.parentProperty == null) {
+                return false;
+            }
             return Project.RemoveProperty(property.parentProperty);
         }
 
@@ -456,6 +459,9 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public bool RemoveItem(Item item)
         {
+            if(item.parentItem == null) {
+                return false;
+            }
             return Project.RemoveItem(item.parentItem);
         }
 

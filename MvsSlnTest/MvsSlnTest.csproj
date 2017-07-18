@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ConfigItemTest.cs" />
+    <Compile Include="Core\XProjectTest.cs" />
     <Compile Include="Core\SynchSubscribersTest.cs" />
     <Compile Include="Core\ProjectItemTest.cs" />
     <Compile Include="Extensions\StringExtensionTest.cs" />
