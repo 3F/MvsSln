@@ -65,6 +65,7 @@
     <Compile Include="EnvDTE\DynDteProject.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="Projects\ImportElement.cs" />
     <Compile Include="Projects\Item.cs" />
     <Compile Include="Projects\PropertyItem.cs" />
     <Compile Include="Core\ProjectItemCfg.cs" />

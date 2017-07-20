@@ -275,8 +275,12 @@ namespace net.r_eg.MvsSln.Core
         /// <returns>Loaded projects.</returns>
         public IEnumerable<IXProject> LoadMinimalProjects()
         {
-            IConfPlatform slnCfg = Sln.SolutionConfigs.FirstOrDefault();
-            return LoadProjects(Sln.ProjectItemsConfigs.Where(p => p.solutionConfig == slnCfg));
+            IConfPlatform slnCfg = Sln.SolutionConfigs?.FirstOrDefault();
+
+            if(slnCfg == null) {
+                return LoadProjects();
+            }
+            return LoadProjects(Sln.ProjectItemsConfigs?.Where(p => p.solutionConfig == slnCfg));
         }
 
         /// <param name="data">Prepared data from solution parser.</param>
@@ -296,6 +300,10 @@ namespace net.r_eg.MvsSln.Core
         /// <returns>List of loaded.</returns>
         protected virtual IEnumerable<IXProject> Load(IEnumerable<ProjectItemCfg> pItems)
         {
+            if(pItems == null) {
+                return null;
+            }
+
             var xprojects = new List<IXProject>();
             foreach(var pItem in pItems)
             {

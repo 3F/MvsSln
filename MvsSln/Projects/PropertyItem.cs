@@ -22,6 +22,7 @@
  * THE SOFTWARE.
 */
 
+using System;
 using System.Diagnostics;
 using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Core;
@@ -97,6 +98,25 @@ namespace net.r_eg.MvsSln.Projects
             this.condition      = condition;
             unevaluatedValue    = value;
             isUserDef           = true;
+        }
+
+        /// <param name="eProperty"></param>
+        public PropertyItem(ProjectProperty eProperty)
+            : this()
+        {
+            if(eProperty == null) {
+                throw new ArgumentNullException(nameof(eProperty));
+            }
+
+            name                    = eProperty.Name;
+            evaluatedValue          = eProperty.EvaluatedValue;
+            unevaluatedValue        = eProperty.UnevaluatedValue;
+            condition               = eProperty.Xml.Condition;
+            isEnvironmentProperty   = eProperty.IsEnvironmentProperty;
+            isGlobalProperty        = eProperty.IsGlobalProperty;
+            isReservedProperty      = eProperty.IsReservedProperty;
+            isImported              = eProperty.IsImported;
+            parentProperty          = eProperty;
         }
     }
 }

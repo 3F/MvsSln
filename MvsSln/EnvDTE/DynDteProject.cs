@@ -73,7 +73,7 @@ namespace net.r_eg.MvsSln.EnvDTE
                     continue;
                 }
 
-                var xprojects = env.UniqueByGuidProjects.Where(p =>
+                var xprojects = env.UniqueByGuidProjects?.Where(p =>
                     p.ProjectItem.project.fullPath.Equals(dtePrj.FullName, StringComparison.InvariantCultureIgnoreCase)
                 );
 

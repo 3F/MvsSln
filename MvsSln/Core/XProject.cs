@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using Microsoft.Build.Construction;
 using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Extensions;
@@ -81,11 +82,35 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// Gets the root directory for this project.
+        /// </summary>
+        public string ProjectPath
+        {
+            get => Project.DirectoryPath;
+        }
+
+        /// <summary>
+        /// Gets the full path to the project source file.
+        /// </summary>
+        public string ProjectFullPath
+        {
+            get => Project.FullPath;
+        }
+
+        /// <summary>
         /// Access to global properties of project.
         /// </summary>
         public IDictionary<string, string> GlobalProperties
         {
             get => Project.GlobalProperties;
+        }
+
+        /// <summary>
+        /// The base path for MakeRelativePath() functions etc.
+        /// </summary>
+        protected string RootPath
+        {
+            get => ProjectPath;
         }
 
         /// <summary>
@@ -98,31 +123,42 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
-        /// To add 'import' element.
-        /// It will be added only if target does not exist.
+        /// Saves the project to the file system, if modified or if the path to the project
+        /// source code changes, using the given character encoding.
+        /// </summary>
+        /// <param name="path">Destination path of the the project source code.</param>
+        /// <param name="enc"></param>
+        public void Save(string path, Encoding enc)
+        {
+            Project.Save(path, enc);
+        }
+
+        /// <summary>
+        /// To add 'Import' element.
         /// </summary>
         /// <param name="target">Target project.</param>
         /// <param name="checking">To check existence of target via 'Condition' attr.</param>
+        /// <param name="label">Optional 'Label' attr.</param>
         /// <returns>true value if target has been added.</returns>
-        public bool AddImport(string target, bool checking)
+        public bool AddImport(string target, bool checking, string label = null)
         {
-            return AddImport(target, checking ? $"Exists('{target}')" : null);
+            return AddImport(target, checking ? $"Exists('{target}')" : null, label);
         }
 
         /// <summary>
         /// To add 'import' element.
-        /// It will be added only if target does not exist.
         /// </summary>
         /// <param name="target">Target project.</param>
-        /// <param name="condition">Use 'Condition' attr.</param>
+        /// <param name="condition">Use 'Condition' attr. Can be null to avoid this attr.</param>
+        /// <param name="label">Optional 'Label' attr.</param>
         /// <returns>true value if target has been added.</returns>
-        public bool AddImport(string target, string condition)
+        public bool AddImport(string target, string condition, string label = null)
         {
             if(String.IsNullOrWhiteSpace(target)) {
                 return false;
             }
 
-            var element = (GetImport(target) != null) ? null : Project.Xml.AddImport(target);
+            var element = Project.Xml.AddImport(target);
             if(element == null) {
                 return false;
             }
@@ -130,47 +166,126 @@ namespace net.r_eg.MvsSln.Core
             if(condition != null) {
                 element.Condition = condition;
             }
+
+            if(label != null) {
+                element.Label = label;
+            }
+
             return true;
         }
 
         /// <summary>
-        /// To remove selected 'import' element if exists.
+        /// To remove the first found 'Import' element.
         /// </summary>
-        /// <param name="target">Target project.</param>
-        /// <returns>true value if target has been found and removed.</returns>
-        public bool RemoveImport(string target)
+        /// <param name="project">Target project.</param>
+        /// <returns>true value if it has been found and removed.</returns>
+        public bool RemoveImport(string project)
         {
-            var element = GetImport(target);
-            if(element == null) {
+            return RemoveImport(GetImport(project));
+        }
+
+        /// <summary>
+        /// To remove 'Import' element.
+        /// </summary>
+        /// <param name="element">Specified 'Import' element to remove.</param>
+        /// <returns>true value if it has been removed.</returns>
+        public bool RemoveImport(ImportElement element)
+        {
+            if(element.parentElement == null) {
                 return false;
             }
 
-            Project.Xml.RemoveChild(element);
+            Project.Xml.RemoveChild(element.parentElement);
             return true;
         }
 
         /// <summary>
-        /// Retrieve first selected target from 'import' tags if it exists.
+        /// Retrieve the first found 'Import' element if it exists.
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="project">Optional filter by the Project attribute.</param>
         /// <returns></returns>
-        public ProjectImportElement GetImport(string target)
+        public ImportElement GetImport(string project = null)
         {
-            if(String.IsNullOrWhiteSpace(target)) {
-                return null;
+            return GetImports(project).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Retrieve the first found 'Import' element if it exists.
+        /// </summary>
+        /// <param name="project">Filter by the Project attribute. Case-insensitive variant. Can be null to skip comparing.</param>
+        /// <param name="label">Filter by the Label attribute. Case-insensitive variant. Can be null to skip comparing.</param>
+        /// <param name="eq">Equals() if true or EndsWith() function for comparing Project attribute.</param>
+        /// <returns></returns>
+        public ImportElement GetImport(string project, string label, bool eq = false)
+        {
+            return GetImports(project, label, eq).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Retrieve the all found 'Import' elements.
+        /// </summary>
+        /// <param name="project">Optional filter by the Project attribute.</param>
+        /// <returns></returns>
+        public IEnumerable<ImportElement> GetImports(string project = null)
+        {
+            if(String.IsNullOrWhiteSpace(project)) {
+                return Project.Xml.Imports.Select(i => GetImportElement(i));
             }
 
-            return Project.Xml.Imports.Where(i => i.Project == target).FirstOrDefault();
+            return Project.Xml.Imports.Where(i => i.Project == project)
+                                        .Select(i => GetImportElement(i));
+        }
+
+        /// <summary>
+        /// Retrieve the all found 'Import' elements.
+        /// </summary>
+        /// <param name="project">Filter by the Project attribute. Case-insensitive variant. Can be null to skip comparing.</param>
+        /// <param name="label">Filter by the Label attribute. Case-insensitive variant. Can be null to skip comparing.</param>
+        /// <param name="eq">Equals() if true or EndsWith() function for comparing Project attribute.</param>
+        /// <returns></returns>
+        public IEnumerable<ImportElement> GetImports(string project, string label, bool eq = false)
+        {
+            var ret = GetImports();
+            var cmp = StringComparison.InvariantCultureIgnoreCase;
+
+            if(project != null) {
+                if(eq) {
+                    ret = ret.Where(i => project.Equals(i.project, cmp));
+                }
+                else {
+                    ret = ret.Where(i => i.project != null && i.project.EndsWith(project, cmp));
+                }
+            }
+
+            if(label != null) {
+                ret = ret.Where(i => label.Equals(i.label, cmp));
+            }
+
+            return ret;
         }
 
         /// <summary>
         /// The property in this project that has the specified name.
         /// </summary>
         /// <param name="name">The name of the property.</param>
-        /// <returns>null if no property of that name exists.</returns>
-        public PropertyItem GetProperty(string name)
+        /// <param name="localScope">If true, will return default value for any special and imported properties type.</param>
+        /// <returns>null if no property of that name and scope exists.</returns>
+        public PropertyItem GetProperty(string name, bool localScope = true)
         {
-            return GetProperty(Project.GetProperty(name));
+            PropertyItem defvalue = default(PropertyItem);
+            if(String.IsNullOrWhiteSpace(name)) {
+                return defvalue;
+            }
+
+            var ret = GetProperty(Project.GetProperty(name));
+            if(!localScope) {
+                return ret;
+            }
+
+            if(ret.isImported || ret.isEnvironmentProperty || ret.isReservedProperty || ret.isGlobalProperty) {
+                return defvalue;
+            }
+            return ret;
         }
 
         /// <summary>
@@ -235,26 +350,55 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
-        /// Removes an property from the project.
+        /// Removes an property from the project. Local Scope only.
         /// </summary>
         /// <param name="name">The name of the property.</param>
+        /// <param name="revalue">if true, will reevaluate data of project after removing.</param>
         /// <returns></returns>
-        public bool RemoveProperty(string name)
+        public bool RemoveProperty(string name, bool revalue = false)
         {
-            return RemoveProperty(GetProperty(name));
+            return RemoveProperty(GetProperty(name), revalue);
         }
 
         /// <summary>
         /// Removes an property from the project.
         /// </summary>
         /// <param name="property"></param>
+        /// <param name="revalue">if true, will reevaluate data of project after removing</param>
         /// <returns></returns>
-        public bool RemoveProperty(PropertyItem property)
+        public bool RemoveProperty(PropertyItem property, bool revalue = false)
         {
             if(property.parentProperty == null) {
                 return false;
             }
-            return Project.RemoveProperty(property.parentProperty);
+
+            try {
+                return Project.RemoveProperty(property.parentProperty);
+            }
+            catch(Exception ex)
+            {
+                Log.LSender.Send(
+                    this, 
+                    String.Format(
+                        "Property '{0}' cannot be removed. [{1};{2};{3};{4};{5}]: '{6}'",
+                        property.name,
+                        property.isImported,
+                        property.isGlobalProperty,
+                        property.isReservedProperty,
+                        property.isEnvironmentProperty,
+                        property.isUserDef,
+                        ex.Message
+                    ),
+                    Log.Message.Level.Info
+                );
+                return false;
+            }
+            finally
+            {
+                if(revalue) {
+                    Reevaluate();
+                }
+            }
         }
 
         /// <summary>
@@ -266,6 +410,17 @@ namespace net.r_eg.MvsSln.Core
             foreach(var p in Project.Properties) {
                 yield return GetProperty(p);
             }
+        }
+
+        /// <summary>
+        /// Reevaluates data of project if necessary.
+        /// For example, if project contains 2 or more same properties by name:
+        /// * After RemoveProperty(...) the second property still will be unavailable for GetProperty(...) 
+        ///  because its node does not contain this at all. Use this to update nodes.
+        /// </summary>
+        public void Reevaluate()
+        {
+            Project?.ReevaluateIfNecessary();
         }
 
         /// <summary>
@@ -288,7 +443,21 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public bool AddReference(Assembly asm, bool local, bool? embed = null, bool? spec = null)
         {
-            return AddReference(asm.ToString(), Sln.SolutionDir.MakeRelativePath(asm.Location), local, embed, spec);
+            return AddReference(asm.ToString(), GetRelativePath(asm.Location), local, embed, spec);
+        }
+
+        /// <summary>
+        /// Adds 'Reference' item.
+        /// </summary>
+        /// <param name="fullpath">Full path to binary file.</param>
+        /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
+        /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
+        /// <param name="spec">Meta 'SpecificVersion'.</param>
+        /// <returns></returns>
+        public bool AddReference(string fullpath, bool local, bool? embed = null, bool? spec = null)
+        {
+            string inc = AssemblyName.GetAssemblyName(fullpath).FullName;
+            return AddReference(inc, GetRelativePath(fullpath), local, embed, spec);
         }
 
         /// <summary>
@@ -325,7 +494,7 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public bool AddProjectReference(ProjectItem project)
         {
-            var path = Sln.SolutionDir.MakeRelativePath(project.fullPath) ?? project.path;
+            var path = GetRelativePath(project.fullPath) ?? project.path;
             return AddProjectReference(path, project.pGuid, project.name, false);
         }
 
@@ -345,7 +514,7 @@ namespace net.r_eg.MvsSln.Core
             };
 
             if(makeRelative) {
-                path = Sln.SolutionDir.MakeRelativePath(path);
+                path = GetRelativePath(path);
             }
             return AddItem("ProjectReference", path, meta);
         }
@@ -510,49 +679,22 @@ namespace net.r_eg.MvsSln.Core
 
         protected PropertyItem GetProperty(ProjectProperty eProperty)
         {
-            if(eProperty == null) {
-                return default(PropertyItem);
-            }
-
-            return new PropertyItem() {
-                name                    = eProperty.Name,
-                evaluatedValue          = eProperty.EvaluatedValue,
-                unevaluatedValue        = eProperty.UnevaluatedValue,
-                condition               = eProperty.Xml.Condition,
-                isEnvironmentProperty   = eProperty.IsEnvironmentProperty,
-                isGlobalProperty        = eProperty.IsGlobalProperty,
-                isReservedProperty      = eProperty.IsReservedProperty,
-                isImported              = eProperty.IsImported,
-                parentProperty          = eProperty,
-                parentProject           = this,
-            };
+            return (eProperty == null) ? default(PropertyItem) : new PropertyItem(eProperty) { parentProject = this };
         }
 
         protected Item GetItem(Microsoft.Build.Evaluation.ProjectItem eItem)
         {
-            if(eItem == null) {
-                return default(Item);
-            }
+            return (eItem == null) ? default(Item) : new Item(eItem) { parentProject = this };
+        }
 
-            return new Item() {
-                type                = eItem.ItemType,
-                unevaluatedInclude  = eItem.UnevaluatedInclude,
-                evaluatedInclude    = eItem.EvaluatedInclude,
-                isImported          = eItem.IsImported,
-                parentItem          = eItem,
-                parentProject       = this,
-                meta = eItem.DirectMetadata
-                            .Select(m => 
-                                new KeyValuePair<string, Item.Metadata>(
-                                    m.Name,
-                                    new Item.Metadata() {
-                                        name = m.Name,
-                                        unevaluated = m.UnevaluatedValue,
-                                        evaluated = m.EvaluatedValue
-                                    }
-                                )
-                             ).ToDictionary(m => m.Key, m => m.Value),
-            };
+        protected ImportElement GetImportElement(ProjectImportElement element)
+        {
+            return (element == null) ? default(ImportElement) : new ImportElement(element) { parentProject = this };
+        }
+
+        protected virtual string GetRelativePath(string path)
+        {
+            return RootPath.MakeRelativePath(path);
         }
     }
 }

@@ -23,7 +23,9 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using net.r_eg.MvsSln.Core;
 
@@ -91,16 +93,74 @@ namespace net.r_eg.MvsSln.Projects
         /// Include="System.Core"
         /// ...
         /// </summary>
-        public AssemblyName AssemblyInfo
+        public AsmData Assembly
         {
             get
             {
                 string name = evaluatedInclude ?? unevaluatedInclude;
                 if(String.IsNullOrWhiteSpace(name) || name.IndexOfAny(new[] { '\\', '/' }) != -1) {
-                    return null;
+                    return default(AsmData);
                 }
-                return new AssemblyName(name);
+                return new AsmData(new AssemblyName(name));
             }
+        }
+
+        public struct AsmData
+        {
+            public AssemblyName Info
+            {
+                get;
+                private set;
+            }
+
+            public string PublicKeyToken
+            {
+                get;
+                private set;
+            }
+
+            public AsmData(AssemblyName asm)
+                : this()
+            {
+                Info = asm;
+
+                byte[] data = asm?.GetPublicKeyToken();
+                if(data == null || data.Length < 1) {
+                    return;
+                }
+
+                PublicKeyToken = String.Empty;
+                foreach(var b in data) {
+                    PublicKeyToken += b.ToString("x");
+                }
+            }
+        }
+
+        /// <param name="eItem"></param>
+        public Item(Microsoft.Build.Evaluation.ProjectItem eItem)
+            : this()
+        {
+            if(eItem == null) {
+                throw new ArgumentNullException(nameof(eItem));
+            }
+
+            type                = eItem.ItemType;
+            unevaluatedInclude  = eItem.UnevaluatedInclude;
+            evaluatedInclude    = eItem.EvaluatedInclude;
+            isImported          = eItem.IsImported;
+            parentItem          = eItem;
+
+            meta = eItem.DirectMetadata
+                        .Select(m => 
+                            new KeyValuePair<string, Metadata>(
+                                m.Name,
+                                new Metadata() {
+                                    name = m.Name,
+                                    unevaluated = m.UnevaluatedValue,
+                                    evaluated = m.EvaluatedValue
+                                }
+                            )
+                            ).ToDictionary(m => m.Key, m => m.Value);
         }
     }
 }

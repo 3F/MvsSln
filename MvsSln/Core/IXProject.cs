@@ -24,7 +24,7 @@
 
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.Build.Construction;
+using System.Text;
 using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Projects;
 
@@ -58,6 +58,16 @@ namespace net.r_eg.MvsSln.Core
         string ProjectName { get; }
 
         /// <summary>
+        /// Gets the root directory for this project.
+        /// </summary>
+        string ProjectPath { get; }
+
+        /// <summary>
+        /// Gets the full path to the project source file.
+        /// </summary>
+        string ProjectFullPath { get; }
+
+        /// <summary>
         /// Access to global properties of project.
         /// </summary>
         IDictionary<string, string> GlobalProperties { get; }
@@ -68,42 +78,84 @@ namespace net.r_eg.MvsSln.Core
         void Save();
 
         /// <summary>
-        /// To add 'import' element.
+        /// Saves the project to the file system, if modified or if the path to the project
+        /// source code changes, using the given character encoding.
+        /// </summary>
+        /// <param name="path">Destination path of the the project source code.</param>
+        /// <param name="enc"></param>
+        void Save(string path, Encoding enc);
+
+        /// <summary>
+        /// To add 'Import' element.
         /// </summary>
         /// <param name="target">Target project.</param>
         /// <param name="checking">To check existence of target via 'Condition' attr.</param>
+        /// <param name="label">Optional 'Label' attr.</param>
         /// <returns>true value if target has been added.</returns>
-        bool AddImport(string target, bool checking);
+        bool AddImport(string target, bool checking, string label = null);
 
         /// <summary>
         /// To add 'import' element.
-        /// It will be added only if target does not exist.
         /// </summary>
         /// <param name="target">Target project.</param>
-        /// <param name="condition">Use 'Condition' attr.</param>
+        /// <param name="condition">Use 'Condition' attr. Can be null to avoid this attr.</param>
+        /// <param name="label">Optional 'Label' attr.</param>
         /// <returns>true value if target has been added.</returns>
-        bool AddImport(string target, string condition);
+        bool AddImport(string target, string condition, string label = null);
 
         /// <summary>
-        /// To remove selected 'import' element.
+        /// To remove the first found 'Import' element.
         /// </summary>
-        /// <param name="target">Target project.</param>
-        /// <returns>true value if target has been found and removed.</returns>
-        bool RemoveImport(string target);
+        /// <param name="project">Target project.</param>
+        /// <returns>true value if it has been found and removed.</returns>
+        bool RemoveImport(string project);
 
         /// <summary>
-        /// Retrieve selected target from 'import' tags if it exists.
+        /// To remove 'Import' element.
         /// </summary>
-        /// <param name="target"></param>
+        /// <param name="element">Specified 'Import' element to remove.</param>
+        /// <returns>true value if it has been removed.</returns>
+        bool RemoveImport(ImportElement element);
+
+        /// <summary>
+        /// Retrieve the first found 'Import' element if it exists.
+        /// </summary>
+        /// <param name="project">Optional filter by the Project attribute.</param>
         /// <returns></returns>
-        ProjectImportElement GetImport(string target);
+        ImportElement GetImport(string project = null);
+
+        /// <summary>
+        /// Retrieve the first found 'Import' element if it exists.
+        /// </summary>
+        /// <param name="project">Filter by the Project attribute. Case-insensitive variant. Can be null to skip comparing.</param>
+        /// <param name="label">Filter by the Label attribute. Case-insensitive variant. Can be null to skip comparing.</param>
+        /// <param name="eq">Equals() if true or EndsWith() function for comparing Project attribute.</param>
+        /// <returns></returns>
+        ImportElement GetImport(string project, string label, bool eq = false);
+
+        /// <summary>
+        /// Retrieve the all found 'Import' elements.
+        /// </summary>
+        /// <param name="project">Optional filter by the Project attribute.</param>
+        /// <returns></returns>
+        IEnumerable<ImportElement> GetImports(string project = null);
+
+        /// <summary>
+        /// Retrieve the all found 'Import' elements.
+        /// </summary>
+        /// <param name="project">Filter by the Project attribute. Case-insensitive variant. Can be null to skip comparing.</param>
+        /// <param name="label">Filter by the Label attribute. Case-insensitive variant. Can be null to skip comparing.</param>
+        /// <param name="eq">Equals() if true or EndsWith() function for comparing Project attribute.</param>
+        /// <returns></returns>
+        IEnumerable<ImportElement> GetImports(string project, string label, bool eq = false);
 
         /// <summary>
         /// The property in this project that has the specified name.
         /// </summary>
         /// <param name="name">The name of the property.</param>
-        /// <returns>null if no property of that name exists.</returns>
-        PropertyItem GetProperty(string name);
+        /// <param name="localScope">If true, will return default value for any special and imported properties type.</param>
+        /// <returns>null if no property of that name and scope exists.</returns>
+        PropertyItem GetProperty(string name, bool localScope = true);
 
         /// <summary>
         /// Sets or adds a property with the given name and unevaluated value to the project.
@@ -142,21 +194,31 @@ namespace net.r_eg.MvsSln.Core
         /// Removes an property from the project.
         /// </summary>
         /// <param name="name">The name of the property.</param>
+        /// <param name="revalue">if true, will reevaluate data of project after removing.</param>
         /// <returns></returns>
-        bool RemoveProperty(string name);
+        bool RemoveProperty(string name, bool revalue = false);
 
         /// <summary>
         /// Removes an property from the project.
         /// </summary>
         /// <param name="property"></param>
+        /// <param name="revalue">if true, will reevaluate data of project after removing.</param>
         /// <returns></returns>
-        bool RemoveProperty(PropertyItem property);
+        bool RemoveProperty(PropertyItem property, bool revalue = false);
 
         /// <summary>
         /// All properties in this project.
         /// </summary>
         /// <returns></returns>
         IEnumerable<PropertyItem> GetProperties();
+
+        /// <summary>
+        /// Reevaluates data of project if necessary.
+        /// For example, if project contains 2 or more same properties by name:
+        /// * After RemoveProperty(...) the second property still will be unavailable for GetProperty(...) 
+        ///  because its node does not contain this at all. Use this to update nodes.
+        /// </summary>
+        void Reevaluate();
 
         /// <summary>
         /// Adds 'Reference' item.
@@ -174,6 +236,16 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="spec">Meta 'SpecificVersion'.</param>
         /// <returns></returns>
         bool AddReference(Assembly asm, bool local, bool? embed = null, bool? spec = null);
+
+        /// <summary>
+        /// Adds 'Reference' item.
+        /// </summary>
+        /// <param name="fullpath">Full path to binary file.</param>
+        /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
+        /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
+        /// <param name="spec">Meta 'SpecificVersion'.</param>
+        /// <returns></returns>
+        bool AddReference(string fullpath, bool local, bool? embed = null, bool? spec = null);
 
         /// <summary>
         /// Adds 'Reference' item.
