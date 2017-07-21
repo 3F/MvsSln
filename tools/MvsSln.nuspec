@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>MvsSln</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>[ MvsSln ] VisualStudio .sln files and its projects</title>
     <authors>github.com/3F/MvsSln</authors>
     <owners>reg</owners>
@@ -21,7 +21,7 @@
         ~~~~~~~~
         Get it via GetNuTool:
         ==========================================
-        gnt /p:ngpackages="MvsSln/1.0.0"
+        gnt /p:ngpackages="MvsSln/1.0.1"
         ==========================================
         * https://github.com/3F/GetNuTool    
 

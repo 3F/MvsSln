@@ -3,6 +3,50 @@ MvsSln  :: https://github.com/3F/MvsSln
 _ _ _ _
 
 
+[v1.0.1] 2017.07.21
+
+    * FIXED: Fixed possible bug with already loaded project in collection when initializing new instance of Sln.
+    * FIXED: Fixed `IXProject.RemoveProperty(PropertyItem property)` & `IXProject.RemoveItem(Item item)` when selected items or properties does not exist.
+    * FIXED: Fixed possible exception when disposing object /IsolatedEnv.
+    * FIXED: Fixed possible NullReferenceException for IsolatedEnv + Improved layer of IXProject.
+    * NEW: Added `localScope` flag for `GetProperty(string name, bool localScope = true)`.
+           If true, will return default value for any special and imported properties type. It's important to use with `RemoveProperty(...)` etc.
+           
+    * NEW: Added `SlnItems.LoadMinimalDefaultData` flag to load only minimal default data. For example, the only one configuration for each project.
+           And its alias `EnvWithMinimalProjects` - To prepare environment with minimal loaded projects.
+           
+    * NEW: Added `IXProject.Reevaluate()` - To reevaluate data of project if necessary.
+           For example, if project contains 2 or more same properties by name: 
+           After `RemoveProperty(...)` the second property still will be unavailable for `GetProperty(...)`
+           because its node does not contain this at all. Use this to update nodes, or `revalue` flag with updated `RemoveProperty(...)`
+           
+    * NEW: Added `IXProject.RemoveImport(ImportElement element)` - For additional control of removing elements via IXProject.
+    * CHANGED: `IXProject.AddImport(...)` methods - now, does not have any restriction for adding new elements.
+    * CHANGED: `AssemblyName` from Projects.Item has been wrapped by `AsmData` for additional work with public key tokens etc.
+    * CHANGED: The result of `IXProject.GetImport(...)` has been wrapped by `ImportElement` to avoid using MBE for end user.
+    * CHANGED: Other list of changes:
+                * `+IXProject.ProjectPath`
+                * `+IXProject.ProjectFullPath`
+                * `+IXProject.GlobalProperties`
+                * `+IXProject.Save(string path, Encoding enc)`
+                * `+IXProject.GetImport(string project, string label, bool eq = false)`
+                * `+IXProject.GetImports(string project = null)`
+                * `+IXProject.GetImports(string project, string label, bool eq = false)`
+                * `+IXProject.AddReference(string fullpath, bool local, bool? embed = null, bool? spec = null)`
+                * `+IEnvironment.LoadMinimalProjects()`
+                
+    * CHANGED: Compatible update of signatures:
+                * `~IXProject.AddImport(string target, bool checking, string label = null)`
+                * `~IXProject.AddImport(string target, string condition, string label = null)`
+                * `~IXProject.GetProperty(string name, bool localScope = true)`
+                * `~IXProject.RemoveProperty(string name, bool revalue = false)`
+                * `~IXProject.RemoveProperty(PropertyItem property, bool revalue = false)`
+                * `~IEnvironment.LoadProjects(IEnumerable<ProjectItemCfg> pItems = null)`
+                
+    * CHANGED: Incompatible minor changes with result of `ProjectImportElement GetImport(string project = null)`. 
+               It has been wrapped by `ImportElement` to avoid using MBE.
+
+
 [v1.0] 2017.07.07
 
     * Initial public release.

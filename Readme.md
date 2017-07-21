@@ -13,6 +13,8 @@ It was as a part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionB
 
 **Download:** [/releases](https://github.com/3F/MvsSln/releases) [ **[latest](https://github.com/3F/MvsSln/releases/latest)** ]
 
+`gnt /p:ngpackages="MvsSln"` [[?](https://github.com/3F/GetNuTool)]
+
 ## License
 
 The [MIT License (MIT)](https://github.com/3F/MvsSln/blob/master/License.txt)
@@ -25,9 +27,9 @@ Copyright (c) 2013-2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
 
 Because today it still is the most easy way for complex work with Visual Studio .sln files and its projects (.vcxproj, .csproj., ...). Because it's free, because it's open.
 
-Even if you just need basic accessing to information from the solution data, like: project Guids, paths, solution & projects configurations... or to calcualte map of projects via build order throught our ProjectDependencies helpers.
+Even if you just need the basic access to information from the solution data, like: project Guids, paths, solution & projects configurations, calculating map of projects via build-order throught our ProjectDependencies helpers, etc.
 
-Control also easily your projects: Reference, ProjectReference, Properties, Import sections, and others.
+You can also control easily all your projects: Reference, ProjectReference, Properties, Import sections, and others.
 
 Moreover, it has been re-licensed now (LGPLv3 -> MIT) from the vsSolutionBuildEvent projects, so, enjoy with us now.
 
@@ -108,6 +110,15 @@ public class LProject: LAbstract, ISlnHandler
 }
 ```
 
+## Examples of using
+
+### DllExport configurator
+
+The final draft-version of the new configurator for DllExport now fully works via MvsSln:
+
+* https://github.com/3F/DllExport
+    * https://github.com/3F/DllExport/issues/38
+
 ## Did you know ?
 
 ### Projects
@@ -135,7 +146,7 @@ Release|Any CPU
 
 The all available configurations for each projects should be 8 * 8 = 64, i.e. 64 instances that can be loaded as each different projects. `EnvWithProjects` will load all available projects and you finally should see 64 different instances, as for vsSolutionBuildEvent above. 
 
-However, if you need to work with common data of selected project: you just need to use any available configuration. To load projects only with specific configuration, you can use for example `IEnvironment.LoadProjects`:
+However, if you only need to work with common data of selected project: you just need to use any available configuration. To load projects only with specific configuration, use for example `IEnvironment.LoadProjects`:
 
 ```csharp
 // SlnItems.Env will initialize environment without loading projects.
