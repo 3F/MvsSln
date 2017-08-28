@@ -144,10 +144,10 @@ namespace net.r_eg.MvsSln.Core
 
         public SlnParser()
         {
-            SlnHandlers.register(new LProject());
-            SlnHandlers.register(new LProjectConfigurationPlatforms());
-            SlnHandlers.register(new LSolutionConfigurationPlatforms());
-            SlnHandlers.register(new LProjectDependencies());
+            SlnHandlers.Register(new LProject());
+            SlnHandlers.Register(new LProjectConfigurationPlatforms());
+            SlnHandlers.Register(new LSolutionConfigurationPlatforms());
+            SlnHandlers.Register(new LProjectDependencies());
         }
 
         protected virtual void HandlePreProcessing(StreamReader stream, SlnResult data)
@@ -221,18 +221,16 @@ namespace net.r_eg.MvsSln.Core
 
         protected RoProperties GlobalProperties(string sln, string configuration, string platform)
         {
-            var ret = new Dictionary<string, string>();
-
-            ret["SolutionDir"]      = GetDirectoryFromFile(sln);
-            ret["SolutionExt"]      = Path.GetExtension(sln);
-            ret["SolutionFileName"] = Path.GetFileName(sln);
-            ret["SolutionName"]     = Path.GetFileNameWithoutExtension(sln);
-            ret["SolutionPath"]     = sln;
-
-            ret["Configuration"]    = configuration;
-            ret["Platform"]         = platform;
-
-            return new RoProperties(ret);
+            return new RoProperties(new Dictionary<string, string>()
+            {
+                ["SolutionDir"]         = GetDirectoryFromFile(sln),
+                ["SolutionExt"]         = Path.GetExtension(sln),
+                ["SolutionFileName"]    = Path.GetFileName(sln),
+                ["SolutionName"]        = Path.GetFileNameWithoutExtension(sln),
+                ["SolutionPath"]        = sln,
+                ["Configuration"]       = configuration,
+                ["Platform"]            = platform
+            });
         }
 
         protected virtual string ExtractDefaultConfiguration(IEnumerable<IConfPlatform> cfg)

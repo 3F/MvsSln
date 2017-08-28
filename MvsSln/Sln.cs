@@ -65,7 +65,7 @@ namespace net.r_eg.MvsSln
         /// <param name="raw">Raw data inside string.</param>
         /// <param name="Enc">Encoding of raw data.</param>
         public Sln(SlnItems type, string raw, Encoding Enc)
-            :this(type, new RawText() { data = raw, encoding = Enc }, null)
+            : this(type, new RawText() { data = raw, encoding = Enc }, null)
         {
 
         }

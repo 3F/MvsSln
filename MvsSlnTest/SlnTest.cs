@@ -191,8 +191,9 @@ namespace net.r_eg.MvsSlnTest
         [TestMethod]
         public void EnvTest1()
         {
-            var projects = new Dictionary<string, RawText>();
-            projects["{12B25935-229F-4128-B66B-7561A77ABC54}"] = new RawText(PrjSamplesResource.snet);
+            var projects = new Dictionary<string, RawText>() {
+                ["{12B25935-229F-4128-B66B-7561A77ABC54}"] = new RawText(PrjSamplesResource.snet)
+            };
 
             using(var sln = new Sln(SlnItems.EnvWithProjects, new RawText(SlnSamplesResource.regXwild), projects))
             {

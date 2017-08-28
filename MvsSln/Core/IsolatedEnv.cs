@@ -249,12 +249,10 @@ namespace net.r_eg.MvsSln.Core
             string platform = cfg.PlatformByRule;
             LSender.Send(this, $"-> prj['{cfg.Configuration}'; '{platform}']", Message.Level.Debug);
 
-            var ret = new Dictionary<string, string>(slnProps);
-
-            ret[P_CONFIG]   = cfg.Configuration;
-            ret[P_PLATFORM] = platform;
-
-            return ret;
+            return new Dictionary<string, string>(slnProps) {
+                [P_CONFIG]   = cfg.Configuration,
+                [P_PLATFORM] = platform
+            };
         }
 
         /// <summary>

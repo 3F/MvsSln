@@ -16,38 +16,38 @@ namespace net.r_eg.MvsSlnTest.Core
             var listener1 = new Listener1();
             var listener2 = new Listener2();
 
-            data.register(listener1);
-            data.register(listener2);
+            data.Register(listener1);
+            data.Register(listener2);
             Assert.AreEqual(2, data.Count);
 
-            data.unregister(listener1);
+            data.Unregister(listener1);
             Assert.AreEqual(1, data.Count);
 
             // existence
 
-            Assert.AreEqual(true, data.contains(listener2));
-            Assert.AreEqual(false, data.contains(listener1));
+            Assert.AreEqual(true, data.Contains(listener2));
+            Assert.AreEqual(false, data.Contains(listener1));
 
-            Assert.AreEqual(true, data.exists(listener2.Id));
-            Assert.AreEqual(false, data.exists(listener1.Id));
+            Assert.AreEqual(true, data.Exists(listener2.Id));
+            Assert.AreEqual(false, data.Exists(listener1.Id));
 
             // re-adding + duplicates
 
-            data.register(listener1);
-            data.register(listener1);
+            data.Register(listener1);
+            data.Register(listener1);
             Assert.AreEqual(2, data.Count);
-            Assert.AreEqual(true, data.contains(listener1));
-            Assert.AreEqual(true, data.exists(listener1.Id));
+            Assert.AreEqual(true, data.Contains(listener1));
+            Assert.AreEqual(true, data.Exists(listener1.Id));
 
             // access by id
 
-            Assert.AreEqual(listener1.Id, data.getById(listener1.Id).Id);
-            Assert.AreEqual(listener2.Id, data.getById(listener2.Id).Id);
+            Assert.AreEqual(listener1.Id, data.GetById(listener1.Id).Id);
+            Assert.AreEqual(listener2.Id, data.GetById(listener2.Id).Id);
 
             var nonexistent = "{8A805C3B-9941-4B82-94D0-E641EBA3881B}";
-            Assert.AreEqual(null, data.getById(new Guid(nonexistent)));
+            Assert.AreEqual(null, data.GetById(new Guid(nonexistent)));
 
-            data.reset();
+            data.Reset();
             Assert.AreEqual(0, data.Count);
         }
 
@@ -59,8 +59,8 @@ namespace net.r_eg.MvsSlnTest.Core
             var listener1 = new Listener1();
             var listener2 = new Listener2();
 
-            data.register(listener1);
-            data.register(listener2);
+            data.Register(listener1);
+            data.Register(listener2);
 
             var enumerator = data.GetEnumerator();
 
@@ -69,8 +69,8 @@ namespace net.r_eg.MvsSlnTest.Core
             Assert.AreEqual(true, enumerator.MoveNext());
             Assert.AreEqual(listener2.Id, enumerator.Current.Id);
 
-            data.unregister(listener1);
-            data.register(listener1);
+            data.Unregister(listener1);
+            data.Register(listener1);
 
             enumerator = data.GetEnumerator();
 
@@ -88,8 +88,8 @@ namespace net.r_eg.MvsSlnTest.Core
             var listener1 = new Listener1();
             var listener2 = new Listener2();
 
-            data.register(listener1);
-            data.register(listener2);
+            data.Register(listener1);
+            data.Register(listener2);
 
             Assert.AreEqual(listener1.Id, data[0].Id);
             Assert.AreEqual(listener2.Id, data[listener2.Id].Id);

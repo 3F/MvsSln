@@ -46,39 +46,39 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>
-        bool register(T listener);
+        bool Register(T listener);
 
         /// <summary>
         /// Removes specified listener from the collection.
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>
-        bool unregister(T listener);
+        bool Unregister(T listener);
 
         /// <summary>
         /// Reset all collection.
         /// </summary>
-        void reset();
+        void Reset();
 
         /// <summary>
         /// Determines whether the collection contains an listener.
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>
-        bool contains(T listener);
+        bool Contains(T listener);
 
         /// <summary>
         /// Checks existence of listener by Guid.
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        bool exists(Guid id);
+        bool Exists(Guid id);
 
         /// <summary>
         /// Get listener by specific id.
         /// </summary>
         /// <param name="id"></param>
         /// <returns>null if not found.</returns>
-        T getById(Guid id);
+        T GetById(Guid id);
     }
 }

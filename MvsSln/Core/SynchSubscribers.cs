@@ -72,9 +72,7 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public object SyncRoot
         {
-            get {
-                return sync;
-            }
+            get => sync;
         }
 
         /// <summary>
@@ -82,11 +80,11 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>
-        public bool register(T listener)
+        public bool Register(T listener)
         {
             lock(sync)
             {
-                if(contains(listener)) {
+                if(Contains(listener)) {
                     return false;
                 }
 
@@ -104,7 +102,7 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>
-        public bool unregister(T listener)
+        public bool Unregister(T listener)
         {
             lock(sync)
             {
@@ -114,8 +112,7 @@ namespace net.r_eg.MvsSln.Core
                 }
 
                 listeners.RemoveAt(idx);
-                T v;
-                accessor.TryRemove(listener.Id, out v);
+                accessor.TryRemove(listener.Id, out T v);
 
                 LSender.Send(this, $"listener has been removed from container - {listener.Id}", Message.Level.Debug);
                 return true;
@@ -125,9 +122,10 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Reset all collection.
         /// </summary>
-        public void reset()
+        public void Reset()
         {
-            lock(sync) {
+            lock(sync)
+            {
                 listeners.Clear();
                 accessor.Clear();
             }
@@ -138,9 +136,9 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="listener"></param>
         /// <returns></returns>
-        public bool contains(T listener)
+        public bool Contains(T listener)
         {
-            return exists(listener.Id);
+            return Exists(listener.Id);
         }
 
         /// <summary>
@@ -148,7 +146,7 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public bool exists(Guid id)
+        public bool Exists(Guid id)
         {
             lock(sync)
             {
@@ -165,11 +163,11 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="id"></param>
         /// <returns>null if not found.</returns>
-        public T getById(Guid id)
+        public T GetById(Guid id)
         {
             lock(sync)
             {
-                if(exists(id)) {
+                if(Exists(id)) {
                     return accessor[id];
                 }
                 return default(T);
@@ -194,13 +192,13 @@ namespace net.r_eg.MvsSln.Core
         public T this[Guid id]
         {
             get {
-                return getById(id);
+                return GetById(id);
             }
             set
             {
                 lock(sync)
                 {
-                    T listener  = getById(id);
+                    T listener  = GetById(id);
                     listener    = value;
                 }
             }
