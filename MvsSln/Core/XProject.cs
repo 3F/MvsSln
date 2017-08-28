@@ -669,7 +669,8 @@ namespace net.r_eg.MvsSln.Core
 
         protected virtual string GetProjectGuid(Project eProject)
         {
-            return eProject.GetProjectGuid();
+            //eProject.GetProjectGuid(); - null by default for all SDK-based projects
+            return ProjectItem.project.pGuid;
         }
 
         protected virtual string GetProjectName(Project eProject)
