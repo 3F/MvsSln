@@ -164,6 +164,33 @@ using(var sln = new Sln(@"vsSolutionBuildEvent.sln", SlnItems.Env))
 
 With latest version should be also available `IEnvironment.LoadMinimalProjects` or `EnvWithMinimalProjects` flag.
 
+### Adding Reference & Assembly name
+
+```csharp
+XProject.AddReference(lib, false);
+```
+
+```xml
+<Reference Include="DllExport, Version=1.5.2.42159, Culture=neutral, PublicKeyToken=8337224c9ad9e356">
+  <HintPath>..\packages\DllExport.1.5.2\gcache\metalib\DllExport.dll</HintPath>
+  <Private>False</Private>
+</Reference>
+```
+
+```csharp
+XProject.AddReference("DllExport", lib, false);
+```
+
+```xml
+<Reference Include="DllExport">
+  <HintPath>..\packages\DllExport.1.5.2\gcache\metalib\DllExport.dll</HintPath>
+  <Private>False</Private>
+</Reference>
+```
+
+You can also specify it via `System.Reflection.Assembly` etc.
+
+
 ## How to get
 
 Available variants:

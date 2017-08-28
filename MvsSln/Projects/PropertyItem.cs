@@ -38,7 +38,7 @@ namespace net.r_eg.MvsSln.Projects
         public string name;
 
         /// <summary>
-        /// the evaluated property value, which is never null.
+        /// The evaluated property value, which is never null.
         /// </summary>
         public string evaluatedValue;
 
@@ -109,7 +109,6 @@ namespace net.r_eg.MvsSln.Projects
             }
 
             name                    = eProperty.Name;
-            evaluatedValue          = eProperty.EvaluatedValue;
             unevaluatedValue        = eProperty.UnevaluatedValue;
             condition               = eProperty.Xml.Condition;
             isEnvironmentProperty   = eProperty.IsEnvironmentProperty;
@@ -117,6 +116,10 @@ namespace net.r_eg.MvsSln.Projects
             isReservedProperty      = eProperty.IsReservedProperty;
             isImported              = eProperty.IsImported;
             parentProperty          = eProperty;
+
+            //NOTE: MS describes this as 'the evaluated property value, which is never null'
+            //      But, this is not true ! >(  .NETFramework\v4.0\Microsoft.Build.dll - Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a
+            evaluatedValue = eProperty.EvaluatedValue ?? String.Empty;
         }
     }
 }
