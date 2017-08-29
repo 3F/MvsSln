@@ -23,7 +23,8 @@
 */
 
 using System;
-using System.IO;
+using System.Collections.Generic;
+using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
@@ -32,10 +33,10 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// New position in stream.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
+        /// <param name="svc"></param>
         /// <param name="line">Received line.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public abstract void Positioned(StreamReader stream, string line, SlnResult rsln);
+        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
+        public abstract bool Positioned(Svc svc, RawText line);
 
         /// <summary>
         /// Gets unique id of listener.
@@ -49,9 +50,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// The logic before processing file.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public virtual void PreProcessing(StreamReader stream, SlnResult rsln)
+        /// <param name="svc"></param>
+        public virtual void PreProcessing(Svc svc)
         {
 
         }
@@ -59,9 +59,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// The logic after processing file.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public virtual void PostProcessing(StreamReader stream, SlnResult rsln)
+        /// <param name="svc"></param>
+        public virtual void PostProcessing(Svc svc)
         {
 
         }
@@ -69,6 +68,26 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         public LAbstract()
         {
             Id = GetType().GUID;
+        }
+
+        /// <param name="line">Initialize data from raw line.</param>
+        /// <param name="solutionDir">Path to solution directory.</param>
+        /// <returns></returns>
+        protected ProjectItem GetProjectItem(string line, string solutionDir)
+        {
+            var pItem = new ProjectItem(line, solutionDir);
+
+            if(pItem.pGuid == null) {
+                LSender.Send(this, $"The Guid is null or empty for line :: '{line}'", Message.Level.Error);
+                return default(ProjectItem);
+            }
+
+            if(String.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase)) {
+                LSender.Send(this, $"{pItem.name} has been ignored as solution-folder :: '{line}'", Message.Level.Debug);
+                return default(ProjectItem);
+            }
+
+            return pItem;
         }
     }
 }

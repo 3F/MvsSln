@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
@@ -72,21 +71,21 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// New position in stream.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
+        /// <param name="svc"></param>
         /// <param name="line">Received line.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public override void Positioned(StreamReader stream, string line, SlnResult rsln)
+        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
+        public override bool Positioned(Svc svc, RawText line)
         {
-            if((rsln.ResultType & SlnItems.ProjectConfPlatforms) != SlnItems.ProjectConfPlatforms) {
-                return;
+            if((svc.Sln.ResultType & SlnItems.ProjectConfPlatforms) != SlnItems.ProjectConfPlatforms) {
+                return false;
             }
 
-            if(!line.StartsWith("GlobalSection(ProjectConfigurationPlatforms)", StringComparison.Ordinal)) {
-                return;
+            if(!line.trimmed.StartsWith("GlobalSection(ProjectConfigurationPlatforms)", StringComparison.Ordinal)) {
+                return false;
             }
 
-            if(rsln.ProjectConfigList == null) {
-                rsln.ProjectConfigList = new List<IConfPlatformPrj>();
+            if(svc.Sln.ProjectConfigList == null) {
+                svc.Sln.ProjectConfigList = new List<IConfPlatformPrj>();
             }
 
             /*
@@ -97,7 +96,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             string _line;
 
             var cortege = new Dictionary<Cortege, ConfigPrj>(new EqCortegeComparer());
-            while((_line = stream.ReadLine()) != null && _line.Trim() != "EndGlobalSection")
+            while((_line = svc.ReadLine(this)) != null && _line.Trim() != "EndGlobalSection")
             {
                 int x, y;
 
@@ -130,7 +129,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 {
                     LSender.Send(this, $"New Project Configuration `{pGuid}`, `{csln}` = `{cprj}` /{type}", Message.Level.Debug);
                     cortege[ident] = new ConfigPrj(cprj, pGuid, isBuild0, new ConfigSln(csln));
-                    rsln.ProjectConfigList.Add(cortege[ident]);
+                    svc.Sln.ProjectConfigList.Add(cortege[ident]);
                     continue;
                 }
 
@@ -141,6 +140,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                     continue;
                 }
             }
+
+            return true;
         }
     }
 }

@@ -82,5 +82,10 @@ namespace net.r_eg.MvsSln.Core
         /// Environment for current data.
         /// </summary>
         IEnvironment Env { get; }
+
+        /// <summary>
+        /// Contains map of all found (known/unknown) solution data.
+        /// </summary>
+        IEnumerable<ISection> Map { get; }
     }
 }

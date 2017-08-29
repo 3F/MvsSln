@@ -26,7 +26,7 @@ using System.Collections.Generic;
 
 namespace net.r_eg.MvsSln.Core
 {
-    public sealed class SlnResult: ISlnResult
+    public sealed class SlnResult: ISlnResult, ISlnResultSvc
     {
         /// <summary>
         /// Full path to root solution directory.
@@ -126,9 +126,17 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// Contains map of all found (known/unknown) solution data.
+        /// </summary>
+        public IEnumerable<ISection> Map
+        {
+            get => MapList;
+        }
+
+        /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
-        internal List<IConfPlatform> SolutionConfigList
+        public List<IConfPlatform> SolutionConfigList
         {
             get;
             set;
@@ -137,7 +145,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Project configurations with platforms.
         /// </summary>
-        internal List<IConfPlatformPrj> ProjectConfigList
+        public List<IConfPlatformPrj> ProjectConfigList
         {
             get;
             set;
@@ -146,10 +154,28 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// All found projects in solution.
         /// </summary>
-        internal List<ProjectItem> ProjectItemList
+        public List<ProjectItem> ProjectItemList
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Contains map of all found (known/unknown) solution data.
+        /// </summary>
+        public List<ISection> MapList
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Updates instance of the Solution Project Dependencies.
+        /// </summary>
+        /// <param name="dep"></param>
+        public void SetProjectDependencies(ISlnProjectDependencies dep)
+        {
+            ProjectDependencies = dep;
         }
     }
 }

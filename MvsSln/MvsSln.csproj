@@ -49,6 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
+    <Compile Include="Core\ISlnResultSvc.cs" />
+    <Compile Include="Core\Section.cs" />
+    <Compile Include="Core\ISection.cs" />
     <Compile Include="Core\IRuleOfConfig.cs" />
     <Compile Include="Core\IConfPlatformPrj.cs" />
     <Compile Include="Core\IConfPlatform.cs" />
@@ -61,6 +64,7 @@
     </Compile>
     <Compile Include="Core\RawText.cs" />
     <Compile Include="Core\ProjectReferences.cs" />
+    <Compile Include="Core\SlnHandlers\Svc.cs" />
     <Compile Include="EnvDTE\DProject.cs" />
     <Compile Include="EnvDTE\DynDteProject.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />

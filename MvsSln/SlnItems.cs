@@ -38,7 +38,8 @@ namespace net.r_eg.MvsSln
                 | ProjectConfPlatforms 
                 | ProjectDependencies
                 | Env
-                | LoadDefaultData,
+                | LoadDefaultData
+                | Map,
 
         /// <summary>
         /// All found projects from solution.
@@ -86,5 +87,10 @@ namespace net.r_eg.MvsSln
         /// The only one configuration for each project. 
         /// </summary>
         EnvWithMinimalProjects = Env | LoadMinimalDefaultData,
+
+        /// <summary>
+        /// Creates map when processing sln data.
+        /// </summary>
+        Map = 0x0080,
     }
 }

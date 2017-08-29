@@ -22,21 +22,43 @@
  * THE SOFTWARE.
 */
 
+using System.Diagnostics;
 using System.Text;
 
 namespace net.r_eg.MvsSln.Core
 {
+    [DebuggerDisplay("{data}")]
     public struct RawText
     {
         public Encoding encoding;
 
         public string data;
 
+        /// <summary>
+        /// data without whitespace characters.
+        /// </summary>
+        public string trimmed;
+
+        public static implicit operator string(RawText raw)
+        {
+            return raw.ToString();
+        }
+
+        public static implicit operator RawText(string str)
+        {
+            return new RawText(str);
+        }
+
+        public override string ToString()
+        {
+            return data;
+        }
+
         /// <param name="data"></param>
         public RawText(string data)
+            : this(data, Encoding.UTF8)
         {
-            this.data   = data;
-            encoding    = Encoding.UTF8;
+
         }
 
         /// <param name="data"></param>
@@ -45,6 +67,7 @@ namespace net.r_eg.MvsSln.Core
         {
             this.data   = data;
             encoding    = enc;
+            trimmed     = data?.Trim();
         }
     }
 }

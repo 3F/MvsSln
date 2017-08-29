@@ -24,38 +24,61 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
-    public class LProject: LAbstract, ISlnHandler
+    public sealed class Svc
     {
         /// <summary>
-        /// New position in stream.
+        /// Used stream.
         /// </summary>
-        /// <param name="svc"></param>
-        /// <param name="line">Received line.</param>
-        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
-        public override bool Positioned(Svc svc, RawText line)
+        public StreamReader Stream
         {
-            if((svc.Sln.ResultType & SlnItems.Projects) != SlnItems.Projects) {
-                return false;
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Prepared solution data.
+        /// </summary>
+        public ISlnResultSvc Sln
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Unspecified storage of the user scope.
+        /// </summary>
+        public Dictionary<Guid, object> UData
+        {
+            get;
+            set;
+        } = new Dictionary<Guid, object>();
+
+        /// <summary>
+        /// Reads a line of characters from the current stream with tracking.
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <returns></returns>
+        public string ReadLine(object handler = null)
+        {
+            string line = Stream?.ReadLine();
+
+            if((Sln.ResultType & SlnItems.Map) != SlnItems.Map) {
+                return line;
             }
 
-            if(!line.trimmed.StartsWith("Project(", StringComparison.Ordinal)) {
-                return false;
+            if(Sln.MapList == null) {
+                Sln.MapList = new List<ISection>();
             }
 
-            var pItem = GetProjectItem(line.trimmed, svc.Sln.SolutionDir);
-            if(pItem.pGuid == null) {
-                return false;
-            }
+            Sln.MapList.Add(
+                new Section(handler, line)
+            );
 
-            if(svc.Sln.ProjectItemList == null) {
-                svc.Sln.ProjectItemList = new List<ProjectItem>();
-            }
-
-            svc.Sln.ProjectItemList.Add(pItem);
-            return true;
+            return line;
         }
     }
 }

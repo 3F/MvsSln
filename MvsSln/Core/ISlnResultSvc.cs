@@ -22,40 +22,36 @@
  * THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
 
-namespace net.r_eg.MvsSln.Core.SlnHandlers
+namespace net.r_eg.MvsSln.Core
 {
-    public class LProject: LAbstract, ISlnHandler
+    public interface ISlnResultSvc: ISlnResult
     {
         /// <summary>
-        /// New position in stream.
+        /// Solution configurations with platforms.
         /// </summary>
-        /// <param name="svc"></param>
-        /// <param name="line">Received line.</param>
-        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
-        public override bool Positioned(Svc svc, RawText line)
-        {
-            if((svc.Sln.ResultType & SlnItems.Projects) != SlnItems.Projects) {
-                return false;
-            }
+        List<IConfPlatform> SolutionConfigList { get; set; }
 
-            if(!line.trimmed.StartsWith("Project(", StringComparison.Ordinal)) {
-                return false;
-            }
+        /// <summary>
+        /// Project configurations with platforms.
+        /// </summary>
+        List<IConfPlatformPrj> ProjectConfigList { get; set; }
 
-            var pItem = GetProjectItem(line.trimmed, svc.Sln.SolutionDir);
-            if(pItem.pGuid == null) {
-                return false;
-            }
+        /// <summary>
+        /// All found projects in solution.
+        /// </summary>
+        List<ProjectItem> ProjectItemList { get; set; }
 
-            if(svc.Sln.ProjectItemList == null) {
-                svc.Sln.ProjectItemList = new List<ProjectItem>();
-            }
+        /// <summary>
+        /// Contains map of all found (known/unknown) solution data.
+        /// </summary>
+        List<ISection> MapList { get; set; }
 
-            svc.Sln.ProjectItemList.Add(pItem);
-            return true;
-        }
+        /// <summary>
+        /// Updates instance of the Solution Project Dependencies.
+        /// </summary>
+        /// <param name="dep"></param>
+        void SetProjectDependencies(ISlnProjectDependencies dep);
     }
 }

@@ -104,14 +104,7 @@ namespace net.r_eg.MvsSln.Core
                 ResultType  = type,
             };
 
-            HandlePreProcessing(reader, data);
-            {
-                string line;
-                while((line = reader.ReadLine()) != null) {
-                    HandlePositioned(reader, line.Trim(), data);
-                }
-            }
-            HandlePostProcessing(reader, data);
+            Process(new Svc() { Stream = reader, Sln = data });
 
             if(data.SolutionConfigs != null)
             {
@@ -150,25 +143,31 @@ namespace net.r_eg.MvsSln.Core
             SlnHandlers.Register(new LProjectDependencies());
         }
 
-        protected virtual void HandlePreProcessing(StreamReader stream, SlnResult data)
+        protected void Process(Svc svc)
         {
-            foreach(ISlnHandler h in SlnHandlers) {
-                h.PreProcessing(stream, data);
+            DoPreProcessing(svc);
+            {
+                string line;
+                while((line = svc.ReadLine()) != null) {
+                    DoPositioned(svc, new RawText(line, svc.Stream.CurrentEncoding));
+                }
             }
+            DoPostProcessing(svc);
         }
 
-        protected virtual void HandlePositioned(StreamReader reader, string line, SlnResult data)
+        protected virtual void DoPreProcessing(Svc svc)
         {
-            foreach(ISlnHandler h in SlnHandlers) {
-                h.Positioned(reader, line, data);
-            }
+            SlnHandlers.ForEach((h) => h.PreProcessing(svc));
         }
 
-        protected virtual void HandlePostProcessing(StreamReader stream, SlnResult data)
+        protected virtual void DoPositioned(Svc svc, RawText line)
         {
-            foreach(ISlnHandler h in SlnHandlers) {
-                h.PostProcessing(stream, data);
-            }
+            SlnHandlers.ForEach((h) => h.Positioned(svc, line));
+        }
+
+        protected virtual void DoPostProcessing(Svc svc)
+        {
+            SlnHandlers.ForEach((h) => h.PostProcessing(svc));
         }
 
         /// <summary>

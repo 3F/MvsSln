@@ -22,8 +22,6 @@
  * THE SOFTWARE.
 */
 
-using System.IO;
-
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
     public interface ISlnHandler: IHandler
@@ -31,23 +29,21 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// The logic before processing file.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        void PreProcessing(StreamReader stream, SlnResult rsln);
+        /// <param name="svc"></param>
+        void PreProcessing(Svc svc);
 
         /// <summary>
         /// New position in stream.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
+        /// <param name="svc"></param>
         /// <param name="line">Received line.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        void Positioned(StreamReader stream, string line, SlnResult rsln);
+        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
+        bool Positioned(Svc svc, RawText line);
 
         /// <summary>
         /// The logic after processing file.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        void PostProcessing(StreamReader stream, SlnResult rsln);
+        /// <param name="svc"></param>
+        void PostProcessing(Svc svc);
     }
 }

@@ -23,39 +23,29 @@
 */
 
 using System;
-using System.Collections.Generic;
 
-namespace net.r_eg.MvsSln.Core.SlnHandlers
+namespace net.r_eg.MvsSln.Core
 {
-    public class LProject: LAbstract, ISlnHandler
+    public interface ISection
     {
         /// <summary>
-        /// New position in stream.
+        /// Contains handler that processed this section.
         /// </summary>
-        /// <param name="svc"></param>
-        /// <param name="line">Received line.</param>
-        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
-        public override bool Positioned(Svc svc, RawText line)
-        {
-            if((svc.Sln.ResultType & SlnItems.Projects) != SlnItems.Projects) {
-                return false;
-            }
+        object Handler { get; }
 
-            if(!line.trimmed.StartsWith("Project(", StringComparison.Ordinal)) {
-                return false;
-            }
+        /// <summary>
+        /// Raw data from stream.
+        /// </summary>
+        RawText Raw { get; }
 
-            var pItem = GetProjectItem(line.trimmed, svc.Sln.SolutionDir);
-            if(pItem.pGuid == null) {
-                return false;
-            }
+        /// <summary>
+        /// To ignore this from other sections.
+        /// </summary>
+        bool Ignore { get; set; }
 
-            if(svc.Sln.ProjectItemList == null) {
-                svc.Sln.ProjectItemList = new List<ProjectItem>();
-            }
-
-            svc.Sln.ProjectItemList.Add(pItem);
-            return true;
-        }
+        /// <summary>
+        /// User's mixed object for anything.
+        /// </summary>
+        object User { get; set; }
     }
 }

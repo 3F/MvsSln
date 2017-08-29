@@ -24,9 +24,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using net.r_eg.MvsSln.Extensions;
-using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
@@ -159,9 +157,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// The logic before processing file.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public override void PreProcessing(StreamReader stream, SlnResult rsln)
+        /// <param name="svc"></param>
+        public override void PreProcessing(Svc svc)
         {
             Projects.Clear();
             order.Clear();
@@ -171,45 +168,36 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// New position in stream.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
+        /// <param name="svc"></param>
         /// <param name="line">Received line.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public override void Positioned(StreamReader stream, string line, SlnResult rsln)
+        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
+        public override bool Positioned(Svc svc, RawText line)
         {
-            if((rsln.ResultType & SlnItems.ProjectDependencies) != SlnItems.ProjectDependencies) {
-                return;
+            if((svc.Sln.ResultType & SlnItems.ProjectDependencies) != SlnItems.ProjectDependencies) {
+                return false;
             }
 
-            if(!line.StartsWith("Project(", StringComparison.Ordinal)) {
-                return;
+            if(!line.trimmed.StartsWith("Project(", StringComparison.Ordinal)) {
+                return false;
             }
 
-            var pItem = new ProjectItem(line, rsln.SolutionDir);
+            var pItem = GetProjectItem(line.trimmed, svc.Sln.SolutionDir);
             if(pItem.pGuid == null) {
-                //throw new Exception();
-                LSender.Send(this, $"The Guid is null or empty for line :: '{line}'", Message.Level.Error);
-                return;
-            }
-
-            if(String.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase)) {
-                LSender.Send(this, $"{pItem.name} has been ignored as solution-folder :: '{line}'", Message.Level.Debug);
-                return;
+                return false;
             }
 
             Projects[pItem.pGuid]   = pItem;
             map[pItem.pGuid]        = new HashSet<string>();
 
-            while((line = stream.ReadLine()) != null && (line != "EndProject"))
+            while((line = svc.ReadLine(this)) != null && (line != "EndProject"))
             {
-                line = line.Trim();
-                if(!line.StartsWith("ProjectSection(ProjectDependencies)", StringComparison.Ordinal)) {
+                if(!line.trimmed.StartsWith("ProjectSection(ProjectDependencies)", StringComparison.Ordinal)) {
                     continue;
                 }
 
-                for(line = stream.ReadLine(); line != null; line = stream.ReadLine())
+                for(line = svc.ReadLine(this); line != null; line = svc.ReadLine(this))
                 {
-                    line = line.Trim();
-                    if(line.StartsWith("EndProjectSection", StringComparison.Ordinal)) {
+                    if(line.trimmed.StartsWith("EndProjectSection", StringComparison.Ordinal)) {
                         break;
                     }
 
@@ -219,15 +207,15 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 }
             }
 
-            rsln.ProjectDependencies = this;
+            svc.Sln.SetProjectDependencies(this);
+            return true;
         }
 
         /// <summary>
         /// The logic after processing file.
         /// </summary>
-        /// <param name="stream">Used stream.</param>
-        /// <param name="rsln">Handled solution data.</param>
-        public override void PostProcessing(StreamReader stream, SlnResult rsln)
+        /// <param name="svc"></param>
+        public override void PostProcessing(Svc svc)
         {
             BuildOrder();
         }
