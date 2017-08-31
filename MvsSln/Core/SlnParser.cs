@@ -49,6 +49,8 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         protected Encoding encoding = Encoding.Default;
 
+        private CoHandlers _coh;
+
         /// <summary>
         /// Available solution handlers.
         /// </summary>
@@ -138,13 +140,15 @@ namespace net.r_eg.MvsSln.Core
         public SlnParser()
         {
             SlnHandlers.Register(new LProject());
+            SlnHandlers.Register(new LProjectDependencies());
             SlnHandlers.Register(new LProjectConfigurationPlatforms());
             SlnHandlers.Register(new LSolutionConfigurationPlatforms());
-            SlnHandlers.Register(new LProjectDependencies());
         }
 
-        protected void Process(Svc svc)
+        protected void Process(ISvc svc)
         {
+            _coh = new CoHandlers(SlnHandlers);
+
             DoPreProcessing(svc);
             {
                 string line;
@@ -155,17 +159,38 @@ namespace net.r_eg.MvsSln.Core
             DoPostProcessing(svc);
         }
 
-        protected virtual void DoPreProcessing(Svc svc)
+        protected virtual void DoPreProcessing(ISvc svc)
         {
             SlnHandlers.ForEach((h) => h.PreProcessing(svc));
         }
 
-        protected virtual void DoPositioned(Svc svc, RawText line)
+        protected virtual void DoPositioned(ISvc svc, RawText line)
         {
-            SlnHandlers.ForEach((h) => h.Positioned(svc, line));
+            foreach(ISlnHandler h in SlnHandlers)
+            {
+                if(!h.Condition(line)) {
+                    continue;
+                }
+
+                var isAct = h.IsActivated(svc);
+
+                if(h.LineControl != LineAct.None && !_coh.set.Contains(h.GetType())) {
+                    svc.Track(line, h.LineControl != LineAct.Process ? null : (isAct ? h : null));
+                }
+
+                if(isAct) {
+                    h.Positioned(svc, line);
+                }
+
+                if(h.CoHandlers == null || !_coh.has[h.Id]) {
+                    return;
+                }
+            }
+
+            svc.Track(line);
         }
 
-        protected virtual void DoPostProcessing(Svc svc)
+        protected virtual void DoPostProcessing(ISvc svc)
         {
             SlnHandlers.ForEach((h) => h.PostProcessing(svc));
         }

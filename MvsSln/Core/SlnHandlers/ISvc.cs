@@ -28,94 +28,46 @@ using System.IO;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
-    public sealed class Svc: ISvc
+    public interface ISvc
     {
-        private long nline = 0;
-
-        private object sync = new object();
-
         /// <summary>
         /// Used stream.
         /// </summary>
-        public StreamReader Stream
-        {
-            get;
-            set;
-        }
+        StreamReader Stream { get; set; }
 
         /// <summary>
         /// Prepared solution data.
         /// </summary>
-        public ISlnResultSvc Sln
-        {
-            get;
-            set;
-        }
+        ISlnResultSvc Sln { get; set; }
 
         /// <summary>
         /// Unspecified storage of the user scope.
         /// </summary>
-        public Dictionary<Guid, object> UData
-        {
-            get;
-            set;
-        } = new Dictionary<Guid, object>();
+        Dictionary<Guid, object> UData { get; set; }
 
         /// <summary>
         /// Reads a line of characters from stream.
         /// </summary>
         /// <returns></returns>
-        public string ReadLine()
-        {
-            lock(sync)
-            {
-                ++nline;
-                return Stream?.ReadLine();
-            }
-        }
+        string ReadLine();
 
         /// <summary>
         /// Reads a line of characters from stream with tracking.
         /// </summary>
         /// <param name="handler"></param>
         /// <returns></returns>
-        public string ReadLine(object handler)
-        {
-            string line = ReadLine();
-            Track(line, handler);
-            return line;
-        }
+        string ReadLine(object handler);
 
         /// <summary>
         /// Resets stream and its related data.
         /// </summary>
-        public void ResetStream()
-        {
-            if(Stream != null) {
-                nline = Stream.BaseStream.Seek(0, SeekOrigin.Begin);
-                return;
-            }
-            nline = 0;
-        }
+        void ResetStream();
 
         /// <summary>
         /// Tracking for line.
         /// </summary>
         /// <param name="line"></param>
         /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
-        public void Track(RawText line, object handler = null)
-        {
-            if((Sln.ResultType & SlnItems.Map) != SlnItems.Map) {
-                return;
-            }
-
-            if(Sln.MapList == null) {
-                Sln.MapList = new List<ISection>();
-            }
-
-            Sln.MapList.Add(
-                new Section(handler, line, nline)
-            );
-        }
+        void Track(RawText line, object handler = null);
     }
 }

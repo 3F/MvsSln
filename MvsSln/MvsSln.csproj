@@ -64,6 +64,9 @@
     </Compile>
     <Compile Include="Core\RawText.cs" />
     <Compile Include="Core\ProjectReferences.cs" />
+    <Compile Include="Core\SlnHandlers\CoHandlers.cs" />
+    <Compile Include="Core\SlnHandlers\LineAct.cs" />
+    <Compile Include="Core\SlnHandlers\ISvc.cs" />
     <Compile Include="Core\SlnHandlers\Svc.cs" />
     <Compile Include="EnvDTE\DProject.cs" />
     <Compile Include="EnvDTE\DynDteProject.cs" />

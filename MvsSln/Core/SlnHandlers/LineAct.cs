@@ -22,33 +22,14 @@
  * THE SOFTWARE.
 */
 
-namespace net.r_eg.MvsSln.Core
+namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
-    public interface ISection
+    public enum LineAct
     {
-        /// <summary>
-        /// Contains handler that processed this section.
-        /// </summary>
-        object Handler { get; }
+        None,
 
-        /// <summary>
-        /// Known line number to this section.
-        /// </summary>
-        long Line { get; }
+        Ignore,
 
-        /// <summary>
-        /// Raw data from stream.
-        /// </summary>
-        RawText Raw { get; }
-
-        /// <summary>
-        /// To ignore this from other sections.
-        /// </summary>
-        bool Ignore { get; set; }
-
-        /// <summary>
-        /// User's mixed object for anything.
-        /// </summary>
-        object User { get; set; }
+        Process,
     }
 }

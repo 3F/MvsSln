@@ -39,6 +39,15 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// Known line number to this section.
+        /// </summary>
+        public long Line
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
         /// Raw data from stream.
         /// </summary>
         public RawText Raw
@@ -67,13 +76,14 @@ namespace net.r_eg.MvsSln.Core
 
         private string DbgDisplay
         {
-            get => $"{(Ignore ? "x: " : "")}[{Handler?.GetType().Name}] '{Raw}'";
+            get => $"{(Ignore ? "x: " : "")}[{Handler?.GetType().Name}] #{Line}:'{Raw}'";
         }
 
-        public Section(object h, RawText raw)
+        public Section(object h, RawText raw, long line = -1)
         {
             Handler = h;
             Raw     = raw;
+            Line    = line;
         }
     }
 }

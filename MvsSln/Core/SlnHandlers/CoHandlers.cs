@@ -22,33 +22,44 @@
  * THE SOFTWARE.
 */
 
-namespace net.r_eg.MvsSln.Core
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using net.r_eg.MvsSln.Extensions;
+
+namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
-    public interface ISection
+    internal struct CoHandlers
     {
-        /// <summary>
-        /// Contains handler that processed this section.
-        /// </summary>
-        object Handler { get; }
+        public HashSet<Type> set;
 
-        /// <summary>
-        /// Known line number to this section.
-        /// </summary>
-        long Line { get; }
+        public Dictionary<Guid, bool> has;
 
-        /// <summary>
-        /// Raw data from stream.
-        /// </summary>
-        RawText Raw { get; }
+        /// <param name="slnHandlers"></param>
+        public CoHandlers(SynchSubscribers<ISlnHandler> slnHandlers)
+        {
+            if(slnHandlers == null) {
+                throw new ArgumentNullException();
+            }
 
-        /// <summary>
-        /// To ignore this from other sections.
-        /// </summary>
-        bool Ignore { get; set; }
+            set = new HashSet<Type>();
+            has = new Dictionary<Guid, bool>();
 
-        /// <summary>
-        /// User's mixed object for anything.
-        /// </summary>
-        object User { get; set; }
+            foreach(ISlnHandler h in slnHandlers)
+            {
+                if(h.CoHandlers == null || h.CoHandlers.Length < 1) {
+                    continue;
+                }
+
+                var registered = h.CoHandlers.Intersect(
+                    slnHandlers.Select(r => r.GetType())
+                );
+
+                has[h.Id] = registered.Count() > 0;
+
+                var _this = this;
+                registered.ForEach(t => _this.set.Add(t));
+            }
+        }
     }
 }

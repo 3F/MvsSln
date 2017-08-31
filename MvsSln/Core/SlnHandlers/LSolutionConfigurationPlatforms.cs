@@ -31,21 +31,33 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
     public class LSolutionConfigurationPlatforms: LAbstract, ISlnHandler
     {
         /// <summary>
+        /// Checks the readiness to process data.
+        /// </summary>
+        /// <param name="svc"></param>
+        /// <returns>True value if it's ready at current time.</returns>
+        public override bool IsActivated(ISvc svc)
+        {
+            return ((svc.Sln.ResultType & SlnItems.SolutionConfPlatforms) == SlnItems.SolutionConfPlatforms);
+        }
+
+        /// <summary>
+        /// Condition for line to continue processing.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns>true value to continue.</returns>
+        public override bool Condition(RawText line)
+        {
+            return line.trimmed.StartsWith("GlobalSection(SolutionConfigurationPlatforms)", StringComparison.Ordinal);
+        }
+
+        /// <summary>
         /// New position in stream.
         /// </summary>
         /// <param name="svc"></param>
         /// <param name="line">Received line.</param>
         /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
-        public override bool Positioned(Svc svc, RawText line)
+        public override bool Positioned(ISvc svc, RawText line)
         {
-            if((svc.Sln.ResultType & SlnItems.SolutionConfPlatforms) != SlnItems.SolutionConfPlatforms) {
-                return false;
-            }
-
-            if(!line.trimmed.StartsWith("GlobalSection(SolutionConfigurationPlatforms)", StringComparison.Ordinal)) {
-                return false;
-            }
-
             if(svc.Sln.SolutionConfigList == null) {
                 svc.Sln.SolutionConfigList = new List<IConfPlatform>();
             }

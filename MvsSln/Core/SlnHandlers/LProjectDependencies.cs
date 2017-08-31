@@ -155,10 +155,38 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         }
 
         /// <summary>
+        /// Action with incoming line.
+        /// </summary>
+        public override LineAct LineControl
+        {
+            get => LineAct.Ignore;
+        }
+
+        /// <summary>
+        /// Checks the readiness to process data.
+        /// </summary>
+        /// <param name="svc"></param>
+        /// <returns>True value if it's ready at current time.</returns>
+        public override bool IsActivated(ISvc svc)
+        {
+            return ((svc.Sln.ResultType & SlnItems.ProjectDependencies) == SlnItems.ProjectDependencies);
+        }
+
+        /// <summary>
+        /// Condition for line to continue processing.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns>true value to continue.</returns>
+        public override bool Condition(RawText line)
+        {
+            return line.trimmed.StartsWith("Project(", StringComparison.Ordinal);
+        }
+
+        /// <summary>
         /// The logic before processing file.
         /// </summary>
         /// <param name="svc"></param>
-        public override void PreProcessing(Svc svc)
+        public override void PreProcessing(ISvc svc)
         {
             Projects.Clear();
             order.Clear();
@@ -171,16 +199,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="svc"></param>
         /// <param name="line">Received line.</param>
         /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
-        public override bool Positioned(Svc svc, RawText line)
+        public override bool Positioned(ISvc svc, RawText line)
         {
-            if((svc.Sln.ResultType & SlnItems.ProjectDependencies) != SlnItems.ProjectDependencies) {
-                return false;
-            }
-
-            if(!line.trimmed.StartsWith("Project(", StringComparison.Ordinal)) {
-                return false;
-            }
-
             var pItem = GetProjectItem(line.trimmed, svc.Sln.SolutionDir);
             if(pItem.pGuid == null) {
                 return false;
@@ -215,7 +235,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// The logic after processing file.
         /// </summary>
         /// <param name="svc"></param>
-        public override void PostProcessing(Svc svc)
+        public override void PostProcessing(ISvc svc)
         {
             BuildOrder();
         }
