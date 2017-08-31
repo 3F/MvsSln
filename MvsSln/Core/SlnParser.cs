@@ -206,14 +206,18 @@ namespace net.r_eg.MvsSln.Core
             {
                 foreach(var prjConf in slnConf.Value)
                 {
-                    var link = new ProjectItemCfg(
-                        data.ProjectItems
-                            .Where(p => p.pGuid == prjConf.PGuid)
-                            .FirstOrDefault(),
-                        slnConf.Key,
-                        prjConf
-                    );
-                    ret.Add(link);
+                    ProjectItem pItem;
+
+                    if(data.ProjectItems == null) {
+                        pItem = default(ProjectItem);
+                    }
+                    else {
+                        pItem = data.ProjectItems
+                                    .Where(p => p.pGuid == prjConf.PGuid)
+                                    .FirstOrDefault();
+                    }
+
+                    ret.Add(new ProjectItemCfg(pItem, slnConf.Key, prjConf));
                 }
             }
             data.ProjectItemsConfigs = ret;
