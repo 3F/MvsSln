@@ -68,6 +68,6 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// </summary>
         /// <param name="line"></param>
         /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
-        void Track(RawText line, object handler = null);
+        ISection Track(RawText line, object handler = null);
     }
 }

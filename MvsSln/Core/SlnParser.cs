@@ -172,15 +172,7 @@ namespace net.r_eg.MvsSln.Core
                     continue;
                 }
 
-                var isAct = h.IsActivated(svc);
-
-                if(h.LineControl != LineAct.None && !_coh.set.Contains(h.GetType())) {
-                    svc.Track(line, h.LineControl != LineAct.Process ? null : (isAct ? h : null));
-                }
-
-                if(isAct) {
-                    h.Positioned(svc, line);
-                }
+                TrackedPosition(h, svc, line);
 
                 if(h.CoHandlers == null || !_coh.has[h.Id]) {
                     return;
@@ -297,6 +289,24 @@ namespace net.r_eg.MvsSln.Core
         protected string GetDirectoryFromFile(string file)
         {
             return Path.GetDirectoryName(file).DirectoryPathFormat();
+        }
+
+        private void TrackedPosition(ISlnHandler h, ISvc svc, RawText line)
+        {
+            bool isAct      = h.IsActivated(svc);
+            ISection part   = null;
+
+            if(h.LineControl != LineAct.None && !_coh.set.Contains(h.GetType())) {
+                part = svc.Track(line, h.LineControl != LineAct.Process ? null : (isAct ? h : null));
+            }
+
+            if(!isAct) {
+                return;
+            }
+
+            if(!h.Positioned(svc, line) && part != null) {
+                part.UpdateHandler(null);
+            }
         }
     }
 }

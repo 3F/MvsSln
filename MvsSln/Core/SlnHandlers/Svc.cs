@@ -103,19 +103,19 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// </summary>
         /// <param name="line"></param>
         /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
-        public void Track(RawText line, object handler = null)
+        public ISection Track(RawText line, object handler = null)
         {
             if((Sln.ResultType & SlnItems.Map) != SlnItems.Map) {
-                return;
+                return null;
             }
 
             if(Sln.MapList == null) {
                 Sln.MapList = new List<ISection>();
             }
 
-            Sln.MapList.Add(
-                new Section(handler, line, nline)
-            );
+            ISection section = new Section(handler, line, nline);
+            Sln.MapList.Add(section);
+            return section;
         }
     }
 }

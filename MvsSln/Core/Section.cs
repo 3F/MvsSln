@@ -30,7 +30,7 @@ namespace net.r_eg.MvsSln.Core
     public class Section: ISection
     {
         /// <summary>
-        /// Contains handler that processed this section.
+        /// Contains handler which is ready to process this section, or already processes.
         /// </summary>
         public object Handler
         {
@@ -72,6 +72,27 @@ namespace net.r_eg.MvsSln.Core
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// To update handler which is ready to process this section.
+        /// </summary>
+        /// <param name="handler">New handler.</param>
+        public void UpdateHandler(object handler)
+        {
+            Handler = handler;
+        }
+
+        /// <summary>
+        /// Clone data from this section into new ISection instance.
+        /// </summary>
+        /// <returns></returns>
+        public ISection Clone()
+        {
+            return new Section(Handler, Raw, Line) {
+                Ignore  = Ignore,
+                User    = User
+            };
         }
 
         private string DbgDisplay

@@ -23,43 +23,16 @@
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using net.r_eg.MvsSln.Extensions;
 
-namespace net.r_eg.MvsSln.Core.SlnHandlers
+namespace net.r_eg.MvsSln.Exceptions
 {
-    internal struct CoHandlers
+    [Serializable]
+    public class CoHandlerRuleException: NotFoundException
     {
-        public HashSet<Type> set;
-
-        public Dictionary<Guid, bool> has;
-
-        public IEnumerable<ISlnHandler> handlers;
-
-        /// <param name="slnHandlers"></param>
-        public CoHandlers(IEnumerable<ISlnHandler> slnHandlers)
+        public CoHandlerRuleException(string message)
+            : base(message)
         {
-            handlers = slnHandlers ?? throw new ArgumentNullException();
 
-            set = new HashSet<Type>();
-            has = new Dictionary<Guid, bool>();
-
-            foreach(ISlnHandler h in handlers)
-            {
-                if(h.CoHandlers == null || h.CoHandlers.Length < 1) {
-                    continue;
-                }
-
-                var registered = h.CoHandlers.Intersect(
-                    handlers.Select(r => r.GetType())
-                );
-
-                has[h.Id] = registered.Count() > 0;
-
-                var _this = this;
-                registered.ForEach(t => _this.set.Add(t));
-            }
         }
     }
 }
