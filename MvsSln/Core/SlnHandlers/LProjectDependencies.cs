@@ -33,23 +33,23 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
     /// 
     /// Please note: initially it was part of https://github.com/3F/vsSolutionBuildEvent
     /// </summary>
-    public class LProjectDependencies: LAbstract, ISlnHandler, ISlnProjectDependencies
+    public class LProjectDependencies: LAbstract, ISlnHandler, ISlnPDManager
     {
         /// <summary>
         /// Direct order of identifiers.
         /// </summary>
-        protected List<string> order = new List<string>();
+        protected IList<string> order = new List<string>();
 
         /// <summary>
         /// Map of projects.
         /// </summary>
-        protected Dictionary<string, HashSet<string>> map = new Dictionary<string, HashSet<string>>();
+        protected IDictionary<string, HashSet<string>> map = new Dictionary<string, HashSet<string>>();
 
         /// <summary>
         /// List of project Guids.
         /// In direct order of definitions with considering of ProjectDependencies.
         /// </summary>
-        public List<string> GuidList
+        public IList<string> GuidList
         {
             get {
                 return order;
@@ -59,7 +59,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// Projects and their dependencies.
         /// </summary>
-        public Dictionary<string, HashSet<string>> Dependencies
+        public IDictionary<string, HashSet<string>> Dependencies
         {
             get {
                 return map;
@@ -69,7 +69,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <summary>
         /// List of projects by Guid.
         /// </summary>
-        public Dictionary<string, ProjectItem> Projects
+        public IDictionary<string, ProjectItem> Projects
         {
             get;
             protected set;

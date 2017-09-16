@@ -192,6 +192,34 @@ Global
 EndGlobal</value>
     <comment>modified for test</comment>
   </data>
+  <data name="Section_Project_Dep" xml:space="preserve">
+    <value>Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge", "Bridge\Bridge.csproj", "{73919171-44B6-4536-B892-F1FCA653887C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CIMLib", "CIMLib\CIMLib.csproj", "{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{73919171-44B6-4536-B892-F1FCA653887C} = {73919171-44B6-4536-B892-F1FCA653887C}
+		{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} = {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider", "Provider\Provider.csproj", "{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{73919171-44B6-4536-B892-F1FCA653887C} = {73919171-44B6-4536-B892-F1FCA653887C}
+	EndProjectSection
+EndProject</value>
+  </data>
+  <data name="Section_Sln_Config" xml:space="preserve">
+    <value>	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CI_Debug_net45|Any CPU = CI_Debug_net45|Any CPU
+		CI_Debug|Any CPU = CI_Debug|Any CPU
+		CI_Release_net45|Any CPU = CI_Release_net45|Any CPU
+		CI_Release|x86 = CI_Release|x86
+		Debug_net45|Any CPU = Debug_net45|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release_net45|Any CPU = Release_net45|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection</value>
+    <comment>keep leading tab-space character, via resx :(</comment>
+  </data>
   <data name="vsSolutionBuildEvent" xml:space="preserve">
     <value>Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 14
@@ -280,5 +308,17 @@ Global
 	EndGlobalSection
 EndGlobal</value>
     <comment>modified for test</comment>
+  </data>
+  <data name="Section_Prj_Config" xml:space="preserve">
+    <value>	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.ActiveCfg = Release_net45|Any CPU
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.Build.0 = Release_net45|Any CPU
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any CPU.ActiveCfg = CI_Release_net45|Any CPU
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any CPU.Build.0 = CI_Release_net45|Any CPU
+		{C00D04E8-8101-42F5-89DA-CBAD205CC1D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C00D04E8-8101-42F5-89DA-CBAD205CC1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection</value>
+    <comment>keep leading tab-space character, via resx :(</comment>
   </data>
 </root>

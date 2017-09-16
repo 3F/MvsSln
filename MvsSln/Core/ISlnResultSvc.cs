@@ -31,22 +31,22 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
-        List<IConfPlatform> SolutionConfigList { get; set; }
+        IList<IConfPlatform> SolutionConfigList { get; set; }
 
         /// <summary>
         /// Project configurations with platforms.
         /// </summary>
-        List<IConfPlatformPrj> ProjectConfigList { get; set; }
+        IList<IConfPlatformPrj> ProjectConfigList { get; set; }
 
         /// <summary>
         /// All found projects in solution.
         /// </summary>
-        List<ProjectItem> ProjectItemList { get; set; }
+        IList<ProjectItem> ProjectItemList { get; set; }
 
         /// <summary>
         /// Updates instance of the Solution Project Dependencies.
         /// </summary>
         /// <param name="dep"></param>
-        void SetProjectDependencies(ISlnProjectDependencies dep);
+        void SetProjectDependencies(ISlnPDManager dep);
     }
 }

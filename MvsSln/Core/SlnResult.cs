@@ -110,7 +110,7 @@ namespace net.r_eg.MvsSln.Core
         /// Solution Project Dependencies.
         /// See also `ProjectReferences` class if you need additional work with project references.
         /// </summary>
-        public ISlnProjectDependencies ProjectDependencies
+        public ISlnPDManager ProjectDependencies
         {
             get;
             set;
@@ -129,7 +129,7 @@ namespace net.r_eg.MvsSln.Core
         /// Contains map of all found (known/unknown) solution data.
         /// This value is never null.
         /// </summary>
-        public List<ISection> Map
+        public IList<ISection> Map
         {
             get;
             private set;
@@ -138,7 +138,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
-        public List<IConfPlatform> SolutionConfigList
+        public IList<IConfPlatform> SolutionConfigList
         {
             get;
             set;
@@ -147,7 +147,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Project configurations with platforms.
         /// </summary>
-        public List<IConfPlatformPrj> ProjectConfigList
+        public IList<IConfPlatformPrj> ProjectConfigList
         {
             get;
             set;
@@ -156,7 +156,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// All found projects in solution.
         /// </summary>
-        public List<ProjectItem> ProjectItemList
+        public IList<ProjectItem> ProjectItemList
         {
             get;
             set;
@@ -166,7 +166,7 @@ namespace net.r_eg.MvsSln.Core
         /// Updates instance of the Solution Project Dependencies.
         /// </summary>
         /// <param name="dep"></param>
-        public void SetProjectDependencies(ISlnProjectDependencies dep)
+        public void SetProjectDependencies(ISlnPDManager dep)
         {
             ProjectDependencies = dep;
         }

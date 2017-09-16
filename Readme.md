@@ -13,7 +13,7 @@ It was as a part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionB
 
 **Download:** [/releases](https://github.com/3F/MvsSln/releases) [ **[latest](https://github.com/3F/MvsSln/releases/latest)** ]
 
-`gnt /p:ngpackages="MvsSln"` [[?](https://github.com/3F/GetNuTool)]
+[`gnt`](https://3f.github.io/GetNuTool/releases/latest/gnt/)` /p:ngpackages="MvsSln"` [[?](https://github.com/3F/GetNuTool)]
 
 ## License
 
@@ -27,7 +27,7 @@ Copyright (c) 2013-2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
 
 Because today it still is the most easy way for complex work with Visual Studio .sln files and its projects (.vcxproj, .csproj., ...). Because it's free, because it's open.
 
-Even if you just need the basic access to information from the solution data, like: project Guids, paths, solution & projects configurations, calculating map of projects via build-order throught our ProjectDependencies helpers, etc.
+Even if you just need the basic access to information from the solution data, like: project Guids, paths, solution & projects configurations, calculating map of projects via build-order through our ProjectDependencies helpers, etc.
 
 You can also control easily all your projects: Reference, ProjectReference, Properties, Import sections, and others.
 
@@ -75,37 +75,61 @@ using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All & ~SlnIte
 } // release all loaded projects
 ```
 
-By the way, the any new solution handler can be easily added by our flexible architecture. Example of `LProject` handler:
+By the way, the any new solution handler can be easily added by our flexible architecture. Example of `LProject` handler (**reader**):
 
 ```csharp
 public class LProject: LAbstract, ISlnHandler
 {
-    public override void Positioned(StreamReader stream, string line, SlnResult rsln)
+    public override bool IsActivated(ISvc svc)
     {
-        if((rsln.ResultType & SlnItems.Projects) != SlnItems.Projects) {
-            return;
-        }
+        return ((svc.Sln.ResultType & SlnItems.Projects) == SlnItems.Projects);
+    }
 
-        if(!line.StartsWith("Project(", StringComparison.Ordinal)) {
-            return;
-        }
+    public override bool Condition(RawText line)
+    {
+        return line.trimmed.StartsWith("Project(", StringComparison.Ordinal);
+    }
 
-        if(rsln.ProjectItemList == null) {
-            rsln.ProjectItemList = new List<ProjectItem>();
-        }
-
-        var pItem = new ProjectItem(line, rsln.SolutionDir);
+    public override bool Positioned(ISvc svc, RawText line)
+    {
+        var pItem = GetProjectItem(line.trimmed, svc.Sln.SolutionDir);
         if(pItem.pGuid == null) {
-            LSender.Send(this, $"LProject: The Guid is null or empty for line :: '{line}'", Message.Level.Error);
-            return;
+            return false;
         }
 
-        if(String.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase)) {
-            LSender.Send(this, $"{pItem.name} has been ignored as solution-folder :: '{line}'", Message.Level.Debug);
-            return;
+        if(svc.Sln.ProjectItemList == null) {
+            svc.Sln.ProjectItemList = new List<ProjectItem>();
         }
 
-        rsln.ProjectItemList.Add(pItem);
+        svc.Sln.ProjectItemList.Add(pItem);
+        return true;
+    }
+}
+```
+
+Example of `WSolutionConfigurationPlatforms` handler (**writer**):
+
+```csharp
+public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
+{
+    protected IEnumerable<IConfPlatform> configs;
+
+    public override string Extract(object data)
+    {
+        var sb = new StringBuilder();
+
+        sb.AppendLine($"{SP}GlobalSection(SolutionConfigurationPlatforms) = preSolution");
+
+        configs.ForEach(cfg => sb.AppendLine($"{SP}{SP}{cfg} = {cfg}"));
+
+        sb.Append($"{SP}EndGlobalSection");
+
+        return sb.ToString();
+    }
+
+    public WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
+    {
+        this.configs = configs ?? throw new ArgumentNullException();
     }
 }
 ```
@@ -118,6 +142,56 @@ The final draft-version of the new configurator for DllExport now fully works vi
 
 * https://github.com/3F/DllExport
     * https://github.com/3F/DllExport/issues/38
+
+
+### Map of .sln & Writers
+
+v2+ also may provides map of analyzed data. To enable this define a bit **0x0080** for type of operations to parser.
+
+Parser will expose map through list of `ISection` for each line. For example:
+
+```
+...
+"[] #4:'VisualStudioVersion = 14.0.25420.1'"
+"[] #5:'MinimumVisualStudioVersion = 10.0.30319.1'"
+"[LProject] #6:'Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"CIMLib\", \"CIMLib\\CIMLib.csproj\", \"...
+"[LProjectDependencies] #7:'EndProject'"
+"[LProject] #8:'Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"vsSolutionBuildEvent\", ....
+"[LProjectDependencies] #9:'\tProjectSection(ProjectDependencies) = postProject'"
+"[LProjectDependencies] #10:'\t\t{73919171-44B6-4536-B892-F1FCA653887C} = {73919171-44B6-4536-B892-F1FCA653887C}'"
+"[LProjectDependencies] #11:'\t\t{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4} = {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}'"
+"[LProjectDependencies] #12:'\tEndProjectSection'"
+...
+"[LSolutionConfigurationPlatforms] #62:'\tGlobalSection(SolutionConfigurationPlatforms) = preSolution'"
+"[LSolutionConfigurationPlatforms] #63:'\t\tCI_Debug_net45|Any CPU = CI_Debug_net45|Any CPU'"
+"[LSolutionConfigurationPlatforms] #64:'\t\tCI_Debug|Any CPU = CI_Debug|Any CPU'"
+.....
+"[LSolutionConfigurationPlatforms] #70:'\t\tRelease|Any CPU = Release|Any CPU'"
+"[LSolutionConfigurationPlatforms] #71:'\tEndGlobalSection'"
+"[LProjectConfigurationPlatforms] #72:'\tGlobalSection(ProjectConfigurationPlatforms) = postSolution'"
+"[LProjectConfigurationPlatforms] #73:'\t\t{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.Activ...
+...
+```
+* Each section contains handler which processes this line + simple access via RawText if not. 
+* All this may be overloaded by any custom handlers (readers - `ISlnHandler`) if it's required by your environment.
+
+This map may be used for modification / define new .sln data through writers (`IObjHandler`). For example:
+
+```csharp
+var data = new List<IConfPlatform>() {
+    new ConfigSln("Debug", "Any CPU"),
+    new ConfigSln("Release_net45", "x64"),
+    new ConfigSln("Release", "Any CPU"),
+};
+
+var whandlers = new Dictionary<Type, HandlerValue>() {
+    [typeof(LSolutionConfigurationPlatforms)] = new HandlerValue(new WSolutionConfigurationPlatforms(data)),
+};
+
+using(var w = new SlnWriter("<path_to>.sln", whandlers)) {
+    w.Write(map);
+}
+```
 
 ## Did you know ?
 
@@ -195,7 +269,7 @@ You can also specify it via `System.Reflection.Assembly` etc.
 
 Available variants:
 
-* [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="MvsSln"` or **[gnt](https://github.com/3F/GetNuTool/releases/download/v1.6/gnt.bat)** /p:ngpackages="MvsSln"
+* [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="MvsSln"` or **[gnt](https://3f.github.io/GetNuTool/releases/latest/gnt/)** /p:ngpackages="MvsSln"
 * NuGet PM: `Install-Package MvsSln`
 * NuGet Commandline: `nuget install MvsSln`
 * [GitHub Releases](https://github.com/3F/MvsSln/releases) ( [latest](https://github.com/3F/MvsSln/releases/latest) )

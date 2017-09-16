@@ -22,26 +22,39 @@
  * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
-
 namespace net.r_eg.MvsSln.Core
 {
-    public interface ISlnProjectDependencies
+    public interface ISlnPDManager: ISlnProjectDependencies
     {
         /// <summary>
-        /// List of project Guids.
-        /// In direct order of definitions with considering of ProjectDependencies.
+        /// Get first project from defined list.
         /// </summary>
-        IList<string> GuidList { get; }
+        ProjectItem FirstProject { get; }
 
         /// <summary>
-        /// List of projects by Guid.
+        /// Get last project from defined list.
         /// </summary>
-        IDictionary<string, ProjectItem> Projects { get; }
+        ProjectItem LastProject { get; }
 
         /// <summary>
-        /// Projects and their dependencies.
+        /// Get first project in Project Build Order.
         /// </summary>
-        IDictionary<string, HashSet<string>> Dependencies { get; }
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ProjectItem FirstBy(BuildType type);
+
+        /// <summary>
+        /// Get last project in Project Build Order.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ProjectItem LastBy(BuildType type);
+
+        /// <summary>
+        /// Get project by Guid string.
+        /// </summary>
+        /// <param name="guid">Identifier of project.</param>
+        /// <returns></returns>
+        ProjectItem GetProjectBy(string guid);
     }
 }

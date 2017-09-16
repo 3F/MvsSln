@@ -31,9 +31,9 @@ using net.r_eg.MvsSln.Projects;
 namespace net.r_eg.MvsSln.Core
 {
     /// <summary>
-    /// Use it for additional work with project references and it's dependencies in ISlnProjectDependencies manner.
+    /// Use it for additional work with project references and it's dependencies in ISlnPDManager manner.
     /// </summary>
-    public class ProjectReferences: LProjectDependencies
+    public class ProjectReferences: LProjectDependencies, ISlnPDManager
     {
         /// <summary>
         /// List of ProjectReferences by project Guid.
@@ -47,7 +47,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Parent data of the solution ProjectDependencies that initialized this object.
         /// </summary>
-        public ISlnProjectDependencies Parent
+        public ISlnPDManager Parent
         {
             get;
             protected set;
@@ -77,7 +77,7 @@ namespace net.r_eg.MvsSln.Core
 
         /// <param name="slndep">Parent data.</param>
         /// <param name="xprojects">List of evaluated projects to consider of dependencies.</param>
-        public ProjectReferences(ISlnProjectDependencies slndep, IEnumerable<IXProject> xprojects)
+        public ProjectReferences(ISlnPDManager slndep, IEnumerable<IXProject> xprojects)
         {
             Parent      = slndep;
             XProjects   = xprojects;

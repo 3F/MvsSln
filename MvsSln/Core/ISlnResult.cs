@@ -76,7 +76,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Solution Project Dependencies.
         /// </summary>
-        ISlnProjectDependencies ProjectDependencies { get; }
+        ISlnPDManager ProjectDependencies { get; }
 
         /// <summary>
         /// Environment for current data.
@@ -87,6 +87,6 @@ namespace net.r_eg.MvsSln.Core
         /// Contains map of all found (known/unknown) solution data.
         /// This value is never null.
         /// </summary>
-        List<ISection> Map { get; }
+        IList<ISection> Map { get; }
     }
 }

@@ -52,20 +52,18 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
             foreach(var prj in projectItems)
             {
-                var line = $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\"";
-#if DEBUG
-                if(!RPatterns.ProjectLine.IsMatch(line)) {
-                    throw new FormatException();
-                }
-#endif
-                sb.AppendLine(line);
+                sb.AppendLine(
+                    $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
+                );
 
                 if(projectDependencies.Dependencies.ContainsKey(prj.pGuid) 
                     && projectDependencies.Dependencies[prj.pGuid].Count > 0)
                 {
                     sb.AppendLine($"{SP}ProjectSection(ProjectDependencies) = postProject");
-                    projectDependencies.Dependencies[prj.pGuid]
-                                       .ForEach(dep => sb.AppendLine($"{SP}{SP}{dep} = {dep}"));
+
+                        projectDependencies.Dependencies[prj.pGuid]
+                                           .ForEach(dep => sb.AppendLine($"{SP}{SP}{dep} = {dep}"));
+
                     sb.AppendLine($"{SP}EndProjectSection");
                 }
 

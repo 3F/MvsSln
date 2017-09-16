@@ -6,7 +6,7 @@ using net.r_eg.MvsSln.Core.SlnHandlers;
 namespace net.r_eg.MvsSlnTest.Core.SlnHandlers
 {
     [TestClass]
-    public class ProjectsMapTest
+    public class LProjectDependenciesTest
     {
         private const string EXIST_GUID     = "{11111111-1111-1111-1111-111111111111}";
         private const string EXIST_GUID2    = "{44444444-4444-4444-4444-444444444444}";

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
+    <Compile Include="Core\ISlnProjectDependencies.cs" />
     <Compile Include="Core\ISlnResultSvc.cs" />
     <Compile Include="Core\ObjHandlers\HandlerValue.cs" />
     <Compile Include="Core\ObjHandlers\WAbstract.cs" />
@@ -90,7 +91,7 @@
     <Compile Include="Core\XProject.cs" />
     <Compile Include="Core\RoProperties.cs" />
     <Compile Include="Core\IsolatedEnv.cs" />
-    <Compile Include="Core\ISlnProjectDependencies.cs" />
+    <Compile Include="Core\ISlnPDManager.cs" />
     <Compile Include="Core\ISlnContainer.cs" />
     <Compile Include="Core\Guids.cs" />
     <Compile Include="Core\RPatterns.cs" />

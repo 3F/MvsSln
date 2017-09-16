@@ -38,12 +38,19 @@ namespace net.r_eg.MvsSln.Core
     {
         protected StreamWriter stream;
 
+        /// <summary>
+        /// Available writers to process sections.
+        /// </summary>
         public IDictionary<Type, HandlerValue> Handlers
         {
             get;
             protected set;
         }
 
+        /// <summary>
+        /// To write all not ignored sections with rules from handlers.
+        /// </summary>
+        /// <param name="sections"></param>
         public void Write(IEnumerable<ISection> sections)
         {
             sections = sections.Select(s => s.Clone()).ToArray();
@@ -52,6 +59,10 @@ namespace net.r_eg.MvsSln.Core
             WritableSections(sections).ForEach(s => Write(s));
         }
 
+        /// <summary>
+        /// To write a single section with rules from handlers.
+        /// </summary>
+        /// <param name="section"></param>
         public void Write(ISection section)
         {
             if(section == null) {
@@ -70,22 +81,35 @@ namespace net.r_eg.MvsSln.Core
             var tid = section.Handler.GetType();
             Write
             (
-                Handlers.ContainsKey(tid) ?
+                (Handlers.ContainsKey(tid) && Handlers[tid].handler != null) ?
                     Handlers[tid].handler.Extract(Handlers[tid].value)
                     : section.Raw.data
             );
         }
 
+        /// <param name="sln">Destination file.</param>
+        /// <param name="handlers">Should contain writers by specific types of readers.</param>
         public SlnWriter(string sln, IDictionary<Type, HandlerValue> handlers)
             : this(sln, handlers, Encoding.UTF8)
         {
 
         }
 
+        /// <param name="sln">Destination file.</param>
+        /// <param name="handlers">Should contain writers by specific types of readers.</param>
+        /// <param name="enc">Use specific encoding.</param>
         public SlnWriter(string sln, IDictionary<Type, HandlerValue> handlers, Encoding enc)
+            : this(new StreamWriter(sln, false, enc), handlers)
         {
+
+        }
+
+        /// <param name="writer"></param>
+        /// <param name="handlers">Should contain writers by specific types of readers.</param>
+        public SlnWriter(StreamWriter writer, IDictionary<Type, HandlerValue> handlers)
+        {
+            stream      = writer ?? throw new ArgumentNullException();
             Handlers    = handlers ?? throw new ArgumentNullException();
-            stream      = new StreamWriter(sln, false, enc);
         }
 
         protected void Validate(IEnumerable<ISection> sections)
@@ -165,7 +189,10 @@ namespace net.r_eg.MvsSln.Core
 
         private void Free()
         {
-            stream?.Dispose();
+            //stream?.Dispose(); //CA2213
+            if(stream != null) {
+                stream.Dispose();
+            }
         }
 
         #region IDisposable
@@ -179,7 +206,7 @@ namespace net.r_eg.MvsSln.Core
             Dispose(true);
         }
 
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if(disposed) {
                 return;

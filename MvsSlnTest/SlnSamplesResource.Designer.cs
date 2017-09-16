@@ -19,7 +19,7 @@ namespace net.r_eg.MvsSlnTest {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class SlnSamplesResource {
@@ -79,6 +79,54 @@ namespace net.r_eg.MvsSlnTest {
         internal static string regXwild {
             get {
                 return ResourceManager.GetString("regXwild", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.ActiveCfg = Release_net45|Any CPU
+        ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.Build.0 = Release_net45|Any CPU
+        ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug|Any CPU.ActiveCfg = Release|Any CPU
+        ///		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any CPU.ActiveCfg = CI_Release_net45|Any CPU
+        ///		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any CP [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Section_Prj_Config {
+            get {
+                return ResourceManager.GetString("Section_Prj_Config", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;Bridge&quot;, &quot;Bridge\Bridge.csproj&quot;, &quot;{73919171-44B6-4536-B892-F1FCA653887C}&quot;
+        ///EndProject
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;CIMLib&quot;, &quot;CIMLib\CIMLib.csproj&quot;, &quot;{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}&quot;
+        ///	ProjectSection(ProjectDependencies) = postProject
+        ///		{73919171-44B6-4536-B892-F1FCA653887C} = {73919171-44B6-4536-B892-F1FCA653887C}
+        ///		{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} = {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}
+        ///	EndProjectSection
+        ///EndPro [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Section_Project_Dep {
+            get {
+                return ResourceManager.GetString("Section_Project_Dep", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        ///		CI_Debug_net45|Any CPU = CI_Debug_net45|Any CPU
+        ///		CI_Debug|Any CPU = CI_Debug|Any CPU
+        ///		CI_Release_net45|Any CPU = CI_Release_net45|Any CPU
+        ///		CI_Release|x86 = CI_Release|x86
+        ///		Debug_net45|Any CPU = Debug_net45|Any CPU
+        ///		Debug|Any CPU = Debug|Any CPU
+        ///		Release_net45|Any CPU = Release_net45|Any CPU
+        ///		Release|x64 = Release|x64
+        ///	EndGlobalSection.
+        /// </summary>
+        internal static string Section_Sln_Config {
+            get {
+                return ResourceManager.GetString("Section_Sln_Config", resourceCulture);
             }
         }
         
