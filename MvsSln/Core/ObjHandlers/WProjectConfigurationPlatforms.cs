@@ -25,21 +25,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
-    public class WProject: WAbstract, IObjHandler
+    public class WProjectConfigurationPlatforms: WAbstract, IObjHandler
     {
         /// <summary>
-        /// All found projects in solution.
+        /// Project configurations with platforms.
         /// </summary>
-        protected IEnumerable<ProjectItem> projectItems;
-
-        /// <summary>
-        /// Solution Project Dependencies.
-        /// </summary>
-        protected ISlnProjectDependencies projectDependencies;
+        public IEnumerable<IConfPlatformPrj> configs;
 
         /// <summary>
         /// To extract prepared raw-data.
@@ -50,40 +44,25 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         {
             var sb = new StringBuilder();
 
-            foreach(var prj in projectItems)
+            sb.AppendLine($"{SP}GlobalSection(ProjectConfigurationPlatforms) = postSolution");
+
+            foreach(var cfg in configs)
             {
-                var line = $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\"";
-#if DEBUG
-                if(!RPatterns.ProjectLine.IsMatch(line)) {
-                    throw new FormatException();
+                sb.AppendLine($"{SP}{SP}{cfg.PGuid}.{cfg.Sln}.ActiveCfg = {cfg}");
+                if(cfg.IncludeInBuild) {
+                    sb.AppendLine($"{SP}{SP}{cfg.PGuid}.{cfg.Sln}.Build.0 = {cfg}");
                 }
-#endif
-                sb.AppendLine(line);
-
-                if(projectDependencies.Dependencies.ContainsKey(prj.pGuid) 
-                    && projectDependencies.Dependencies[prj.pGuid].Count > 0)
-                {
-                    sb.AppendLine($"{SP}ProjectSection(ProjectDependencies) = postProject");
-                    projectDependencies.Dependencies[prj.pGuid]
-                                       .ForEach(dep => sb.AppendLine($"{SP}{SP}{dep} = {dep}"));
-                    sb.AppendLine($"{SP}EndProjectSection");
-                }
-
-                sb.AppendLine("EndProject");
             }
 
-            if(sb.Length > 1) {
-                return sb.ToString(0, sb.Length - 2);
-            }
-            return String.Empty;
+            sb.Append($"{SP}EndGlobalSection");
+
+            return sb.ToString();
         }
 
-        /// <param name="pItems">List of projects in solution.</param>
-        /// <param name="deps">Solution Project Dependencies.</param>
-        public WProject(IEnumerable<ProjectItem> pItems, ISlnProjectDependencies deps)
+        /// <param name="configs">Project configurations with platforms.</param>
+        public WProjectConfigurationPlatforms(IEnumerable<IConfPlatformPrj> configs)
         {
-            projectItems        = pItems ?? throw new ArgumentNullException();
-            projectDependencies = deps ?? throw new ArgumentNullException();
+            this.configs = configs ?? throw new ArgumentNullException();
         }
     }
 }

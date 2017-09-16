@@ -127,11 +127,13 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// Contains map of all found (known/unknown) solution data.
+        /// This value is never null.
         /// </summary>
-        public IEnumerable<ISection> Map
+        public List<ISection> Map
         {
-            get => MapList;
-        }
+            get;
+            private set;
+        } = new List<ISection>();
 
         /// <summary>
         /// Solution configurations with platforms.
@@ -155,15 +157,6 @@ namespace net.r_eg.MvsSln.Core
         /// All found projects in solution.
         /// </summary>
         public List<ProjectItem> ProjectItemList
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Contains map of all found (known/unknown) solution data.
-        /// </summary>
-        public List<ISection> MapList
         {
             get;
             set;

@@ -66,8 +66,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             while((_line = svc.ReadLine(this)) != null && _line.Trim() != "EndGlobalSection")
             {
                 string left = _line.Split('=')[0].Trim(); // Debug|Win32 = Debug|Win32
-                if(string.Compare(left, "DESCRIPTION", StringComparison.OrdinalIgnoreCase) == 0) {
-                    LSender.Send(this, $"SolutionParser: Solution Configuration has been ignored for line '{_line}'", Message.Level.Debug);
+                if(String.Compare(left, "DESCRIPTION", StringComparison.OrdinalIgnoreCase) == 0) {
+                    LSender.Send(this, $"Solution Configuration has been ignored for line '{_line}'", Message.Level.Debug);
                     continue;
                 }
 

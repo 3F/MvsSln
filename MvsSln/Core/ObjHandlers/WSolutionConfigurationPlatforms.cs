@@ -29,17 +29,12 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
-    public class WProject: WAbstract, IObjHandler
+    public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
     {
         /// <summary>
-        /// All found projects in solution.
+        /// Solution configurations with platforms.
         /// </summary>
-        protected IEnumerable<ProjectItem> projectItems;
-
-        /// <summary>
-        /// Solution Project Dependencies.
-        /// </summary>
-        protected ISlnProjectDependencies projectDependencies;
+        protected IEnumerable<IConfPlatform> configs;
 
         /// <summary>
         /// To extract prepared raw-data.
@@ -50,40 +45,19 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         {
             var sb = new StringBuilder();
 
-            foreach(var prj in projectItems)
-            {
-                var line = $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\"";
-#if DEBUG
-                if(!RPatterns.ProjectLine.IsMatch(line)) {
-                    throw new FormatException();
-                }
-#endif
-                sb.AppendLine(line);
+            sb.AppendLine($"{SP}GlobalSection(SolutionConfigurationPlatforms) = preSolution");
 
-                if(projectDependencies.Dependencies.ContainsKey(prj.pGuid) 
-                    && projectDependencies.Dependencies[prj.pGuid].Count > 0)
-                {
-                    sb.AppendLine($"{SP}ProjectSection(ProjectDependencies) = postProject");
-                    projectDependencies.Dependencies[prj.pGuid]
-                                       .ForEach(dep => sb.AppendLine($"{SP}{SP}{dep} = {dep}"));
-                    sb.AppendLine($"{SP}EndProjectSection");
-                }
+            configs.ForEach(cfg => sb.AppendLine($"{SP}{SP}{cfg} = {cfg}"));
 
-                sb.AppendLine("EndProject");
-            }
+            sb.Append($"{SP}EndGlobalSection");
 
-            if(sb.Length > 1) {
-                return sb.ToString(0, sb.Length - 2);
-            }
-            return String.Empty;
+            return sb.ToString();
         }
 
-        /// <param name="pItems">List of projects in solution.</param>
-        /// <param name="deps">Solution Project Dependencies.</param>
-        public WProject(IEnumerable<ProjectItem> pItems, ISlnProjectDependencies deps)
+        /// <param name="configs">Solution configurations with platforms.</param>
+        public WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
         {
-            projectItems        = pItems ?? throw new ArgumentNullException();
-            projectDependencies = deps ?? throw new ArgumentNullException();
+            this.configs = configs ?? throw new ArgumentNullException();
         }
     }
 }

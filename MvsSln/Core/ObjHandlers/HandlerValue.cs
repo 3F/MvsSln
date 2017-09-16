@@ -80,6 +80,12 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
             return h;
         }
 
+        public HandlerValue(IObjHandler handler)
+            : this(handler, null)
+        {
+
+        }
+
         public HandlerValue(IObjHandler handler, object value)
         {
             this.handler    = handler;

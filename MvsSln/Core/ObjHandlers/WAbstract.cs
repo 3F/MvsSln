@@ -29,6 +29,11 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
     public abstract class WAbstract: IObjHandler
     {
         /// <summary>
+        /// Default indent.
+        /// </summary>
+        public const string SP = "\t";
+
+        /// <summary>
         /// To extract prepared raw-data.
         /// </summary>
         /// <param name="data">Any object data which is ready for this IObjHandler.</param>

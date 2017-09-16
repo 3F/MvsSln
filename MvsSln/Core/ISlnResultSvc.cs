@@ -44,11 +44,6 @@ namespace net.r_eg.MvsSln.Core
         List<ProjectItem> ProjectItemList { get; set; }
 
         /// <summary>
-        /// Contains map of all found (known/unknown) solution data.
-        /// </summary>
-        List<ISection> MapList { get; set; }
-
-        /// <summary>
         /// Updates instance of the Solution Project Dependencies.
         /// </summary>
         /// <param name="dep"></param>

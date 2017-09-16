@@ -109,12 +109,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return null;
             }
 
-            if(Sln.MapList == null) {
-                Sln.MapList = new List<ISection>();
-            }
-
             ISection section = new Section(handler, line, nline);
-            Sln.MapList.Add(section);
+            Sln.Map.Add(section);
             return section;
         }
     }

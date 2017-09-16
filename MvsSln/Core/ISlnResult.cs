@@ -85,7 +85,8 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// Contains map of all found (known/unknown) solution data.
+        /// This value is never null.
         /// </summary>
-        IEnumerable<ISection> Map { get; }
+        List<ISection> Map { get; }
     }
 }

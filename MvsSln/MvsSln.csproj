@@ -52,6 +52,8 @@
     <Compile Include="Core\ISlnResultSvc.cs" />
     <Compile Include="Core\ObjHandlers\HandlerValue.cs" />
     <Compile Include="Core\ObjHandlers\WAbstract.cs" />
+    <Compile Include="Core\ObjHandlers\WSolutionConfigurationPlatforms.cs" />
+    <Compile Include="Core\ObjHandlers\WProjectConfigurationPlatforms.cs" />
     <Compile Include="Core\ObjHandlers\WProject.cs" />
     <Compile Include="Core\ObjHandlers\IObjHandler.cs" />
     <Compile Include="Core\Section.cs" />
