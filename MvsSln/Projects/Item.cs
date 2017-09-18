@@ -31,7 +31,7 @@ using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.MvsSln.Projects
 {
-    [DebuggerDisplay("{type} = {evaluatedInclude} [{unevaluatedInclude}]")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public struct Item
     {
         /// <summary>
@@ -162,5 +162,14 @@ namespace net.r_eg.MvsSln.Projects
                             )
                             ).ToDictionary(m => m.Key, m => m.Value);
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{type} = {evaluatedInclude} [{unevaluatedInclude}]";
+        }
+
+        #endregion
     }
 }

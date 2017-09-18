@@ -29,7 +29,7 @@ namespace net.r_eg.MvsSln.Core
     /// <summary>
     /// Aggregates links to ProjectItem and its configurations.
     /// </summary>
-    [DebuggerDisplay("{project.name} ({projectConfig}) [{project.pGuid}]")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public struct ProjectItemCfg
     {
         public ProjectItem project;
@@ -44,5 +44,14 @@ namespace net.r_eg.MvsSln.Core
             solutionConfig  = sln;
             projectConfig   = prj;
         }
+        
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{project.name} ({projectConfig}) [{project.pGuid}]";
+        }
+
+        #endregion
     }
 }

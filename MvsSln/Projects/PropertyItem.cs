@@ -29,7 +29,7 @@ using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.MvsSln.Projects
 {
-    [DebuggerDisplay("{name} = {evaluatedValue} [{unevaluatedValue}]")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public struct PropertyItem
     {
         /// <summary>
@@ -121,5 +121,14 @@ namespace net.r_eg.MvsSln.Projects
             //      But, this is not true ! >(  .NETFramework\v4.0\Microsoft.Build.dll - Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a
             evaluatedValue = eProperty.EvaluatedValue ?? String.Empty;
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{name} = {evaluatedValue} [{unevaluatedValue}]";
+        }
+
+        #endregion
     }
 }

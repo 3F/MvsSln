@@ -27,7 +27,7 @@ using System.Text;
 
 namespace net.r_eg.MvsSln.Core
 {
-    [DebuggerDisplay("{data}")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public struct RawText
     {
         public Encoding encoding;
@@ -69,5 +69,14 @@ namespace net.r_eg.MvsSln.Core
             encoding    = enc;
             trimmed     = data?.Trim();
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => data;
+        }
+
+        #endregion
     }
 }

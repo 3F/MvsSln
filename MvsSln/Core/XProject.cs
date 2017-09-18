@@ -35,7 +35,7 @@ using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.MvsSln.Core
 {
-    [DebuggerDisplay("{ProjectName}: [{ProjectItem.projectConfig}] {ProjectGuid}")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public class XProject: IXProject
     {
         /// <summary>
@@ -697,5 +697,14 @@ namespace net.r_eg.MvsSln.Core
         {
             return RootPath.MakeRelativePath(path);
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{ProjectName}: [{ProjectItem.projectConfig}] {ProjectGuid}";
+        }
+
+        #endregion
     }
 }

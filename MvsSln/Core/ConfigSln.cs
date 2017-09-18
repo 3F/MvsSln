@@ -29,7 +29,7 @@ namespace net.r_eg.MvsSln.Core
     /// <summary>
     /// Solution Configuration
     /// </summary>
-    [DebuggerDisplay("{Format()}")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public class ConfigSln: ConfigItem, IConfPlatform
     {
         public ConfigSln(string configuration, string platform)
@@ -43,5 +43,14 @@ namespace net.r_eg.MvsSln.Core
         {
 
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => Format();
+        }
+
+        #endregion
     }
 }

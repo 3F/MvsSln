@@ -29,7 +29,7 @@ namespace net.r_eg.MvsSln.Core
     /// <summary>
     /// Project Configuration
     /// </summary>
-    [DebuggerDisplay("{Format()} -> {Sln} : [{PGuid}]")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public class ConfigPrj: ConfigItem, IConfPlatform, IConfPlatformPrj
     {
         /// <summary>
@@ -78,5 +78,14 @@ namespace net.r_eg.MvsSln.Core
             IncludeInBuild  = build;
             Sln             = sln;
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{Format()} -> {Sln} : [{PGuid}]";
+        }
+
+        #endregion
     }
 }

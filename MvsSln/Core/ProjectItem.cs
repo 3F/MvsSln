@@ -33,7 +33,7 @@ namespace net.r_eg.MvsSln.Core
     /// <summary>
     /// Properties of project in solution file
     /// </summary>
-    [DebuggerDisplay("{name} [{pGuid}] = {path}")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public struct ProjectItem
     {
         /// <summary>
@@ -136,5 +136,14 @@ namespace net.r_eg.MvsSln.Core
 
             LSender.Send(this, $"ProjectItem ->['{pGuid}'; '{name}'; '{path}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{name} [{pGuid}] = {path}";
+        }
+
+        #endregion
     }
 }

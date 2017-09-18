@@ -29,7 +29,7 @@ using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.MvsSln.Projects
 {
-    [DebuggerDisplay("{project} - {label} [{condition}]")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public struct ImportElement
     {
         /// <summary>
@@ -67,5 +67,14 @@ namespace net.r_eg.MvsSln.Projects
             condition       = element.Condition;
             label           = element.Label;
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{project} - {label} [{condition}]";
+        }
+
+        #endregion
     }
 }

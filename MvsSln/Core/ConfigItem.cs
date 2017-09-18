@@ -30,7 +30,7 @@ namespace net.r_eg.MvsSln.Core
     /// <summary>
     /// Basic item of configuration and platform.
     /// </summary>
-    [DebuggerDisplay("{Format()}")]
+    [DebuggerDisplay("{DbgDisplay}")]
     public class ConfigItem: IConfPlatform
     {
         /// <summary>
@@ -161,5 +161,14 @@ namespace net.r_eg.MvsSln.Core
             }
             return name.ToLowerInvariant();
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => Format();
+        }
+
+        #endregion
     }
 }

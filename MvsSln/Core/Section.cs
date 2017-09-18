@@ -95,16 +95,20 @@ namespace net.r_eg.MvsSln.Core
             };
         }
 
-        private string DbgDisplay
-        {
-            get => $"{(Ignore ? "x: " : "")}[{Handler?.GetType().Name}] #{Line}:'{Raw}'";
-        }
-
         public Section(object h, RawText raw, long line = -1)
         {
             Handler = h;
             Raw     = raw;
             Line    = line;
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{(Ignore ? "x: " : "")}[{Handler?.GetType().Name}] #{Line}:'{Raw}'";
+        }
+
+        #endregion
     }
 }
