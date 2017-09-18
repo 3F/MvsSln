@@ -106,7 +106,7 @@ namespace net.r_eg.MvsSln.Core
                 ResultType  = type,
             };
 
-            Process(new Svc() { Stream = reader, Sln = data });
+            Process(new Svc(reader, data));
 
             if(data.SolutionConfigs != null)
             {
@@ -143,6 +143,8 @@ namespace net.r_eg.MvsSln.Core
             SlnHandlers.Register(new LProjectDependencies());
             SlnHandlers.Register(new LProjectConfigurationPlatforms());
             SlnHandlers.Register(new LSolutionConfigurationPlatforms());
+
+            // TODO: validate CoHandlers ref
         }
 
         protected void Process(ISvc svc)
@@ -153,7 +155,7 @@ namespace net.r_eg.MvsSln.Core
             {
                 string line;
                 while((line = svc.ReadLine()) != null) {
-                    DoPositioned(svc, new RawText(line, svc.Stream.CurrentEncoding));
+                    DoPositioned(svc, new RawText(line, svc.CurrentEncoding));
                 }
             }
             DoPostProcessing(svc);
@@ -172,9 +174,9 @@ namespace net.r_eg.MvsSln.Core
                     continue;
                 }
 
-                TrackedPosition(h, svc, line);
-
-                if(h.CoHandlers == null || !_coh.has[h.Id]) {
+                if(TrackedPosition(h, svc, line)
+                    && (h.CoHandlers == null || !_coh.Contains(h.Id)))
+                {
                     return;
                 }
             }
@@ -291,22 +293,23 @@ namespace net.r_eg.MvsSln.Core
             return Path.GetDirectoryName(file).DirectoryPathFormat();
         }
 
-        private void TrackedPosition(ISlnHandler h, ISvc svc, RawText line)
+        private bool TrackedPosition(ISlnHandler h, ISvc svc, RawText line)
         {
-            bool isAct      = h.IsActivated(svc);
-            ISection part   = null;
+            bool isAct = h.IsActivated(svc);
 
-            if(h.LineControl != LineAct.None && !_coh.set.Contains(h.GetType())) {
-                part = svc.Track(line, h.LineControl != LineAct.Process ? null : (isAct ? h : null));
+            TransactTracking<ISection, IList<ISection>> tt = null;
+            if(h.LineControl == LineAct.Process) {
+                tt = svc.TransactTrack(line, isAct ? h : null);
             }
 
             if(!isAct) {
-                return;
+                return false;
             }
 
-            if(!h.Positioned(svc, line) && part != null) {
-                part.UpdateHandler(null);
-            }
+            bool res = h.Positioned(svc, line);
+            tt?.Action(res ? TransactAction.Commit : TransactAction.Rollback);
+
+            return res;
         }
     }
 }

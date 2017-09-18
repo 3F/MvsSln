@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
@@ -55,7 +56,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// Completeness of implementation.
         /// Aggregates additional handlers that will process same line.
         /// </summary>
-        public virtual Type[] CoHandlers
+        public virtual ICollection<Type> CoHandlers
         {
             get;
             protected set;

@@ -33,11 +33,11 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// Completeness of implementation.
         /// Aggregates additional handlers that will process same line.
         /// </summary>
-        public override Type[] CoHandlers
+        public override ICollection<Type> CoHandlers
         {
             get;
             protected set;
-        } = new Type[] { typeof(LProjectDependencies) };
+        } = new List<Type> { typeof(LProjectDependencies) };
 
         /// <summary>
         /// Checks the readiness to process data.

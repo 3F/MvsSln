@@ -115,14 +115,14 @@ namespace net.r_eg.MvsSln.Core
         protected void Validate(IEnumerable<ISection> sections)
         {
             var coh = GetSlnHandlers(sections)
-                        .Where(s => s.CoHandlers != null && s.CoHandlers.Length > 0)
+                        .Where(s => s.CoHandlers != null && s.CoHandlers.Count > 0)
                         .ToDictionary(key => key.GetType(), value => value.CoHandlers);
 
             foreach(var h in Handlers)
             {
                 if(coh.ContainsKey(h.Key))
                 {
-                    if(coh[h.Key].Except(Handlers.Keys).Count() != coh[h.Key].Length) {
+                    if(coh[h.Key].Except(Handlers.Keys).Count() != coh[h.Key].Count) {
                         throw new CoHandlerRuleException(
                             $"Only parent handler is allowed '{h.Key}' <- {String.Join(", ", coh[h.Key].Select(c => c.Name))}"
                         );

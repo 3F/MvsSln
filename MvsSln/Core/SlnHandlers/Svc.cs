@@ -25,22 +25,28 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
+    using TransactSection = TransactTracking<ISection, IList<ISection>>;
+
     public sealed class Svc: ISvc
     {
+        private StreamReader stream;
+
+        private TransactTracking<ISection, IList<ISection>> tracking;
+
         private long nline = 0;
 
         private object sync = new object();
 
         /// <summary>
-        /// Used stream.
+        /// Used encoding for all data.
         /// </summary>
-        public StreamReader Stream
+        public Encoding CurrentEncoding
         {
-            get;
-            set;
+            get => stream?.CurrentEncoding;
         }
 
         /// <summary>
@@ -70,7 +76,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             lock(sync)
             {
                 ++nline;
-                return Stream?.ReadLine();
+                return stream?.ReadLine();
             }
         }
 
@@ -91,15 +97,15 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// </summary>
         public void ResetStream()
         {
-            if(Stream != null) {
-                nline = Stream.BaseStream.Seek(0, SeekOrigin.Begin);
+            if(stream != null) {
+                nline = stream.BaseStream.Seek(0, SeekOrigin.Begin);
                 return;
             }
             nline = 0;
         }
 
         /// <summary>
-        /// Tracking for line.
+        /// Non-Transact tracking for line.
         /// </summary>
         /// <param name="line"></param>
         /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
@@ -109,9 +115,61 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return null;
             }
 
-            ISection section = new Section(handler, line, nline);
-            Sln.Map.Add(section);
-            return section;
+            lock(sync)
+            {
+                tracking?.Commit(); // to commit all delayed sections
+
+                ISection section = new Section(handler, line, nline);
+                Sln.Map.Add(section);
+                return section;
+            }
+        }
+
+        /// <summary>
+        /// Transact tracking for line.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
+        /// <returns></returns>
+        public TransactSection TransactTrack(RawText line, object handler = null)
+        {
+            return TransactTrack(out ISection ss, line, handler);
+        }
+
+        /// <summary>
+        /// Transact tracking for line.
+        /// </summary>
+        /// <param name="section">Provides requested section.</param>
+        /// <param name="line"></param>
+        /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
+        /// <returns></returns>
+        public TransactSection TransactTrack(out ISection section, RawText line, object handler = null)
+        {
+            section = null;
+
+            if(tracking == null 
+                || (Sln.ResultType & SlnItems.Map) != SlnItems.Map)
+            {
+                return null;
+            }
+
+            section = new Section(handler, line, nline);
+            return tracking.Track(section);
+        }
+
+        /// <param name="reader"></param>
+        /// <param name="rsln"></param>
+        public Svc(StreamReader reader, ISlnResultSvc rsln)
+            : this(reader)
+        {
+            Sln         = rsln ?? throw new ArgumentNullException();
+            tracking    = new TransactTracking<ISection, IList<ISection>>(Sln.Map);
+        }
+
+        /// <param name="reader"></param>
+        public Svc(StreamReader reader)
+        {
+            stream = reader ?? throw new ArgumentNullException();
         }
     }
 }

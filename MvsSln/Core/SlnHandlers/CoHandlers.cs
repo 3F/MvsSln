@@ -29,6 +29,9 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
+    /// <summary>
+    /// TODO: review
+    /// </summary>
     internal struct CoHandlers
     {
         public HashSet<Type> set;
@@ -36,6 +39,11 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         public Dictionary<Guid, bool> has;
 
         public IEnumerable<ISlnHandler> handlers;
+
+        public bool Contains(Guid id)
+        {
+            return has.ContainsKey(id) && has[id];
+        }
 
         /// <param name="slnHandlers"></param>
         public CoHandlers(IEnumerable<ISlnHandler> slnHandlers)
@@ -47,7 +55,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 
             foreach(ISlnHandler h in handlers)
             {
-                if(h.CoHandlers == null || h.CoHandlers.Length < 1) {
+                if(h.CoHandlers == null || h.CoHandlers.Count < 1) {
                     continue;
                 }
 

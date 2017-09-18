@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
@@ -32,7 +33,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// Completeness of implementation.
         /// Aggregates additional handlers that will process same line.
         /// </summary>
-        Type[] CoHandlers { get; }
+        ICollection<Type> CoHandlers { get; }
 
         /// <summary>
         /// Action with incoming line.

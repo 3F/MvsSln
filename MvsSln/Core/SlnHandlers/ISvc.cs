@@ -24,16 +24,18 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
+    using TransactSection = TransactTracking<ISection, IList<ISection>>;
+
     public interface ISvc
     {
         /// <summary>
-        /// Used stream.
+        /// Used encoding for all data.
         /// </summary>
-        StreamReader Stream { get; set; }
+        Encoding CurrentEncoding { get; }
 
         /// <summary>
         /// Prepared solution data.
@@ -69,5 +71,22 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="line"></param>
         /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
         ISection Track(RawText line, object handler = null);
+
+        /// <summary>
+        /// Transact tracking for line.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
+        /// <returns></returns>
+        TransactSection TransactTrack(RawText line, object handler = null);
+
+        /// <summary>
+        /// Transact tracking for line.
+        /// </summary>
+        /// <param name="section">Provides requested section.</param>
+        /// <param name="line"></param>
+        /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
+        /// <returns></returns>
+        TransactSection TransactTrack(out ISection section, RawText line, object handler = null);
     }
 }
