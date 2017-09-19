@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
@@ -65,8 +66,10 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             string _line;
             while((_line = svc.ReadLine(this)) != null && _line.Trim() != "EndGlobalSection")
             {
-                string left = _line.Split('=')[0].Trim(); // Debug|Win32 = Debug|Win32
-                if(String.Compare(left, "DESCRIPTION", StringComparison.OrdinalIgnoreCase) == 0) {
+                string left = _line.Before('=')?.Trim(); // Debug|Win32 = Debug|Win32
+                if(left == null 
+                    || String.Compare(left, "DESCRIPTION", StringComparison.OrdinalIgnoreCase) == 0)
+                {
                     LSender.Send(this, $"Solution Configuration has been ignored for line '{_line}'", Message.Level.Debug);
                     continue;
                 }
@@ -76,7 +79,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                     continue;
                 }
 
-                LSender.Send(this, $"Solution Configuration ->['{cfg[0]}' ; '{cfg[1]}']", Message.Level.Trace);
+                LSender.Send(this, $"Solution Configuration ->['{cfg[0]}' ; '{cfg[1]}']", Message.Level.Info);
                 svc.Sln.SolutionConfigList.Add(new ConfigSln(cfg[0], cfg[1]));
             }
 

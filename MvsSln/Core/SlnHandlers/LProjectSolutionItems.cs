@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
@@ -66,7 +67,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return false;
             }
 
-            LSender.Send(this, $"Found solution-folder for line: '{line}'", Message.Level.Trace);
+            LSender.Send(this, $"Found solution-folder: '{pItem.name}'", Message.Level.Info);
 
             var folderItems = new List<RawText>();
             while((line = svc.ReadLine(this)) != null && (line != "EndProject"))
@@ -81,8 +82,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                         break;
                     }
 
-                    int pos = line.trimmed.IndexOf('=');
-                    if(pos == -1)
+                    var item = line.trimmed.Before('=');
+                    if(item == null)
                     {
                         LSender.Send(
                             this, 
@@ -92,10 +93,10 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                         continue;
                     }
 
-                    folderItems.Add(new RawText(
-                        line.trimmed.Substring(0, pos).TrimEnd(), 
-                        svc.CurrentEncoding
-                    ));
+                    item = item.TrimEnd();
+                    LSender.Send(this, $"Found item: '{item}'", Message.Level.Info);
+
+                    folderItems.Add(new RawText(item, svc.CurrentEncoding));
                 }
             }
 

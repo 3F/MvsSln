@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using net.r_eg.MvsSln.Extensions;
+using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
@@ -241,10 +242,10 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 BuildOrder();
             }
             catch(KeyNotFoundException) {
-                Log.LSender.Send(
+                LSender.Send(
                     this, 
                     "We can't build dependencies, some of this is incorrect. Please check data.", 
-                    Log.Message.Level.Warn
+                    Message.Level.Warn
                 );
             }
         }

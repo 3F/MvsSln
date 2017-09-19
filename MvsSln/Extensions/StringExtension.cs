@@ -47,6 +47,22 @@ namespace net.r_eg.MvsSln.Extensions
         }
 
         /// <summary>
+        /// Gets part of string before specific symbols.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="c">Separators.</param>
+        /// <returns>Left part of string before symbols, or null value if no any symbols are found.</returns>
+        public static string Before(this string str, params char[] c)
+        {
+            int pos = str.IndexOfAny(c);
+            if(pos == -1) {
+                return null;
+            }
+
+            return str.Substring(0, pos);
+        }
+
+        /// <summary>
         /// Formatting of the path to directory.
         /// </summary>
         /// <param name="path"></param>

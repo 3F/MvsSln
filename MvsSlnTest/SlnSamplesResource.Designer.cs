@@ -131,6 +131,25 @@ namespace net.r_eg.MvsSlnTest {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Project(&quot;{2150E333-8FDC-42A3-9474-1A3956D46DE8}&quot;) = &quot;.gnt&quot;, &quot;.gnt&quot;, &quot;{65FF5D56-E814-4956-89BD-7C53EC557BFE}&quot;
+        ///	ProjectSection(SolutionItems) = preProject
+        ///		.gnt\gnt.core = .gnt\gnt.core
+        ///		.gnt\packages.config = .gnt\packages.config
+        ///	EndProjectSection
+        ///EndProject
+        ///Project(&quot;{2150E333-8FDC-42A3-9474-1A3956D46DE8}&quot;) = &quot;tools&quot;, &quot;tools&quot;, &quot;{849DD790-F856-493C-A19E-2560A21F6AF1}&quot;
+        ///	ProjectSection(SolutionItems) = preProject
+        ///		tools\gnt.bat = tools\gnt.bat
+        ///	EndProjectSection
+        ///EndProject.
+        /// </summary>
+        internal static string Section_Sln_Items {
+            get {
+                return ResourceManager.GetString("Section_Sln_Items", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Microsoft Visual Studio Solution File, Format Version 11.00
         ///# Visual Studio 14
         ///VisualStudioVersion = 14.0.25420.1

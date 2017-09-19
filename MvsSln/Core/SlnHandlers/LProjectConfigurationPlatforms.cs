@@ -139,7 +139,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 
                 if(!cortege.ContainsKey(ident))
                 {
-                    LSender.Send(this, $"New Project Configuration `{pGuid}`, `{csln}` = `{cprj}` /{type}", Message.Level.Debug);
+                    LSender.Send(this, $"New Project Configuration `{pGuid}`, `{csln}` = `{cprj}` /{type}", Message.Level.Info);
                     cortege[ident] = new ConfigPrj(cprj, pGuid, isBuild0, new ConfigSln(csln));
                     svc.Sln.ProjectConfigList.Add(cortege[ident]);
                     continue;

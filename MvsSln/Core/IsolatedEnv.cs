@@ -201,7 +201,7 @@ namespace net.r_eg.MvsSln.Core
                 }
             }
 
-            LSender.Send(this, $"Load project {pItem.pGuid}:{properties[P_CONFIG]}|{properties[P_PLATFORM]} :: '{pItem.name}' ('{pItem.fullPath}')", Message.Level.Debug);
+            LSender.Send(this, $"Load project {pItem.pGuid}:{properties[P_CONFIG]}|{properties[P_PLATFORM]} :: '{pItem.name}' ('{pItem.fullPath}')", Message.Level.Info);
             if(String.IsNullOrWhiteSpace(pItem.fullPath)) {
                 throw new NotFoundException($"Path is empty to project ['{pItem.name}', '{pItem.pGuid}']");
             }
@@ -247,7 +247,7 @@ namespace net.r_eg.MvsSln.Core
             }
 
             string platform = cfg.PlatformByRule;
-            LSender.Send(this, $"-> prj['{cfg.Configuration}'; '{platform}']", Message.Level.Debug);
+            LSender.Send(this, $"-> prj['{cfg.Configuration}'; '{platform}']", Message.Level.Info);
 
             return new Dictionary<string, string>(slnProps) {
                 [P_CONFIG]   = cfg.Configuration,

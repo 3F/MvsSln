@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Core\ConfigItemTest.cs" />
     <Compile Include="Core\ObjHandlers\WProjectConfigurationPlatformsTest.cs" />
+    <Compile Include="Core\ObjHandlers\WProjectSolutionItemsTest.cs" />
     <Compile Include="Core\ObjHandlers\WSolutionConfigurationPlatformsTest.cs" />
     <Compile Include="Core\ObjHandlers\WProjectTest.cs" />
     <Compile Include="Core\SlnWriterTest.cs" />

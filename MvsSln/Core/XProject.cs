@@ -389,7 +389,7 @@ namespace net.r_eg.MvsSln.Core
                         property.isUserDef,
                         ex.Message
                     ),
-                    Log.Message.Level.Info
+                    Log.Message.Level.Warn
                 );
                 return false;
             }
