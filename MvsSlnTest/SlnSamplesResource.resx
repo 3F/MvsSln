@@ -321,4 +321,44 @@ EndGlobal</value>
 	EndGlobalSection</value>
     <comment>keep leading tab-space character, via resx :(</comment>
   </data>
+  <data name="vsSolutionBuildEvent_map" xml:space="preserve">
+    <value>MinimumVisualStudioVersion = 10.0.30319.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Provider", "Provider\Provider.csproj", "{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vsSolutionBuildEvent", "vsSolutionBuildEvent\vsSolutionBuildEvent.csproj", "{32E44995-F621-4E77-B46A-8F65D64E7FEA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} = {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{7ADBBB81-2FA7-45CA-B97D-486C3A6624D3}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.vssbe = .vssbe
+		build_[CI_Release].bat = build_[CI_Release].bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".gnt", ".gnt", "{65FF5D56-E814-4956-89BD-7C53EC557BFE}"
+	ProjectSection(SolutionItems) = preProject
+		.gnt\gnt.core = .gnt\gnt.core
+		.gnt\packages.config = .gnt\packages.config
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CI_Debug_net45|Any CPU = CI_Debug_net45|Any CPU
+		CI_Debug|Any CPU = CI_Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.ActiveCfg = Release_net45|Any CPU
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.Build.0 = Release_net45|Any CPU
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bridge", "Bridge\Bridge.csproj", "{73919171-44B6-4536-B892-F1FCA653887C}"
+EndProject</value>
+  </data>
 </root>

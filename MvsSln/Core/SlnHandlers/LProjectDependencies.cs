@@ -237,7 +237,16 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="svc"></param>
         public override void PostProcessing(ISvc svc)
         {
-            BuildOrder();
+            try {
+                BuildOrder();
+            }
+            catch(KeyNotFoundException) {
+                Log.LSender.Send(
+                    this, 
+                    "We can't build dependencies, some of this is incorrect. Please check data.", 
+                    Log.Message.Level.Warn
+                );
+            }
         }
 
         protected void BuildOrder()

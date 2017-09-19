@@ -83,12 +83,12 @@ namespace net.r_eg.MvsSlnTest {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        ///   Looks up a localized string similar to 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
         ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.ActiveCfg = Release_net45|Any CPU
         ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.Build.0 = Release_net45|Any CPU
         ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug|Any CPU.ActiveCfg = Release|Any CPU
         ///		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any CPU.ActiveCfg = CI_Release_net45|Any CPU
-        ///		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any CP [rest of string was truncated]&quot;;.
+        ///		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any C [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Section_Prj_Config {
             get {
@@ -143,6 +143,21 @@ namespace net.r_eg.MvsSlnTest {
         internal static string vsSolutionBuildEvent {
             get {
                 return ResourceManager.GetString("vsSolutionBuildEvent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MinimumVisualStudioVersion = 10.0.30319.1
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;Provider&quot;, &quot;Provider\Provider.csproj&quot;, &quot;{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}&quot;
+        ///EndProject
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;vsSolutionBuildEvent&quot;, &quot;vsSolutionBuildEvent\vsSolutionBuildEvent.csproj&quot;, &quot;{32E44995-F621-4E77-B46A-8F65D64E7FEA}&quot;
+        ///	ProjectSection(ProjectDependencies) = postProject
+        ///		{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} = {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}
+        ///	EndProjectSection [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string vsSolutionBuildEvent_map {
+            get {
+                return ResourceManager.GetString("vsSolutionBuildEvent_map", resourceCulture);
             }
         }
     }

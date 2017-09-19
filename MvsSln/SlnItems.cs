@@ -37,6 +37,7 @@ namespace net.r_eg.MvsSln
                 | SolutionConfPlatforms 
                 | ProjectConfPlatforms 
                 | ProjectDependencies
+                | SolutionItems
                 | Env
                 | LoadDefaultData
                 | Map,
@@ -92,5 +93,10 @@ namespace net.r_eg.MvsSln
         /// Creates map when processing sln data.
         /// </summary>
         Map = 0x0080,
+
+        /// <summary>
+        /// ProjectSection - SolutionItems
+        /// </summary>
+        SolutionItems = 0x0100,
     }
 }

@@ -64,6 +64,11 @@ namespace net.r_eg.MvsSln.Core
         IEnumerable<ProjectItemCfg> ProjectItemsConfigs { get; }
 
         /// <summary>
+        /// List of solution folders.
+        /// </summary>
+        IEnumerable<SolutionFolder> SolutionFolders { get; }
+
+        /// <summary>
         /// Default Configuration and Platform for current solution.
         /// </summary>
         IConfPlatform DefaultConfig { get; }

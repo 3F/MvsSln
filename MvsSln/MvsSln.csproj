@@ -59,6 +59,7 @@
     <Compile Include="Core\ObjHandlers\WProjectConfigurationPlatforms.cs" />
     <Compile Include="Core\ObjHandlers\WProject.cs" />
     <Compile Include="Core\ObjHandlers\IObjHandler.cs" />
+    <Compile Include="Core\SolutionFolder.cs" />
     <Compile Include="Core\Section.cs" />
     <Compile Include="Core\ISection.cs" />
     <Compile Include="Core\IRuleOfConfig.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Core\SlnHandlers\CoHandlers.cs" />
     <Compile Include="Core\SlnHandlers\LineAct.cs" />
     <Compile Include="Core\SlnHandlers\ISvc.cs" />
+    <Compile Include="Core\SlnHandlers\LProjectSolutionItems.cs" />
     <Compile Include="Core\SlnHandlers\Svc.cs" />
     <Compile Include="Core\SlnWriter.cs" />
     <Compile Include="EnvDTE\DProject.cs" />

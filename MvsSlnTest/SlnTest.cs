@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using net.r_eg.MvsSln;
-using System.Collections.Generic;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Core.SlnHandlers;
 
 namespace net.r_eg.MvsSlnTest
 {
@@ -249,6 +250,64 @@ namespace net.r_eg.MvsSlnTest
                 Assert.AreNotEqual(null, sln.Result.Properties);
 
                 Assert.AreEqual(SlnItems.All & ~SlnItems.LoadDefaultData, sln.Result.ResultType);
+            }
+        }
+
+        [TestMethod]
+        public void MapTest1()
+        {
+            using(var sln = new Sln(SlnItems.All &~ SlnItems.LoadDefaultData, SlnSamplesResource.vsSolutionBuildEvent_map))
+            {
+                var map = sln.Result.Map;
+                Assert.AreEqual(38, map.Count);
+
+                Assert.AreEqual(null, map[0].Handler);
+
+                Assert.AreEqual(typeof(LProject), map[1].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectDependencies), map[2].Handler.GetType());
+
+                Assert.AreEqual(typeof(LProject), map[3].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectDependencies), map[4].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectDependencies), map[5].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectDependencies), map[6].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectDependencies), map[7].Handler.GetType());
+
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[8].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[9].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[10].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[11].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[12].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[13].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[14].Handler.GetType());
+
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[15].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[16].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[17].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[18].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[19].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectSolutionItems), map[20].Handler.GetType());
+
+                Assert.AreEqual(null, map[21].Handler);
+
+                Assert.AreEqual(typeof(LSolutionConfigurationPlatforms), map[22].Handler.GetType());
+                Assert.AreEqual(typeof(LSolutionConfigurationPlatforms), map[23].Handler.GetType());
+                Assert.AreEqual(typeof(LSolutionConfigurationPlatforms), map[24].Handler.GetType());
+                Assert.AreEqual(typeof(LSolutionConfigurationPlatforms), map[25].Handler.GetType());
+                Assert.AreEqual(typeof(LSolutionConfigurationPlatforms), map[26].Handler.GetType());
+
+                Assert.AreEqual(typeof(LProjectConfigurationPlatforms), map[27].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectConfigurationPlatforms), map[28].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectConfigurationPlatforms), map[29].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectConfigurationPlatforms), map[30].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectConfigurationPlatforms), map[31].Handler.GetType());
+
+                Assert.AreEqual(null, map[32].Handler);
+                Assert.AreEqual(null, map[33].Handler);
+                Assert.AreEqual(null, map[34].Handler);
+                Assert.AreEqual(null, map[35].Handler);
+
+                Assert.AreEqual(typeof(LProject), map[36].Handler.GetType());
+                Assert.AreEqual(typeof(LProjectDependencies), map[37].Handler.GetType());
             }
         }
     }

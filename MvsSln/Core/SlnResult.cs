@@ -89,6 +89,14 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// List of solution folders.
+        /// </summary>
+        public IEnumerable<SolutionFolder> SolutionFolders
+        {
+            get => SolutionFolderList;
+        }
+
+        /// <summary>
         /// Default Configuration and Platform for current solution.
         /// </summary>
         public IConfPlatform DefaultConfig
@@ -157,6 +165,15 @@ namespace net.r_eg.MvsSln.Core
         /// All found projects in solution.
         /// </summary>
         public IList<ProjectItem> ProjectItemList
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// List of solution folders.
+        /// </summary>
+        public IList<SolutionFolder> SolutionFolderList
         {
             get;
             set;

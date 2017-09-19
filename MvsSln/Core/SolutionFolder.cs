@@ -22,12 +22,40 @@
  * THE SOFTWARE.
 */
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
 namespace net.r_eg.MvsSln.Core
 {
-    public enum TransactAction
+    [DebuggerDisplay("{DbgDisplay}")]
+    public struct SolutionFolder
     {
-        None,
-        Commit,
-        Rollback
+        /// <summary>
+        /// Information about folder section.
+        /// </summary>
+        public ProjectItem header;
+
+        /// <summary>
+        /// Available items for this folder.
+        /// </summary>
+        public IEnumerable<RawText> items;
+
+        /// <param name="pItem">Information about folder.</param>
+        /// <param name="def">List of items for this folder.</param>
+        public SolutionFolder(ProjectItem pItem, IEnumerable<RawText> def)
+        {
+            header  = pItem;
+            items   = def;
+        }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay
+        {
+            get => $"{header.name} [{header.pGuid}] = {items?.Count()}";
+        }
+
+        #endregion
     }
 }

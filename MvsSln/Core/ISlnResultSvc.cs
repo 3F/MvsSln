@@ -44,6 +44,11 @@ namespace net.r_eg.MvsSln.Core
         IList<ProjectItem> ProjectItemList { get; set; }
 
         /// <summary>
+        /// List of solution folders.
+        /// </summary>
+        IList<SolutionFolder> SolutionFolderList { get; set; }
+
+        /// <summary>
         /// Updates instance of the Solution Project Dependencies.
         /// </summary>
         /// <param name="dep"></param>
