@@ -670,12 +670,12 @@ namespace net.r_eg.MvsSln.Core
         protected virtual string GetProjectGuid(Project eProject)
         {
             //eProject.GetProjectGuid(); - null by default for all SDK-based projects
-            return ProjectItem.project.pGuid;
+            return eProject.GetProjectGuid() ?? ProjectItem.project.pGuid;
         }
 
         protected virtual string GetProjectName(Project eProject)
         {
-            return eProject.GetProjectName();
+            return eProject.GetProjectName() ?? ProjectItem.project.name;
         }
 
         protected PropertyItem GetProperty(ProjectProperty eProperty)
