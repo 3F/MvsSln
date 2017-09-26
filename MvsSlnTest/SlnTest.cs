@@ -261,7 +261,7 @@ namespace net.r_eg.MvsSlnTest
                 var map = sln.Result.Map;
                 Assert.AreEqual(38, map.Count);
 
-                Assert.AreEqual(null, map[0].Handler);
+                Assert.AreEqual(typeof(LVisualStudioVersion), map[0].Handler.GetType());
 
                 Assert.AreEqual(typeof(LProject), map[1].Handler.GetType());
                 Assert.AreEqual(typeof(LProjectDependencies), map[2].Handler.GetType());

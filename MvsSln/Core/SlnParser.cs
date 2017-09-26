@@ -71,6 +71,23 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// To reset and register all default handlers.
+        /// </summary>
+        public void SetDefaultHandlers()
+        {
+            SlnHandlers.Reset();
+
+            SlnHandlers.Register(new LVisualStudioVersion());
+            SlnHandlers.Register(new LProject());
+            SlnHandlers.Register(new LProjectDependencies());
+            SlnHandlers.Register(new LProjectSolutionItems());
+            SlnHandlers.Register(new LProjectConfigurationPlatforms());
+            SlnHandlers.Register(new LSolutionConfigurationPlatforms());
+
+            // TODO: validate CoHandlers ref
+        }
+
+        /// <summary>
         /// Parse of selected .sln file.
         /// </summary>
         /// <param name="sln">Solution file</param>
@@ -137,16 +154,12 @@ namespace net.r_eg.MvsSln.Core
             return data;
         }
 
-        public SlnParser()
+        /// <param name="defaultHandlers">To register and activate all handlers by default if true.</param>
+        public SlnParser(bool defaultHandlers = true)
         {
-            SlnHandlers.Register(new LVisualStudioVersion());
-            SlnHandlers.Register(new LProject());
-            SlnHandlers.Register(new LProjectDependencies());
-            SlnHandlers.Register(new LProjectSolutionItems());
-            SlnHandlers.Register(new LProjectConfigurationPlatforms());
-            SlnHandlers.Register(new LSolutionConfigurationPlatforms());
-
-            // TODO: validate CoHandlers ref
+            if(defaultHandlers) {
+                SetDefaultHandlers();
+            }
         }
 
         protected void Process(ISvc svc)

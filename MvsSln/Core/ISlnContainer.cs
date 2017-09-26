@@ -42,6 +42,11 @@ namespace net.r_eg.MvsSln.Core
         IDictionary<string, RawText> RawXmlProjects { get; set; }
 
         /// <summary>
+        /// To reset and register all default handlers.
+        /// </summary>
+        void SetDefaultHandlers();
+
+        /// <summary>
         /// Parse of selected .sln file.
         /// </summary>
         /// <param name="sln">Solution file</param>

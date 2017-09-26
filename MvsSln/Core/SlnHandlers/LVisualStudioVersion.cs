@@ -79,6 +79,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return false;
             }
 
+            LSender.Send(this, $"Found version from header: '{lineType}' = '{version}'", Message.Level.Info);
+
             var h = new SlnHeader(svc.Sln.Header);
             switch(lineType)
             {
