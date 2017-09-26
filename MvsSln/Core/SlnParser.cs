@@ -139,6 +139,7 @@ namespace net.r_eg.MvsSln.Core
 
         public SlnParser()
         {
+            SlnHandlers.Register(new LVisualStudioVersion());
             SlnHandlers.Register(new LProject());
             SlnHandlers.Register(new LProjectDependencies());
             SlnHandlers.Register(new LProjectSolutionItems());

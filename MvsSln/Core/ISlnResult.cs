@@ -39,6 +39,11 @@ namespace net.r_eg.MvsSln.Core
         SlnItems ResultType { get; }
 
         /// <summary>
+        /// Header information.
+        /// </summary>
+        SlnHeader Header { get; }
+
+        /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
         IEnumerable<IConfPlatform> SolutionConfigs { get; }

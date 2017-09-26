@@ -49,7 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
+    <Compile Include="Core\ObjHandlers\WVisualStudioVersion.cs" />
+    <Compile Include="Core\SlnHeader.cs" />
     <Compile Include="Core\ObjHandlers\WProjectSolutionItems.cs" />
+    <Compile Include="Core\SlnHandlers\LVisualStudioVersion.cs" />
     <Compile Include="Core\TransactAction.cs" />
     <Compile Include="Core\TransactTracking.cs" />
     <Compile Include="Core\ISlnProjectDependencies.cs" />

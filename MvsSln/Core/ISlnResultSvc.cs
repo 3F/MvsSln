@@ -53,5 +53,11 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="dep"></param>
         void SetProjectDependencies(ISlnPDManager dep);
+
+        /// <summary>
+        /// Updates header info.
+        /// </summary>
+        /// <param name="info"></param>
+        void SetHeader(SlnHeader info);
     }
 }

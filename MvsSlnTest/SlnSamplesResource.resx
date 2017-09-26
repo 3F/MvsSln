@@ -374,4 +374,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{849DD790
 	EndProjectSection
 EndProject</value>
   </data>
+  <data name="Section_Header" xml:space="preserve">
+    <value>Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.30319.1</value>
+  </data>
 </root>

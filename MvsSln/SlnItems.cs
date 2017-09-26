@@ -34,6 +34,7 @@ namespace net.r_eg.MvsSln
         /// All supported data.
         /// </summary>
         All = Projects 
+                | Header 
                 | SolutionConfPlatforms 
                 | ProjectConfPlatforms 
                 | ProjectDependencies
@@ -98,5 +99,10 @@ namespace net.r_eg.MvsSln
         /// ProjectSection - SolutionItems
         /// </summary>
         SolutionItems = 0x0100,
+
+        /// <summary>
+        /// Header information.
+        /// </summary>
+        Header = 0x0200,
     }
 }

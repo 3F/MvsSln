@@ -47,6 +47,15 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// Header information.
+        /// </summary>
+        public SlnHeader Header
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
         public IEnumerable<IConfPlatform> SolutionConfigs
@@ -186,6 +195,15 @@ namespace net.r_eg.MvsSln.Core
         public void SetProjectDependencies(ISlnPDManager dep)
         {
             ProjectDependencies = dep;
+        }
+
+        /// <summary>
+        /// Updates header info.
+        /// </summary>
+        /// <param name="info"></param>
+        public void SetHeader(SlnHeader info)
+        {
+            Header = info;
         }
     }
 }
