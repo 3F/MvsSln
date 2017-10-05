@@ -317,15 +317,22 @@ namespace net.r_eg.MvsSln.Core
 
         protected Project Load(ProjectItem pItem, IDictionary<string, string> properties)
         {
-            if(rawXmlProjects != null && rawXmlProjects.ContainsKey(pItem.pGuid))
-            {
-                var raw = rawXmlProjects[pItem.pGuid];
-
-                using(var reader = XmlReader.Create(new StreamReader(raw.data.GetStream(raw.encoding), raw.encoding))) {
-                    return new Project(reader, properties, null, PrjCollection);
-                }
+            if(rawXmlProjects != null && rawXmlProjects.ContainsKey(pItem.pGuid)) {
+                return Load(rawXmlProjects[pItem.pGuid], properties);
             }
-            return new Project(pItem.fullPath, properties, null, PrjCollection);
+            return Load(pItem.fullPath, properties);
+        }
+
+        protected virtual Project Load(RawText raw, IDictionary<string, string> properties)
+        {
+            using(var reader = XmlReader.Create(new StreamReader(raw.data.GetStream(raw.encoding), raw.encoding))) {
+                return new Project(reader, properties, null, PrjCollection);
+            }
+        }
+
+        protected virtual Project Load(string path, IDictionary<string, string> properties)
+        {
+            return new Project(path, properties, null, PrjCollection);
         }
 
         /// <summary>

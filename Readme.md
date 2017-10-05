@@ -146,7 +146,7 @@ The final draft-version of the new configurator for DllExport now fully works vi
 
 ### Map of .sln & Writers
 
-v2+ also may provides map of analyzed data. To enable this define a bit **0x0080** for type of operations to parser.
+v2+ also provides map of analyzed data. To enable this, define a bit **0x0080** for type of operations to parser.
 
 Parser will expose map through list of `ISection` for each line. For example:
 
