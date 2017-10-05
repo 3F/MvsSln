@@ -8,14 +8,14 @@ namespace net.r_eg.MvsSln
     {
         public static readonly Version number = new Version(S_NUM_REV);
 
-        public const string S_NUM = "1.0.1";
-        public const string S_REV = "43412";
+        public const string S_NUM = "2.0.0";
+        public const string S_REV = "23904";
 
         public const string S_NUM_REV = S_NUM + "." + S_REV;
 
-        public const string BRANCH_SHA1 = "92d1be7";
+        public const string BRANCH_SHA1 = "a84f0f2";
         public const string BRANCH_NAME = "master";
-        public const string BRANCH_REVC = "16";
+        public const string BRANCH_REVC = "37";
 
         internal const string S_INFO        = S_NUM_REV + " [ " + BRANCH_SHA1 + " ]";
         internal const string S_INFO_FULL   = S_INFO + " /'" + BRANCH_NAME + "':" + BRANCH_REVC;

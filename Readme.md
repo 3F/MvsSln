@@ -4,7 +4,7 @@
 
 MvsSln provides logic for complex support of the Visual Studio .sln files and its projects (.vcxproj, .csproj., ...).
 
-It was as a part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) projects, but now it extracted into the new specially for [DllExport](https://github.com/3F/DllExport/issues/38) and for others.
+It was as a part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) projects, but now it extracted into the new (specially for [DllExport](https://github.com/3F/DllExport/issues/38) and for others).
 
 [![Build status](https://ci.appveyor.com/api/projects/status/if1t4rhhntpf6ut3/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln/branch/master)
 [![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
@@ -27,9 +27,9 @@ Copyright (c) 2013-2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
 
 Because today it still is the most easy way for complex work with Visual Studio .sln files and its projects (.vcxproj, .csproj., ...). Because it's free, because it's open.
 
-Even if you just need the basic access to information from the solution data, like: project Guids, paths, solution & projects configurations, calculating map of projects via build-order through our ProjectDependencies helpers, etc.
+Even if you just need the basic access to information or more complex work through our readers and writers.
 
-You can also control easily all your projects: Reference, ProjectReference, Properties, Import sections, and others.
+You can also easily control all your projects data (Reference, ProjectReference, Properties, Import sections, and others).
 
 Moreover, it has been re-licensed now (LGPLv3 -> MIT) from the vsSolutionBuildEvent projects, so, enjoy with us now.
 
@@ -75,7 +75,9 @@ using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All & ~SlnIte
 } // release all loaded projects
 ```
 
-By the way, the any new solution handler can be easily added by our flexible architecture. Example of `LProject` handler (**reader**):
+By the way, the any new solution handler (reader or writer) can be easily added by our flexible architecture. 
+
+Example of `LProject` handler (**reader**):
 
 ```csharp
 public class LProject: LAbstract, ISlnHandler
@@ -134,6 +136,8 @@ public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
 }
 ```
 
+Control anything and have fun !
+
 ## Examples of using
 
 ### DllExport configurator
@@ -146,7 +150,7 @@ The final draft-version of the new configurator for DllExport now fully works vi
 
 ### Map of .sln & Writers
 
-v2+ also provides map of analyzed data. To enable this, define a bit **0x0080** for type of operations to parser.
+v2+ now also may provide map of analyzed data. To enable this, define a bit **0x0080** for type of operations to parser.
 
 Parser will expose map through list of `ISection` for each line. For example:
 
@@ -272,7 +276,7 @@ Available variants:
 * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="MvsSln"` or **[gnt](https://3f.github.io/GetNuTool/releases/latest/gnt/)** /p:ngpackages="MvsSln"
 * NuGet PM: `Install-Package MvsSln`
 * NuGet Commandline: `nuget install MvsSln`
-* [GitHub Releases](https://github.com/3F/MvsSln/releases) ( [latest](https://github.com/3F/MvsSln/releases/latest) )
+* [GitHub Releases](https://github.com/3F/MvsSln/releases) [ [latest](https://github.com/3F/MvsSln/releases/latest) ]
 * [Nightly builds](https://ci.appveyor.com/project/3Fs/mvssln/history) (`/artifacts` page). But remember: It can be unstable or not work at all. Use this for tests of latest changes.
 
 

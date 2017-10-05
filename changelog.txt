@@ -3,6 +3,77 @@ MvsSln  :: https://github.com/3F/MvsSln
 _ _ _ _
 
 
+[v2.0] 2017.10.05
+
+    * NEW: Updated architecture now provides 2 types of handlers - readers (ISlnHandler) and writers (IObjHandler).
+            You also can use your custom reader or writer, just implement an `ISlnHandler` or `IObjHandler`:
+            
+            ```
+              class MyReader: LAbstract, ISlnHandler { ... }
+              class MyWriter: WAbstract, IObjHandler { ... }
+            ```
+            
+            Read the documentation for details.
+            
+    * NEW: MvsSln now also may provide map of analyzed data. Parser will expose map through list of `ISection` for each line.
+           To enable this, define a bit 0x0080 for type of operations to parser.
+           This helps to get flexible control between readers and any writers.
+           
+           Example of using writer `WSolutionConfigurationPlatforms` together with calculated map:
+           
+            ```
+              var data = new List<IConfPlatform>() {
+                  new ConfigSln("Debug", "Any CPU"),
+                  new ConfigSln("Release_net45", "x64"),
+                  new ConfigSln("Release", "Any CPU"),
+              };
+              
+              var whandlers = new Dictionary<Type, HandlerValue>() {
+                  [typeof(LSolutionConfigurationPlatforms)] = new HandlerValue(new WSolutionConfigurationPlatforms(data)),
+              };
+              
+              using(var w = new SlnWriter("<path_to>.sln", whandlers)) {
+                  w.Write(map);
+              }
+            ```
+            
+            Read the documentation for details.
+            
+    * NEW: Implemented new writer `WProject`. 
+    * NEW: Implemented new writer `WProjectConfigurationPlatforms`.
+    * NEW: Implemented new writer `WSolutionConfigurationPlatforms`.
+    * NEW: Implemented new writer `WVisualStudioVersion`. 
+    * NEW: Implemented new writer `WProjectSolutionItems`.
+    * NEW: Implemented new reader `LVisualStudioVersion`.
+    * NEW: Implemented new reader `LProjectSolutionItems`.
+    * FIXED: Fixed possible bug when SlnItems.All &~ SlnItems.Projects.
+    * FIXED: Fixed possible null with PropertyItem.evaluatedValue:
+               MS describes this as 'the evaluated property value, which is never null'
+               But, this is not true: .NETFramework\v4.0\Microsoft.Build.dll - Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a
+               
+    * FIXED: Fixed possible null for `IXProject.ProjectName` when project does not contain this property.
+    * CHANGED: `IXProject.ProjectGuid` now will return value from ProjectItem.pGuid if project file does not contain an Guid at all. 
+                It's actual for SDK-based projects.
+               
+    * CHANGED: SlnParser now can be initialized without handlers at all.
+                ```
+                  ISlnContainer sln = new SlnParser(false);
+                  sln.SlnHandlers.Register(new LMySpec());
+                  ...
+
+                  // to reset and register all default:
+                  sln.SetDefaultHandlers();
+                ```
+               
+    * CHANGED: Updated SlnItems: added `Map` item to create map when processing sln data.
+    * CHANGED: `IsolatedEnv.Load(...)` splitted and marked as virtual to leave the final implementation for user, 
+                to avoid problems like in Issue #1 etc.
+                
+    * CHANGED: Updated abstract layer with some types from ISlnResult & ISlnResultSvc.
+    * CHANGED: Updated GetNuTool v1.6.1.10480_bde3e50 & hMSBuild v1.2.2.62992_3ee58c3.
+    * KNOWN_PROBLEM: C++ projects and their initialization for Visual Studio 2017. Issue #1.
+    
+    
 [v1.0.1] 2017.07.21
 
     * FIXED: Fixed possible bug with already loaded project in collection when initializing new instance of Sln.
