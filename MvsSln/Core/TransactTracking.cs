@@ -29,7 +29,7 @@ using net.r_eg.MvsSln.Extensions;
 namespace net.r_eg.MvsSln.Core
 {
     public sealed class TransactTracking<T, TCore> 
-        where TCore: ICollection<T>
+        where TCore: class, ICollection<T>
     {
         private TCore core;
         private Queue<T> queries = new Queue<T>();
@@ -78,15 +78,7 @@ namespace net.r_eg.MvsSln.Core
 
         public TransactTracking(TCore core)
         {
-            // VS2017 15.3.4 / C# 7.1:
-            // - IDE0016: Null check can be simplified.
-            // - And CS0019: Operator '??' cannot be applied to operands of type 'TCore' and '<throw expression>'
-            //this.core = core ?? throw new ArgumentNullException();
-
-            if(core == null) {
-                throw new ArgumentNullException();
-            }
-            this.core = core;
+            this.core = core ?? throw new ArgumentNullException();
         }
 
         private void Reset()

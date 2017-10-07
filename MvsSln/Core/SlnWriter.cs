@@ -189,10 +189,7 @@ namespace net.r_eg.MvsSln.Core
 
         private void Free()
         {
-            //stream?.Dispose(); //CA2213
-            if(stream != null) {
-                stream.Dispose();
-            }
+            stream?.Dispose();
         }
 
         #region IDisposable
