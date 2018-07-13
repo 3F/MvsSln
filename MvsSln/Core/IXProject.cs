@@ -22,6 +22,7 @@
  * THE SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
@@ -46,6 +47,11 @@ namespace net.r_eg.MvsSln.Core
         /// Access to solution data if this was initialized with its context.
         /// </summary>
         ISlnResult Sln { get; }
+
+        /// <summary>
+        /// Provides unique identifier for project (not instance).
+        /// </summary>
+        Guid PId { get; }
 
         /// <summary>
         /// The Guid of this project.
@@ -219,6 +225,13 @@ namespace net.r_eg.MvsSln.Core
         ///  because its node does not contain this at all. Use this to update nodes.
         /// </summary>
         void Reevaluate();
+
+        /// <summary>
+        /// Makes relative path from this project.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        string GetRelativePath(string path);
 
         /// <summary>
         /// Adds 'Reference' item.

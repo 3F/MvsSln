@@ -66,6 +66,15 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// Provides unique identifier for project (not instance).
+        /// </summary>
+        public Guid PId
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
         /// The Guid of this project.
         /// </summary>
         public string ProjectGuid
@@ -424,6 +433,16 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// Makes relative path from this project.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public virtual string GetRelativePath(string path)
+        {
+            return RootPath.MakeRelativePath(path);
+        }
+
+        /// <summary>
         /// Adds 'Reference' item.
         /// </summary>
         /// <param name="inc">Include attribute.</param>
@@ -456,6 +475,7 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public bool AddReference(string fullpath, bool local, bool? embed = null, bool? spec = null)
         {
+            //TODO: fullpath may contain unevaluated properties, e.g.: metalib\$(namespace)\$(libname)
             string inc = AssemblyName.GetAssemblyName(fullpath).FullName;
             return AddReference(inc, GetRelativePath(fullpath), local, embed, spec);
         }
@@ -654,6 +674,30 @@ namespace net.r_eg.MvsSln.Core
             return RemoveItem(GetFirstProjectReference(inc));
         }
 
+        public XProject()
+            : this(new Project())
+        {
+
+        }
+
+        public XProject(string file)
+            : this(new Project(file))
+        {
+
+        }
+
+        public XProject(string file, IDictionary<string, string> properties)
+            : this(new Project(file, properties, null))
+        {
+
+        }
+
+        public XProject(Project prj)
+            : this(new ProjectItemCfg(), prj)
+        {
+
+        }
+
         public XProject(ProjectItemCfg pItem, Project prj)
             : this(null, pItem, prj)
         {
@@ -665,12 +709,27 @@ namespace net.r_eg.MvsSln.Core
             Sln         = data;
             ProjectItem = pItem;
             Project     = prj ?? throw new ArgumentNullException(nameof(prj), MsgResource.ValueNoEmptyOrNull);
+            PId         = CalculatePId(prj);
+        }
+
+        protected Guid CalculatePId(Project prj)
+        {
+            if(Project == null) {
+                return Guid.Empty;
+            }
+
+            return (
+                FindGuid(prj)
+                    + ProjectItem.projectConfig 
+                    + ProjectItem.solutionConfig
+            )
+            .Guid();
         }
 
         protected virtual string GetProjectGuid(Project eProject)
         {
             //eProject.GetProjectGuid(); - null by default for all SDK-based projects
-            return eProject.GetProjectGuid() ?? ProjectItem.project.pGuid;
+            return FindGuid(eProject);
         }
 
         protected virtual string GetProjectName(Project eProject)
@@ -693,9 +752,9 @@ namespace net.r_eg.MvsSln.Core
             return (element == null) ? default(ImportElement) : new ImportElement(element) { parentProject = this };
         }
 
-        protected virtual string GetRelativePath(string path)
+        private string FindGuid(Project eProject)
         {
-            return RootPath.MakeRelativePath(path);
+            return eProject?.GetProjectGuid() ?? ProjectItem.project.pGuid;
         }
 
         #region DebuggerDisplay

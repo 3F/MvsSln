@@ -150,6 +150,8 @@ The final draft-version of the new configurator for DllExport now fully works vi
 
 ### Map of .sln & Writers
 
+![](https://raw.githubusercontent.com/3F/MvsSln/master/resources/MvsSln_v2.0_Map.png)
+
 v2+ now also may provide map of analyzed data. To enable this, define a bit **0x0080** for type of operations to parser.
 
 Parser will expose map through list of `ISection` for each line. For example:
