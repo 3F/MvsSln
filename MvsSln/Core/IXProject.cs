@@ -120,8 +120,9 @@ namespace net.r_eg.MvsSln.Core
         /// To remove 'Import' element.
         /// </summary>
         /// <param name="element">Specified 'Import' element to remove.</param>
+        /// <param name="holdEmptyGroup">Holds empty group if it was inside.</param>
         /// <returns>true value if it has been removed.</returns>
-        bool RemoveImport(ImportElement element);
+        bool RemoveImport(ImportElement element, bool holdEmptyGroup = true);
 
         /// <summary>
         /// Retrieve the first found 'Import' element if it exists.

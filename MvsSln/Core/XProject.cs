@@ -197,14 +197,36 @@ namespace net.r_eg.MvsSln.Core
         /// To remove 'Import' element.
         /// </summary>
         /// <param name="element">Specified 'Import' element to remove.</param>
+        /// <param name="holdEmptyGroup">Holds empty group if it was inside.</param>
         /// <returns>true value if it has been removed.</returns>
-        public bool RemoveImport(ImportElement element)
+        public bool RemoveImport(ImportElement element, bool holdEmptyGroup = true)
         {
             if(element.parentElement == null) {
                 return false;
             }
 
-            Project.Xml.RemoveChild(element.parentElement);
+            // https://github.com/3F/DllExport/issues/77
+            // 'The node is not parented by this object' if an `Import` element is already placed inside `ImportGroup`.
+            //Project.Xml.RemoveChild(element.parentElement);
+
+            var imp = element.parentElement;
+            if(imp.Parent is ProjectImportGroupElement container)
+            {
+                if(container.Imports.Count > 1) {
+                    container.RemoveChild(imp);
+                    return true;
+                }
+
+                if(holdEmptyGroup) {
+                    container.RemoveChild(imp); // leave as an ~ <ImportGroup />
+                }
+                else {
+                    Project.Xml.RemoveChild(container);
+                }
+                return true;
+            }
+
+            Project.Xml.RemoveChild(imp);
             return true;
         }
 
