@@ -110,6 +110,23 @@ namespace net.r_eg.MvsSln.Core
         bool AddImport(string target, string condition, string label = null);
 
         /// <summary>
+        /// To add 'import' element.
+        /// </summary>
+        /// <param name="element">Specified 'Import' element to add.</param>
+        /// <returns>true value if it has been added.</returns>
+        bool AddImport(ImportElement element);
+
+        /// <summary>
+        /// To add 'import' elements inside ImportGroup.
+        /// Will stop the adding if some of this cannot be added.
+        /// </summary>
+        /// <param name="elements">List of specified 'Import' elements to add.</param>
+        /// <param name="condition">Optional 'Condition' attr for group.</param>
+        /// <param name="label">Optional 'Label' attr for group.</param>
+        /// <returns>true value only if all 'import' elements has been successfully added. False if one of this is failed.</returns>
+        bool AddImport(IEnumerable<ImportElement> elements, string condition = null, string label = null);
+
+        /// <summary>
         /// To remove the first found 'Import' element.
         /// </summary>
         /// <param name="project">Target project.</param>
@@ -122,7 +139,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="element">Specified 'Import' element to remove.</param>
         /// <param name="holdEmptyGroup">Holds empty group if it was inside.</param>
         /// <returns>true value if it has been removed.</returns>
-        bool RemoveImport(ImportElement element, bool holdEmptyGroup = true);
+        bool RemoveImport(ImportElement element, bool holdEmptyGroup = false);
 
         /// <summary>
         /// Retrieve the first found 'Import' element if it exists.

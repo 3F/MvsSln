@@ -166,18 +166,50 @@ namespace net.r_eg.MvsSln.Core
             if(String.IsNullOrWhiteSpace(target)) {
                 return false;
             }
+            return AddImport(Project.Xml.AddImport(target), condition, label);
+        }
 
-            var element = Project.Xml.AddImport(target);
-            if(element == null) {
+        /// <summary>
+        /// To add 'import' element.
+        /// </summary>
+        /// <param name="element">Specified 'Import' element to add.</param>
+        /// <returns>true value if it has been added.</returns>
+        public bool AddImport(ImportElement element)
+        {
+            return AddImport(element.project, element.condition, element.label);
+        }
+
+        /// <summary>
+        /// To add 'import' elements inside ImportGroup.
+        /// Will stop the adding if some of this cannot be added.
+        /// </summary>
+        /// <param name="elements">List of specified 'Import' elements to add.</param>
+        /// <param name="condition">Optional 'Condition' attr for group.</param>
+        /// <param name="label">Optional 'Label' attr for group.</param>
+        /// <returns>true value only if all 'import' elements has been successfully added. False if one of this is failed.</returns>
+        public bool AddImport(IEnumerable<ImportElement> elements, string condition = null, string label = null)
+        {
+            var group = Project.Xml.AddImportGroup();
+            foreach(var elem in elements)
+            {
+                if(AddImport(group.AddImport(elem.project), elem.condition, elem.label)) {
+                    continue;
+                }
+
+                Log.LSender.Send(
+                    this,
+                    $"One of the 'Import' elements cannot be added: '{elem.project}'",
+                    Log.Message.Level.Debug
+                );
                 return false;
             }
 
             if(condition != null) {
-                element.Condition = condition;
+                group.Condition = condition;
             }
 
             if(label != null) {
-                element.Label = label;
+                group.Label = label;
             }
 
             return true;
@@ -199,7 +231,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="element">Specified 'Import' element to remove.</param>
         /// <param name="holdEmptyGroup">Holds empty group if it was inside.</param>
         /// <returns>true value if it has been removed.</returns>
-        public bool RemoveImport(ImportElement element, bool holdEmptyGroup = true)
+        public bool RemoveImport(ImportElement element, bool holdEmptyGroup = false)
         {
             if(element.parentElement == null) {
                 return false;
@@ -772,6 +804,23 @@ namespace net.r_eg.MvsSln.Core
         protected ImportElement GetImportElement(ProjectImportElement element)
         {
             return (element == null) ? default(ImportElement) : new ImportElement(element) { parentProject = this };
+        }
+
+        protected bool AddImport(ProjectImportElement element, string condition, string label)
+        {
+            if(element == null) {
+                return false;
+            }
+
+            if(condition != null) {
+                element.Condition = condition;
+            }
+
+            if(label != null) {
+                element.Label = label;
+            }
+
+            return true;
         }
 
         private string FindGuid(Project eProject)
