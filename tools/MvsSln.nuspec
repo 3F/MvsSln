@@ -12,9 +12,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
     
-        MvsSln provides logic for complex support of the Visual Studio .sln files and its projects (.vcxproj, .csproj., ...).
+        MvsSln provides complex support (sln parser, r/w handlers, ...) of the Visual Studio .sln files and its projects (.vcxproj, .csproj., ...).
 
-        It was as a part of the https://github.com/3F/vsSolutionBuildEvent projects, but now it extracted into the new specially for [DllExport](https://github.com/3F/DllExport/issues/38) and for others.
+        It was as a part of the https://github.com/3F/vsSolutionBuildEvent projects, but now it extracted into the new specially for [DllExport](https://github.com/3F/DllExport) and for others.
         _ _ _ _ _ _
         Source code and all details here: https://github.com/3F/MvsSln
         
@@ -29,10 +29,10 @@
 {build_info}
         
     </description>
-    <summary>Complex support of the Visual Studio .sln files and its projects (.vcxproj, .csproj., ...) - https://github.com/3F/MvsSln</summary>
-    <tags>sln visual-studio projects visualstudio sln-files csproj vcxproj vs vs2015 vs2017 MvsSln</tags>
+    <summary>Complex support (sln parser, r/w handlers, ...) of the Visual Studio .sln files and its projects (.vcxproj, .csproj, ...) - https://github.com/3F/MvsSln</summary>
+    <tags>sln visual-studio projects visualstudio sln-files csproj vcxproj vs vs2015 vs2017 parser sln-parser MvsSln</tags>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright (c) 2013-2017  Denis Kuzmin [entry.reg@gmail.com] :: github.com/3F </copyright>
+    <copyright>Copyright (c) 2013-2018  Denis Kuzmin [entry.reg@gmail.com] :: github.com/3F </copyright>
     <references>
       <reference file="MvsSln.dll" />
     </references>
