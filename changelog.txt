@@ -2,6 +2,26 @@
 MvsSln  :: https://github.com/3F/MvsSln
 _ _ _ _
 
+[v2.1] 2018.08.05
+
+    * FIXED: Fixed bug 'The node is not parented by this object' 
+             When IXProject.RemoveImport is used for `Import` elements inside `ImportGroup`.
+             Related issue: https://github.com/3F/DllExport/issues/77
+
+    * NEW: Added `IXProject.AddImport(IEnumerable<ImportElement> elements, ...` 
+           To add 'import' elements inside ImportGroup.
+           
+    * CHANGED: IXProject changes:
+        * +`IXProject.PId` an unique identifier for project (not instance).
+        * +`IXProject.GetRelativePath(string path)` Makes relative path from used project.
+        * +`IXProject.AddImport(ImportElement element);`
+        * Compatible signature update: `bool RemoveImport(ImportElement element, bool holdEmptyGroup = false)`
+        
+    * CHANGED: Additional .ctors for XProject:
+        * +`XProject()`
+        * +`XProject(string file)`
+        * +`XProject(string file, IDictionary<string, string> properties)`
+        * +`XProject(Project prj)`
 
 [v2.0] 2017.10.05
 
