@@ -4,7 +4,7 @@
 
 MvsSln provides complex support (sln parser, r/w handlers, ...) of the Visual Studio .sln files and its projects (.vcxproj, .csproj., ...).
 
-It was as a part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) projects, but now it extracted into the new (specially for [DllExport](https://github.com/3F/DllExport) and for others).
+It was part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) projects, but now it extracted into the new (specially for [DllExport](https://github.com/3F/DllExport) and for others).
 
 [![Build status](https://ci.appveyor.com/api/projects/status/if1t4rhhntpf6ut3/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln/branch/master)
 [![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
@@ -23,15 +23,18 @@ The [MIT License (MIT)](https://github.com/3F/MvsSln/blob/master/License.txt)
 Copyright (c) 2013-2018  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
 ```
 
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif) ☕](https://3F.github.io/Donation/) 
+
 ## Why MvsSln ?
 
 Because today it still is the most easy way for complex work with Visual Studio .sln files and its projects (.vcxproj, .csproj., ...). Because it's free, because it's open.
 
-Even if you just need the basic access to information or more complex work through our readers and writers.
+Even if you just need the basic access to information or more complex work through our readers and writers. 
 
-You can also easily control all your projects data (Reference, ProjectReference, Properties, Import sections, and others).
+* You can also easily control all your projects data (Reference, ProjectReference, Properties, Import sections, ...).
+* Or even create your **custom sln parsing** of anything **in a few steps.**
 
-Moreover, it has been re-licensed now (LGPLv3 -> MIT) from the vsSolutionBuildEvent projects, so, enjoy with us now.
+Moreover, it has been re-licensed from vsSolutionBuildEvent projects (LGPLv3 -> MIT), so, enjoy with us.
 
 ```csharp
 using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All &~ SlnItems.ProjectDependencies))
@@ -139,7 +142,7 @@ using(var w = new SlnWriter(@"modified.sln", whandlers)) {
 // That's all. You should get 'modified.sln' without `UnLib` project.
 ```
 
-## Did you know ?
+## Did you know 
 
 ### Projects
 
@@ -210,7 +213,7 @@ XProject.AddReference("DllExport", lib, false);
 
 You can also specify it via `System.Reflection.Assembly` etc.
 
-## Example of extending
+## Example of extending (your custom handlers)
 
 Example of `LProject` handler (**reader**):
 
@@ -271,7 +274,7 @@ public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
 }
 ```
 
-## How to get
+## How to get MvsSln
 
 Available variants:
 
@@ -279,10 +282,6 @@ Available variants:
 * NuGet PM: `Install-Package MvsSln`
 * NuGet Commandline: `nuget install MvsSln`
 * [GitHub Releases](https://github.com/3F/MvsSln/releases) [ [latest](https://github.com/3F/MvsSln/releases/latest) ]
-* [Nightly builds](https://ci.appveyor.com/project/3Fs/mvssln/history) (`/artifacts` page). But remember: It can be unstable or not work at all. Use this for tests of latest changes.
+* [Nightly builds](https://ci.appveyor.com/project/3Fs/mvssln/history) (`/artifacts` page). It can be unstable or not work at all. Use this for tests of latest changes.
   * Artifacts [older than 6 months](https://www.appveyor.com/docs/packaging-artifacts/#artifacts-retention-policy) you can also find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/MvsSln/releases) page.
 
-
-## &_
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://r-eg.net/Donation/)
