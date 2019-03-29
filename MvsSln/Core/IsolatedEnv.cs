@@ -303,7 +303,7 @@ namespace net.r_eg.MvsSln.Core
             }
 
             var xprojects = new List<IXProject>();
-            foreach(var pItem in pItems)
+            foreach(var pItem in GetUniqPrjCfgs(pItems))
             {
                 if(pItem.project.pGuid == null) {
                     LSender.Send(this, $"{pItem.solutionConfig} -> {pItem.projectConfig} does not have reference to project item.", Message.Level.Debug);
@@ -333,6 +333,12 @@ namespace net.r_eg.MvsSln.Core
         protected virtual Project Load(string path, IDictionary<string, string> properties)
         {
             return new Project(path, properties, null, PrjCollection);
+        }
+
+        protected IEnumerable<ProjectItemCfg> GetUniqPrjCfgs(IEnumerable<ProjectItemCfg> pItems)
+        {
+            // each sln cfg may refer to the same prj cfg more than once
+            return pItems.GroupBy(p => new{ p.project.pGuid, p.projectConfig }).Select(g => g.First());
         }
 
         /// <summary>
