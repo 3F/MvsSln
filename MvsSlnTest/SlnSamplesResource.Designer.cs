@@ -162,6 +162,47 @@ namespace net.r_eg.MvsSlnTest {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 	GlobalSection(NestedProjects) = preSolution
+        ///		{BEB7D6F5-5065-4427-9797-2AD7511862D8} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
+        ///		{1257C186-1EC7-41C6-9344-14B2341BE6F6} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
+        ///		{80AEF083-D86A-416E-88B8-300DF20399AF} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
+        ///	EndGlobalSection.
+        /// </summary>
+        internal static string Section_WNestedProjects_Test2 {
+            get {
+                return ResourceManager.GetString("Section_WNestedProjects_Test2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 	GlobalSection(NestedProjects) = preSolution
+        ///		{A2D23001-08A8-49AF-A975-64ADA41EB08A} = {1257C186-1EC7-41C6-9344-14B2341BE6F6}
+        ///		{C4C66B30-66CD-4D68-9A95-372CA4A13611} = {80AEF083-D86A-416E-88B8-300DF20399AF}
+        ///		{C1A3BCC3-F120-471D-A31E-4B835A06F42D} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
+        ///	EndGlobalSection.
+        /// </summary>
+        internal static string Section_WNestedProjects_Test3 {
+            get {
+                return ResourceManager.GetString("Section_WNestedProjects_Test3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 	GlobalSection(NestedProjects) = preSolution
+        ///		{BEB7D6F5-5065-4427-9797-2AD7511862D8} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
+        ///		{1257C186-1EC7-41C6-9344-14B2341BE6F6} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
+        ///		{80AEF083-D86A-416E-88B8-300DF20399AF} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
+        ///		{A2D23001-08A8-49AF-A975-64ADA41EB08A} = {1257C186-1EC7-41C6-9344-14B2341BE6F6}
+        ///		{C4C66B30-66CD-4D68-9A95-372CA4A13611} = {80AEF083-D86A-416E-88B8-300DF20399AF}
+        ///		{C1A3BCC3-F120-471D-A31E-4B835A06F42D} = {BEB7D6F [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Section_WNestedProjects_Test4 {
+            get {
+                return ResourceManager.GetString("Section_WNestedProjects_Test4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 
         ///Microsoft Visual Studio Solution File, Format Version 12.00
         ///# Visual Studio 15

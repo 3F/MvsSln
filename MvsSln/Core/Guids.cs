@@ -22,9 +22,12 @@
  * THE SOFTWARE.
 */
 
+using System.Linq;
+using System.Collections.Generic;
+
 namespace net.r_eg.MvsSln.Core
 {
-    public struct Guids
+    public static class Guids
     {
         /// <summary>
         /// Solution Folder.
@@ -39,5 +42,40 @@ namespace net.r_eg.MvsSln.Core
         public const string PROJECT_VJ  = "{E6FDF86B-F3D1-11D4-8576-0002A516ECE8}";
         public const string PROJECT_WD  = "{2CFEAB61-6A3B-4EB8-B523-560B4BEEF521}";
         public const string PROJECT_WEB = "{E24C65DC-7377-472B-9ABA-BC803B73C61A}";
+
+        private static Dictionary<ProjectType, string> ProjectTypeGuids = new Dictionary<ProjectType, string>()
+        {
+            { ProjectType.Cs, PROJECT_CS },
+            { ProjectType.Db, PROJECT_DB },
+            { ProjectType.Fs, PROJECT_FS },
+            { ProjectType.Vb, PROJECT_VB },
+            { ProjectType.Vc, PROJECT_VC },
+            { ProjectType.Vj, PROJECT_VJ },
+            { ProjectType.Wd, PROJECT_WD },
+            { ProjectType.Web, PROJECT_WEB },
+            { ProjectType.SlnFolder, Guids.SLN_FOLDER },
+            { ProjectType.Unknown, null }
+        };
+
+        /// <summary>
+        /// Evaluate project type via Guid.
+        /// </summary>
+        /// <param name="guid">Project type Guid.</param>
+        /// <returns></returns>
+        public static ProjectType ProjectTypeBy(string guid)
+        {
+            return ProjectTypeGuids.Where(p => p.Value == guid)
+                    .Select(p => p.Key).First();
+        }
+
+        /// <summary>
+        /// Evaluate Guid via ProjectType enum.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static string GuidBy(ProjectType type)
+        {
+            return ProjectTypeGuids[type];
+        }
     }
 }
