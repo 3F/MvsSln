@@ -20,7 +20,7 @@ It was part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildE
 The [MIT License (MIT)](https://github.com/3F/MvsSln/blob/master/License.txt)
 
 ```
-Copyright (c) 2013-2018  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
+Copyright (c) 2013-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 ```
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif) ☕](https://3F.github.io/Donation/) 
