@@ -190,6 +190,92 @@ namespace net.r_eg.MvsSlnTest
         }
 
         [TestMethod]
+        public void SolutionFoldersAndProjectsTest1()
+        {
+            using(var sln = new Sln(SlnItems.SolutionItems | SlnItems.Projects, SlnSamplesResource.SolutionFoldersAndProjects))
+            {
+                Assert.AreEqual(4, sln.Result.SolutionFolders.Count());
+                Assert.AreEqual(5, sln.Result.ProjectItems.Count());
+
+                Assert.AreEqual("dir1", sln.Result.SolutionFolders.ElementAt(0).header.name);
+                Assert.AreEqual("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.SolutionFolders.ElementAt(0).header.pGuid);
+
+                Assert.AreEqual("subdir1", sln.Result.SolutionFolders.ElementAt(1).header.name);
+                Assert.AreEqual("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.SolutionFolders.ElementAt(1).header.pGuid);
+
+                Assert.AreEqual("dir3", sln.Result.SolutionFolders.ElementAt(2).header.name);
+                Assert.AreEqual("{49B0FC00-2D07-419C-86D4-FDEC8BF0F12C}", sln.Result.SolutionFolders.ElementAt(2).header.pGuid);
+
+                Assert.AreEqual("dir2", sln.Result.SolutionFolders.ElementAt(3).header.name);
+                Assert.AreEqual("{AB650B89-1B1B-43C6-B254-226B56ACB6EB}", sln.Result.SolutionFolders.ElementAt(3).header.pGuid);
+            }
+        }
+
+        [TestMethod]
+        public void SolutionFoldersAndProjectsTest2()
+        {
+            using(var sln = new Sln(SlnItems.SolutionItems | SlnItems.Projects, SlnSamplesResource.SolutionFoldersAndProjects))
+            {
+                Assert.AreEqual(4, sln.Result.SolutionFolders.Count());
+                Assert.AreEqual(5, sln.Result.ProjectItems.Count());
+
+                Assert.AreEqual(0, sln.Result.SolutionFolders.ElementAt(0).items.Count());
+                Assert.AreEqual(2, sln.Result.SolutionFolders.ElementAt(1).items.Count());
+                Assert.AreEqual(1, sln.Result.SolutionFolders.ElementAt(2).items.Count());
+                Assert.AreEqual(0, sln.Result.SolutionFolders.ElementAt(3).items.Count());
+
+                Assert.AreEqual(".gitignore", sln.Result.SolutionFolders.ElementAt(1).items.ElementAt(0).data);
+                Assert.AreEqual("Readme.txt", sln.Result.SolutionFolders.ElementAt(1).items.ElementAt(1).data);
+
+                Assert.AreEqual(".gitattributes", sln.Result.SolutionFolders.ElementAt(2).items.ElementAt(0).data);
+            }
+        }
+
+        [TestMethod]
+        public void SolutionFoldersAndProjectsTest3()
+        {
+            using(var sln = new Sln(SlnItems.SolutionItems | SlnItems.Projects, SlnSamplesResource.SolutionFoldersAndProjects))
+            {
+                Assert.AreEqual(null, sln.Result.SolutionFolders.ElementAt(0).header.parent.Value);
+
+                Assert.AreNotEqual(null, sln.Result.SolutionFolders.ElementAt(1).header.parent.Value);
+                Assert.AreEqual("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.SolutionFolders.ElementAt(1).header.parent.Value?.header.pGuid);
+                Assert.AreEqual("dir1", sln.Result.SolutionFolders.ElementAt(1).header.parent.Value?.header.name);
+
+                Assert.AreNotEqual(null, sln.Result.SolutionFolders.ElementAt(2).header.parent.Value);
+                Assert.AreEqual("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.SolutionFolders.ElementAt(2).header.parent.Value?.header.pGuid);
+                Assert.AreEqual("subdir1", sln.Result.SolutionFolders.ElementAt(2).header.parent.Value?.header.name);
+
+                Assert.AreEqual(null, sln.Result.SolutionFolders.ElementAt(3).header.parent.Value);
+            }
+        }
+
+        [TestMethod]
+        public void SolutionFoldersAndProjectsTest4()
+        {
+            using(var sln = new Sln(SlnItems.SolutionItems | SlnItems.Projects, SlnSamplesResource.SolutionFoldersAndProjects))
+            {
+                Assert.AreNotEqual(null, sln.Result.ProjectItems.ElementAt(0).parent.Value);
+                Assert.AreEqual("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.ProjectItems.ElementAt(0).parent.Value?.header.pGuid);
+                Assert.AreEqual("dir1", sln.Result.ProjectItems.ElementAt(0).parent.Value?.header.name);
+
+                Assert.AreNotEqual(null, sln.Result.ProjectItems.ElementAt(1).parent.Value);
+                Assert.AreEqual("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.ProjectItems.ElementAt(1).parent.Value?.header.pGuid);
+                Assert.AreEqual("subdir1", sln.Result.ProjectItems.ElementAt(1).parent.Value?.header.name);
+
+                Assert.AreEqual(null, sln.Result.ProjectItems.ElementAt(2).parent.Value);
+
+                Assert.AreNotEqual(null, sln.Result.ProjectItems.ElementAt(3).parent.Value);
+                Assert.AreEqual("{49B0FC00-2D07-419C-86D4-FDEC8BF0F12C}", sln.Result.ProjectItems.ElementAt(3).parent.Value?.header.pGuid);
+                Assert.AreEqual("dir3", sln.Result.ProjectItems.ElementAt(3).parent.Value?.header.name);
+
+                Assert.AreNotEqual(null, sln.Result.ProjectItems.ElementAt(4).parent.Value);
+                Assert.AreEqual("{AB650B89-1B1B-43C6-B254-226B56ACB6EB}", sln.Result.ProjectItems.ElementAt(4).parent.Value?.header.pGuid);
+                Assert.AreEqual("dir2", sln.Result.ProjectItems.ElementAt(4).parent.Value?.header.name);
+            }
+        }
+
+        [TestMethod]
         public void EnvTest1()
         {
             var projects = new Dictionary<string, RawText>() {

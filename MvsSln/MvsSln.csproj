@@ -49,7 +49,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
+    <Compile Include="Core\ObjHandlers\WNestedProjects.cs" />
     <Compile Include="Core\ObjHandlers\WVisualStudioVersion.cs" />
+    <Compile Include="Core\RefType.cs" />
+    <Compile Include="Core\SlnHandlers\LNestedProjects.cs" />
     <Compile Include="Core\SlnHeader.cs" />
     <Compile Include="Core\ObjHandlers\WProjectSolutionItems.cs" />
     <Compile Include="Core\SlnHandlers\LVisualStudioVersion.cs" />

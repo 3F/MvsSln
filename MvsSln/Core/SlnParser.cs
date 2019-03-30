@@ -81,6 +81,7 @@ namespace net.r_eg.MvsSln.Core
             SlnHandlers.Register(new LProject());
             SlnHandlers.Register(new LProjectDependencies());
             SlnHandlers.Register(new LProjectSolutionItems());
+            SlnHandlers.Register(new LNestedProjects());
             SlnHandlers.Register(new LProjectConfigurationPlatforms());
             SlnHandlers.Register(new LSolutionConfigurationPlatforms());
 

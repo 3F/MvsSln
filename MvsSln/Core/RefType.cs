@@ -22,41 +22,40 @@
  * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace net.r_eg.MvsSln.Core
 {
-    [DebuggerDisplay("{DbgDisplay}")]
-    public struct SolutionFolder
+    [DebuggerDisplay("{Value}")]
+    public sealed class RefType<T>
     {
-        /// <summary>
-        /// Information about folder section.
-        /// </summary>
-        public ProjectItem header;
-
-        /// <summary>
-        /// Available items for this folder.
-        /// </summary>
-        public IEnumerable<RawText> items;
-
-        /// <param name="pItem">Information about folder.</param>
-        /// <param name="def">List of items for this folder.</param>
-        public SolutionFolder(ProjectItem pItem, IEnumerable<RawText> def)
-            : this()
+        public T Value
         {
-            header  = pItem;
-            items   = def;
+            get;
+            set;
         }
 
-        #region DebuggerDisplay
-
-        private string DbgDisplay
+        public static implicit operator T(RefType<T> v)
         {
-            get => $"{header.name} [^{header.parent?.Value?.header.name}] = {items?.Count()} [{header.pGuid}]";
+            if(v == null) {
+                return default(T);
+            }
+            return v.Value;
         }
 
-        #endregion
+        public static implicit operator RefType<T>(T v)
+        {
+            return new RefType<T>(v);
+        }
+
+        public RefType(T value)
+        {
+            Value = value;
+        }
+
+        public RefType()
+        {
+
+        }
     }
 }

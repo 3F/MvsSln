@@ -97,6 +97,7 @@ namespace net.r_eg.MvsSln
 
         /// <summary>
         /// ProjectSection - SolutionItems
+        /// +NestedProjects dependencies
         /// </summary>
         SolutionItems = 0x0100,
 

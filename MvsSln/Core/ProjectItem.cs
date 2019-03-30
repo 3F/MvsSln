@@ -23,8 +23,10 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using net.r_eg.MvsSln.Log;
 
@@ -62,12 +64,14 @@ namespace net.r_eg.MvsSln.Core
         public string fullPath;
 
         /// <summary>
+        /// Contains parent item or null if it's a root element.
+        /// </summary>
+        public RefType<SolutionFolder?> parent;
+
+        /// <summary>
         /// Evaluated project type.
         /// </summary>
-        public ProjectType EpType
-        {
-            get => ProjectTypeBy(pType);
-        }
+        public ProjectType EpType;
 
         /// <summary>
         /// Evaluate project type via Guid.
@@ -124,6 +128,7 @@ namespace net.r_eg.MvsSln.Core
             name    = m.Groups["Name"].Value.Trim();
             path    = m.Groups["Path"].Value.Trim();
             pGuid   = m.Groups["Guid"].Value.Trim();
+            EpType  = ProjectTypeBy(pType);
 
             if(Path.IsPathRooted(path)) {
                 fullPath = path;
@@ -131,17 +136,17 @@ namespace net.r_eg.MvsSln.Core
             else {
                 fullPath = (solutionDir != null && path != null) ? Path.Combine(solutionDir, path) : path;
             }
-
             fullPath = Path.GetFullPath(fullPath); // D:\a\b\c\..\..\MvsSlnTest.csproj -> D:\a\MvsSlnTest.csproj
 
             LSender.Send(this, $"ProjectItem ->['{pGuid}'; '{name}'; '{path}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
+            parent = new RefType<SolutionFolder?>();
         }
 
         #region DebuggerDisplay
 
         private string DbgDisplay
         {
-            get => $"{name} [{pGuid}] = {path}";
+            get => $"{name} [^{parent?.Value?.header.name}] [{pGuid}] = {path}";
         }
 
         #endregion

@@ -102,6 +102,7 @@
     <EmbeddedResource Include="SlnSamplesResource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SlnSamplesResource.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

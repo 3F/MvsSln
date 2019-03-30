@@ -162,6 +162,24 @@ namespace net.r_eg.MvsSlnTest {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 
+        ///Microsoft Visual Studio Solution File, Format Version 12.00
+        ///# Visual Studio 15
+        ///VisualStudioVersion = 15.0.28307.329
+        ///MinimumVisualStudioVersion = 10.0.40219.1
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;ConsoleApp1&quot;, &quot;ConsoleApp1\ConsoleApp1.csproj&quot;, &quot;{20FD5406-C998-4926-956F-5779766D7C31}&quot;
+        ///EndProject
+        ///Project(&quot;{2150E333-8FDC-42A3-9474-1A3956D46DE8}&quot;) = &quot;dir1&quot;, &quot;dir1&quot;, &quot;{1571A74C-579F-4C91-8484-322B7D89B430}&quot;
+        ///EndProject
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;ClassLibrary1&quot;, &quot;C [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SolutionFoldersAndProjects {
+            get {
+                return ResourceManager.GetString("SolutionFoldersAndProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Microsoft Visual Studio Solution File, Format Version 11.00
         ///# Visual Studio 14
         ///VisualStudioVersion = 14.0.25420.1
