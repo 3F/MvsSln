@@ -11,34 +11,18 @@ namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
     {
         protected List<SolutionFolder> folders = new List<SolutionFolder>()
         {
-                new SolutionFolder
-                (
-                    new ProjectItem("{8B05CE1C-999E-460D-80FF-E44DFEC019E7}", "dir1", ProjectType.SlnFolder),
-                    new List<RawText>() { }
-                ),
-                new SolutionFolder
-                (
-                    new ProjectItem("{BEB7D6F5-5065-4427-9797-2AD7511862D8}", "dir2", ProjectType.SlnFolder),
-                    new List<RawText>() { }
-                ),
-                new SolutionFolder
-                (
-                    new ProjectItem("{1257C186-1EC7-41C6-9344-14B2341BE6F6}", "dir3", ProjectType.SlnFolder),
-                    new List<RawText>() { }
-                ),
-                new SolutionFolder
-                (
-                    new ProjectItem("{80AEF083-D86A-416E-88B8-300DF20399AF}", "dir4", ProjectType.SlnFolder),
-                    new List<RawText>() { }
-                ),
+                new SolutionFolder("{8B05CE1C-999E-460D-80FF-E44DFEC019E7}", "dir1", null),
+                new SolutionFolder("{BEB7D6F5-5065-4427-9797-2AD7511862D8}", "dir2", null),
+                new SolutionFolder("{1257C186-1EC7-41C6-9344-14B2341BE6F6}", "dir3", null),
+                new SolutionFolder("{80AEF083-D86A-416E-88B8-300DF20399AF}", "dir4", null),
         };
 
         protected List<ProjectItem> projects = new List<ProjectItem>()
         {
-            new ProjectItem("{A2D23001-08A8-49AF-A975-64ADA41EB08A}", "Project1", "path1", ProjectType.Cs),
-            new ProjectItem("{470DA54D-A309-4A6B-8670-33F017213113}", "Project2", "path2", ProjectType.Cs),
-            new ProjectItem("{C4C66B30-66CD-4D68-9A95-372CA4A13611}", "Project3", "path3", ProjectType.Vc),
-            new ProjectItem("{C1A3BCC3-F120-471D-A31E-4B835A06F42D}", "Project4", "path4", ProjectType.Vc),
+            new ProjectItem("{A2D23001-08A8-49AF-A975-64ADA41EB08A}", "Project1", ProjectType.Cs),
+            new ProjectItem("{470DA54D-A309-4A6B-8670-33F017213113}", "Project2", ProjectType.Cs),
+            new ProjectItem("{C4C66B30-66CD-4D68-9A95-372CA4A13611}", "Project3", ProjectType.Vc),
+            new ProjectItem("{C1A3BCC3-F120-471D-A31E-4B835A06F42D}", "Project4", ProjectType.Vc),
         };
 
         [TestMethod]

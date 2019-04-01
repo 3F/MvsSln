@@ -24,6 +24,7 @@
 
 using System;
 using System.Diagnostics;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -85,10 +86,8 @@ namespace net.r_eg.MvsSln.Core
 
         public static bool operator ==(ConfigItem a, ConfigItem b)
         {
-            if(Object.ReferenceEquals(a, null)) {
-                return Object.ReferenceEquals(b, null);
-            }
-            return a.Equals(b);
+            return Object.ReferenceEquals(a, null) ? 
+                    Object.ReferenceEquals(b, null) : a.Equals(b);
         }
 
         public static bool operator !=(ConfigItem a, ConfigItem b)
@@ -103,15 +102,18 @@ namespace net.r_eg.MvsSln.Core
             }
 
             var b = (ConfigItem)obj;
-            return (ConfigurationByRuleICase == b.ConfigurationByRuleICase) 
-                    && (PlatformByRuleICase == b.PlatformByRuleICase);
+
+            return ConfigurationByRuleICase == b.ConfigurationByRuleICase 
+                    && PlatformByRuleICase == b.PlatformByRuleICase;
         }
 
         public override int GetHashCode()
         {
-            unchecked {
-                return (Configuration.GetHashCode() << 5) + Configuration.GetHashCode() ^ Platform.GetHashCode();
-            }
+            return 0.CalculateHashCode
+            (
+                Configuration.GetHashCode(),
+                Platform.GetHashCode()
+            );
         }
 
         public override string ToString()

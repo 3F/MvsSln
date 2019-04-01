@@ -20,6 +20,27 @@ namespace net.r_eg.MvsSlnTest.Extensions
         }
 
         [TestMethod]
+        public void GuidSlnFormatTest1()
+        {
+            Assert.AreEqual
+            (
+                "{D98C1DD4-008F-04B2-E980-0998ECF8427E}", 
+                new Guid("{d98c1dd4-008f-04b2-e980-0998ecf8427e}").SlnFormat()
+            );
+        }
+
+        [TestMethod]
+        public void ReformatSlnGuidTest1()
+        {
+            Assert.AreEqual("{D98C1DD4-008F-04B2-E980-0998ECF8427E}", "".ReformatSlnGuid());
+            Assert.AreEqual("{D98C1DD4-008F-04B2-E980-0998ECF8427E}", " ".ReformatSlnGuid());
+            Assert.AreEqual(null, ((string)null).ReformatSlnGuid());
+            Assert.AreEqual("{842DDBFE-FECA-8620-2CB4-399751A8A7E3}", "invalid".ReformatSlnGuid());
+            Assert.AreEqual("{DCE5BB88-7640-4CFB-861D-6CBAA1F6EF0E}", "dce5bb88-7640-4cfb-861d-6cbaa1f6ef0e".ReformatSlnGuid());
+            Assert.AreEqual("{D98C1DD4-008F-04B2-E980-0998ECF8427E}", "{d98c1dd4-008f-04b2-e980-0998ecf8427e}".ReformatSlnGuid());
+        }
+
+        [TestMethod]
         public void DirectoryPathFormatTest1()
         {
             string dir1 = @"D:\path\to\dir1";

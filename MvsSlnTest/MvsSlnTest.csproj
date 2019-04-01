@@ -64,6 +64,7 @@
     <Compile Include="Core\ObjHandlers\WVisualStudioVersionTest.cs" />
     <Compile Include="Core\ObjHandlers\WSolutionConfigurationPlatformsTest.cs" />
     <Compile Include="Core\ObjHandlers\WProjectTest.cs" />
+    <Compile Include="Core\SolutionFolderTest.cs" />
     <Compile Include="Core\SlnHeaderTest.cs" />
     <Compile Include="Core\SlnWriterTest.cs" />
     <Compile Include="Core\XProjectTest.cs" />

@@ -10,6 +10,10 @@ It was part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildE
 [![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
 [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
+[![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln/build/tests)
+
+[![Build history](https://buildstats.info/appveyor/chart/3Fs/mvssln?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/mvssln/history)
+
 
 **Download:** [/releases](https://github.com/3F/MvsSln/releases) [ **[latest](https://github.com/3F/MvsSln/releases/latest)** ]
 
@@ -77,6 +81,44 @@ using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All &~ SlnIte
 
 } // release all loaded projects
 ```
+
+Easy to create/modify/or just use parsed folders, projects, and other. 
+
+Safely compare anything: 
+
+```csharp
+if(new ProjectItem(...) == new ProjectItem(...)) { ... }
+if(new SolutionFolder(...) == new SolutionFolder(...)) { ... }
+if(new RawText(...) == new RawText(...)) { ... }
+if(new ConfigItem(...) == new ConfigItem(...)) { ... }
+if((RawText)"data" == (RawText)"data") { ... }
+````
+
+
+Use Subdirectories:
+
+```csharp
+new SolutionFolder("dir1", 
+    new SolutionFolder("dir2", 
+        new SolutionFolder("dir3", "hMSBuild.bat", "DllExport.bat")
+    )
+);
+...
+new SolutionFolder("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder2", dir1, ".gnt\\gnt.core");
+...
+```
+
+Projects and Folders:
+
+```csharp
+new ProjectItem("Project1", ProjectType.Cs);
+new ProjectItem("Project1", ProjectType.Cs, new SolutionFolder("dir1"));
+new ProjectItem("Project2", ProjectType.Vc, "path 1");
+new ProjectItem("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "Project1", ProjectType.Cs, dir2);
+...
+```
+
+See related unit tests.
 
 By the way, the any new solution handler (reader or writer) can be easily added by our flexible architecture. *See below.*
 
@@ -167,7 +209,7 @@ Release_net45|Any CPU
 Release|Any CPU
 ```
 
-The all available configurations for each projects should be 8 * 8 = 64, i.e. 64 instances that can be loaded as each different projects. `EnvWithProjects` will load all available projects and you finally should see 64 different instances, as for vsSolutionBuildEvent above.
+Maximum possible configurations for each projects above should be calculated as 8 * 8 = 64, ie. 64 instances that *can be* loaded as each different project. `EnvWithProjects` will try load all available, but in fact, mostly 2 or more project-configuration can be related to the same 1 solution-configuration, therefore it can be just 30 or even 20 in reality, and so on.
 
 However, if you only need to work with common data of selected project: you just need to use any available configuration. To load projects only with specific configuration, use for example `IEnvironment.LoadProjects`:
 
@@ -185,7 +227,7 @@ using(var sln = new Sln(@"vsSolutionBuildEvent.sln", SlnItems.Env))
 }
 ```
 
-With latest version should be also available `IEnvironment.LoadMinimalProjects` or `EnvWithMinimalProjects` flag.
+**With latest version** should be also available `IEnvironment.LoadMinimalProjects` or `EnvWithMinimalProjects` flag.
 
 ### Adding Reference & Assembly name
 

@@ -23,6 +23,7 @@
 */
 
 using System;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
@@ -39,10 +40,8 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         public static bool operator ==(HandlerValue a, HandlerValue b)
         {
-            if(Object.ReferenceEquals(a, null)) {
-                return Object.ReferenceEquals(b, null);
-            }
-            return a.Equals(b);
+            return Object.ReferenceEquals(a, null) ? 
+                Object.ReferenceEquals(b, null) : a.Equals(b);
         }
 
         public static bool operator !=(HandlerValue a, HandlerValue b)
@@ -65,19 +64,12 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         public override int GetHashCode()
         {
-            int polynom(int r, int x)
-            {
-                unchecked {
-                    return (r << 5) + r ^ x;
-                }
-            };
-
-            int h = 0;
-            h = polynom(h, handler.GetHashCode());
-            h = polynom(h, value.GetHashCode());
-            h = polynom(h, id.GetHashCode());
-
-            return h;
+            return 0.CalculateHashCode
+            (
+                handler.GetHashCode(),
+                value.GetHashCode(),
+                id.GetHashCode()
+            );
         }
 
         public HandlerValue(IObjHandler handler)

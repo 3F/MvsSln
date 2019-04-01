@@ -26,6 +26,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core
@@ -37,27 +38,27 @@ namespace net.r_eg.MvsSln.Core
     public struct ProjectItem
     {
         /// <summary>
-        /// Project GUID
+        /// Project GUID.
         /// </summary>
         public string pGuid;
 
         /// <summary>
-        /// Project type GUID
+        /// Project type GUID.
         /// </summary>
         public string pType;
 
         /// <summary>
-        /// Project name
+        /// Project name.
         /// </summary>
         public string name;
 
         /// <summary>
-        /// Relative path to project
+        /// Relative path to project.
         /// </summary>
         public string path;
 
         /// <summary>
-        /// Full path to project 
+        /// Evaluated full path to project.
         /// </summary>
         public string fullPath;
 
@@ -72,9 +73,9 @@ namespace net.r_eg.MvsSln.Core
         public ProjectType EpType;
 
         /// <summary>
-        /// Evaluate project type via Guid.
+        /// Evaluate project type via GUID.
         /// </summary>
-        /// <param name="guid">Project type Guid.</param>
+        /// <param name="guid">Project type GUID.</param>
         /// <returns></returns>
         [Obsolete("Use `Guids.ProjectTypeBy(string guid)` instead.", false)]
         public static ProjectType ProjectTypeBy(string guid)
@@ -82,38 +83,115 @@ namespace net.r_eg.MvsSln.Core
             return Guids.ProjectTypeBy(guid);
         }
 
-        public ProjectItem(string name, ProjectType pType)
-            : this(name, name, pType)
+        public static bool operator ==(ProjectItem a, ProjectItem b)
+        {
+            return Object.ReferenceEquals(a, null) ?
+                    Object.ReferenceEquals(b, null) : a.Equals(b);
+        }
+
+        public static bool operator !=(ProjectItem a, ProjectItem b)
+        {
+            return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(Object.ReferenceEquals(obj, null) || !(obj is ProjectItem)) {
+                return false;
+            }
+
+            var b = (ProjectItem)obj;
+
+            return pGuid == b.pGuid
+                    && pType == b.pType
+                    && name == b.name
+                    && path == b.path
+                    && fullPath == b.fullPath
+                    && EpType == b.EpType
+                    && parent == b.parent;
+        }
+
+        public override int GetHashCode()
+        {
+            return 0.CalculateHashCode
+            (
+                pGuid.GetHashCode(),
+                pType.GetHashCode(),
+                name.GetHashCode(),
+                path.GetHashCode(),
+                fullPath.GetHashCode(),
+                EpType.GetHashCode(),
+                parent.GetHashCode()
+            );
+        }
+
+        /// <param name="name">Project name.</param>
+        /// <param name="pType">Project type GUID.</param>
+        /// <param name="parent">Parent folder.</param>
+        public ProjectItem(string name, ProjectType pType, SolutionFolder? parent = null)
+            : this(name, pType, name, parent)
         {
 
         }
 
-        public ProjectItem(string pGuid, string name, ProjectType pType)
-            : this(pGuid, name, name, pType)
+        /// <param name="name">Project name.</param>
+        /// <param name="pType">Project type GUID.</param>
+        /// <param name="path"></param>
+        /// <param name="parent">Parent folder.</param>
+        /// <param name="slnDir">To evaluate `fullPath` define path to solution directory.</param>
+        public ProjectItem(string name, ProjectType pType, string path, SolutionFolder? parent = null, string slnDir = null)
+            : this(Guid.NewGuid().SlnFormat(), name, pType, path, parent, slnDir)
         {
 
         }
 
-        public ProjectItem(string name, string path, ProjectType pType, string slnDir = null)
-            : this(Guid.NewGuid().ToString(), name, path, pType, slnDir)
+        /// <param name="pGuid">Project GUID.</param>
+        /// <param name="name">Project name.</param>
+        /// <param name="pType">Project type GUID.</param>
+        /// <param name="parent">Parent folder.</param>
+        public ProjectItem(string pGuid, string name, ProjectType pType, SolutionFolder? parent = null)
+            : this(pGuid, name, pType, name, parent)
         {
 
         }
 
-        public ProjectItem(string pGuid, string name, string path, ProjectType pType, string slnDir = null)
+        /// <param name="pGuid">Project GUID.</param>
+        /// <param name="name">Project name.</param>
+        /// <param name="pType">Project type GUID.</param>
+        /// <param name="path">Relative path to project.</param>
+        /// <param name="parent">Parent folder.</param>
+        /// <param name="slnDir">To evaluate `fullPath` define path to solution directory.</param>
+        public ProjectItem(string pGuid, string name, ProjectType pType, string path, SolutionFolder? parent = null, string slnDir = null)
             : this()
         {
-            Init(pGuid, name, path, pType, slnDir);
+            Init(pGuid, name, path, pType, parent, slnDir);
         }
 
+        /// <param name="pGuid">Project GUID.</param>
+        /// <param name="name">Project name.</param>
+        /// <param name="path">Relative path to project.</param>
+        /// <param name="pType">Project type GUID.</param>
+        /// <param name="slnDir">To evaluate `fullPath` define path to solution directory.</param>
         public ProjectItem(string pGuid, string name, string path, string pType, string slnDir = null)
             : this()
         {
             Init(pGuid, name, path, pType, slnDir);
         }
 
+        /// <param name="prj">Initialize data from other project.</param>
+        public ProjectItem(ProjectItem prj)
+        {
+            pGuid       = prj.pGuid.ReformatSlnGuid();
+            pType       = prj.pType.ReformatSlnGuid();
+            name        = prj.name;
+            path        = prj.path;
+            fullPath    = prj.fullPath;
+            EpType      = prj.EpType;
+            parent      = prj.parent;
+        }
+
         /// <param name="raw">Initialize data from raw line.</param>
-        /// <param name="solutionDir">Path to solution directory.</param>
+        /// <param name="solutionDir">To evaluate `fullPath` define path to solution directory.</param>
         public ProjectItem(string raw, string solutionDir)
             : this()
         {
@@ -133,28 +211,28 @@ namespace net.r_eg.MvsSln.Core
             );
         }
 
-        private void Init(string pGuid, string name, string path, ProjectType pType, string slnDir)
+        private void Init(string pGuid, string name, string path, ProjectType pType, SolutionFolder? parent, string slnDir)
         {
             SetProjectType(pType);
-            Init(pGuid, name, path, slnDir);
+            SetFields(pGuid, name, path, slnDir, parent);
         }
 
         private void Init(string pGuid, string name, string path, string pType, string slnDir)
         {
             SetProjectType(pType);
-            Init(pGuid, name, path, slnDir);
+            SetFields(pGuid, name, path, slnDir);
         }
 
-        private void Init(string pGuid, string name, string path, string slnDir)
+        private void SetFields(string pGuid, string name, string path, string slnDir, SolutionFolder? parent = null)
         {
             this.name   = name.Trim();
             this.path   = path.Trim();
-            this.pGuid  = pGuid.Trim();
+            this.pGuid  = pGuid.ReformatSlnGuid();
 
             SetFullPath(slnDir);
-
             LSender.Send(this, $"ProjectItem ->['{pGuid}'; '{name}'; '{path}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
-            parent = new RefType<SolutionFolder?>();
+
+            this.parent = new RefType<SolutionFolder?>(parent);
         }
 
         private void SetProjectType(ProjectType pType)
@@ -169,16 +247,12 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="pType"></param>
         private void SetProjectType(string pType)
         {
-            this.pType  = pType;
+            this.pType  = pType.ReformatSlnGuid();
             EpType      = Guids.ProjectTypeBy(pType);
         }
 
         private void SetFullPath(string slnDir)
         {
-            if(slnDir == null) {
-                return;
-            }
-
             if(Path.IsPathRooted(path)) {
                 fullPath = path;
             }

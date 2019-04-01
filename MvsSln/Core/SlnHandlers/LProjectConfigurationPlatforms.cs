@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
@@ -46,18 +47,12 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 
             public int GetHashCode(Cortege obj)
             {
-                Func<int, int, int> polynom = delegate(int r, int x) {
-                    unchecked {
-                        return (r << 5) + r ^ x;
-                    }
-                };
-
-                int h = 0;
-                h = polynom(h, obj.pGuid.GetHashCode());
-                h = polynom(h, obj.csln.GetHashCode());
-                h = polynom(h, obj.cprj.GetHashCode());
-
-                return h;
+                return 0.CalculateHashCode
+                (
+                    obj.pGuid.GetHashCode(),
+                    obj.csln.GetHashCode(),
+                    obj.cprj.GetHashCode()
+                );
             }
         }
 

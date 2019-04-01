@@ -38,12 +38,39 @@ namespace net.r_eg.MvsSln.Extensions
         /// <returns></returns>
         public static Guid Guid(this string str)
         {
+            if(System.Guid.TryParse(str, out Guid res)) {
+                return res;
+            }
+
             if(str == null) {
                 str = String.Empty;
             }
+
             using(MD5 md5 = MD5.Create()) {
                 return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
             }
+        }
+
+        /// <summary>
+        /// Sln format of GUID:
+        /// 32 uppercase digits separated by hyphens, enclosed in braces:
+        /// ie. {100FD7F2-3278-49C7-B9D4-A91F1C65BED3}
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public static string SlnFormat(this Guid guid)
+        {
+            return guid.ToString("B").ToUpper();
+        }
+
+        /// <summary>
+        /// Returns string GUID formated via `GuidSlnFormat`
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        public static string ReformatSlnGuid(this string guid)
+        {
+            return guid?.Trim().Guid().SlnFormat();
         }
 
         /// <summary>

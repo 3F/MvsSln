@@ -22,6 +22,7 @@
  * THE SOFTWARE.
 */
 
+using System;
 using System.Diagnostics;
 
 namespace net.r_eg.MvsSln.Core
@@ -46,6 +47,34 @@ namespace net.r_eg.MvsSln.Core
         public static implicit operator RefType<T>(T v)
         {
             return new RefType<T>(v);
+        }
+
+        public static bool operator ==(RefType<T> a, RefType<T> b)
+        {
+            bool _EqNull(RefType<T> x)
+            {
+                return Object.ReferenceEquals(x, null)
+                    || Object.ReferenceEquals(x.Value, null);
+            }
+            return _EqNull(a) ? _EqNull(b) : a.Equals(b);
+        }
+
+        public static bool operator !=(RefType<T> a, RefType<T> b)
+        {
+            return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(Object.ReferenceEquals(obj, null) || !(obj is RefType<T>)) {
+                return false;
+            }
+            return Value.Equals(((RefType<T>)obj).Value);
+        }
+
+        public override int GetHashCode()
+        {
+            return Value.GetHashCode();
         }
 
         public RefType(T value)
