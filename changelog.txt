@@ -2,6 +2,61 @@
 MvsSln  :: https://github.com/3F/MvsSln
 _ _ _ _
 
+[v2.2] 2019.04.08
+
+    * FIXED: Fixed possible error when loading all found projects: 
+            'An equivalent project is already present in the project collection, ...'
+    
+    * NEW: Implemented R/W Handlers for `NestedProjects` section. Issue #7
+    
+    * NEW: Implemented new R/W handlers for `ExtensibilityGlobals` section.
+            Use `ExtItems = 0x0400` flag to activate it.
+
+    * NEW: Implemented native object comparison for ProjectItem, SolutionFolder, and RawText.
+            ```
+            ~
+            if(new ProjectItem(...) == new ProjectItem(...)) { ... }
+            if(new SolutionFolder(...) == new SolutionFolder(...)) { ... }
+            if(new RawText(...) == new RawText(...)) { ... }
+            if(new ConfigItem(...) == new ConfigItem(...)) { ... }
+            if((RawText)"data" == (RawText)"data") { ... }
+            ```
+
+    * NEW: New constructors for `SolutionFolder`. Issue #8:
+        ```
+        +SolutionFolder(string fGuid, string name, IEnumerable<RawText> items)
+        +SolutionFolder(Guid fGuid, string name)
+        +SolutionFolder(string fGuid, string name, SolutionFolder parent, params RawText[] items)
+        +SolutionFolder(string fGuid, string name, SolutionFolder? parent, IEnumerable<RawText> items)
+        +SolutionFolder(string name, params RawText[] items)
+        +SolutionFolder(string name, IEnumerable<RawText> items)
+        +SolutionFolder(string name, SolutionFolder parent, params RawText[] items)
+        +SolutionFolder(string name, SolutionFolder parent, IEnumerable<RawText> items)
+        +SolutionFolder(ProjectItem pItem, params RawText[] def)
+        +SolutionFolder(SolutionFolder folder)
+        ```
+        
+    * NEW: New constructors for `ProjectItem` (part of Issue #8):
+        ```
+        +ProjectItem(string name, ProjectType pType, SolutionFolder? parent = null)
+        +ProjectItem(string name, ProjectType pType, string path, SolutionFolder? parent = null, string slnDir = null)
+        +ProjectItem(string pGuid, string name, ProjectType pType, SolutionFolder? parent = null)
+        +ProjectItem(string pGuid, string name, ProjectType pType, string path, SolutionFolder? parent = null, string slnDir = null)
+        +ProjectItem(string pGuid, string name, string path, string pType, string slnDir = null)
+        +ProjectItem(ProjectItem prj)
+        ```
+        
+    * CHANGED: `ProjectItem.ProjectTypeBy(string guid)` marked as [Obsolete] and can be removed in new versions later.
+                You can use new methods when you need:
+                * `Guids.ProjectTypeBy(string guid)`
+                * `Guids.GuidBy(ProjectType type)`
+                
+    * CHANGED: Updated package tools hMSBuild 2.0 & GetNuTool 1.7.
+               Release notes:
+                * https://github.com/3F/GetNuTool/releases/tag/v1.7
+                * https://github.com/3F/hMSBuild/releases/tag/v2.0
+                
+
 [v2.1] 2018.08.05
 
     * FIXED: Fixed bug 'The node is not parented by this object' 
