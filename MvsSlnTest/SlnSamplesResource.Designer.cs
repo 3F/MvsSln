@@ -61,6 +61,22 @@ namespace net.r_eg.MvsSlnTest {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 
+        ///Microsoft Visual Studio Solution File, Format Version 12.00
+        ///# Visual Studio 15
+        ///VisualStudioVersion = 15.0.28307.329
+        ///MinimumVisualStudioVersion = 10.0.40219.1
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;ConsoleApp1&quot;, &quot;ConsoleApp1\ConsoleApp1.csproj&quot;, &quot;{20FD5406-C998-4926-956F-5779766D7C31}&quot;
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;ClassLibrary1&quot;, &quot;ClassLibrary1\ClassLibrary1.csproj&quot;, &quot;{3D3E87AF-22F7-4E26-937F-AA430BCA2942}&quot;
+        ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;Cla [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ExtensibilityGlobals {
+            get {
+                return ResourceManager.GetString("ExtensibilityGlobals", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Microsoft Visual Studio Solution File, Format Version 11.00
         ///# Visual Studio 15
         ///VisualStudioVersion = 15.0.26228.4
@@ -158,6 +174,20 @@ namespace net.r_eg.MvsSlnTest {
         internal static string Section_Sln_Items {
             get {
                 return ResourceManager.GetString("Section_Sln_Items", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 	GlobalSection(ExtensibilityGlobals) = postSolution
+        ///		SolutionGuid = {B3244B90-20DE-4D69-8692-EBC686503F90}
+        ///		SomeOtherEmptyData = 
+        ///		SomeNullData
+        ///		EnterpriseLibraryConfigurationToolBinariesPath = packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin
+        ///	EndGlobalSection.
+        /// </summary>
+        internal static string Section_WExtensibilityGlobals_Test {
+            get {
+                return ResourceManager.GetString("Section_WExtensibilityGlobals_Test", resourceCulture);
             }
         }
         

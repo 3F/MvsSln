@@ -134,6 +134,18 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
+        /// Optional Key[-Value] records like `SolutionGuid` and so on
+        /// that can be presented inside an ExtensibilityGlobals section.
+        /// 
+        /// ie. Flags/Key-only records are possible too (values will contain null).
+        /// </summary>
+        public IDictionary<string, string> ExtItems
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Environment for current data.
         /// </summary>
         public IEnvironment Env

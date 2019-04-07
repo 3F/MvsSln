@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ConfigItemTest.cs" />
+    <Compile Include="Core\ObjHandlers\WExtensibilityGlobalsTest.cs" />
     <Compile Include="Core\ObjHandlers\WProjectConfigurationPlatformsTest.cs" />
     <Compile Include="Core\ObjHandlers\WNestedProjectsTest.cs" />
     <Compile Include="Core\ObjHandlers\WProjectSolutionItemsTest.cs" />

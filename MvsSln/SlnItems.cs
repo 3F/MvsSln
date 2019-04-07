@@ -39,6 +39,7 @@ namespace net.r_eg.MvsSln
                 | ProjectConfPlatforms 
                 | ProjectDependencies
                 | SolutionItems
+                | ExtItems
                 | Env
                 | LoadDefaultData
                 | Map,
@@ -105,5 +106,10 @@ namespace net.r_eg.MvsSln
         /// Header information.
         /// </summary>
         Header = 0x0200,
+
+        /// <summary>
+        /// Includes ExtensibilityGlobals
+        /// </summary>
+        ExtItems = 0x0400,
     }
 }

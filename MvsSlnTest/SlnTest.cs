@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -186,6 +187,34 @@ namespace net.r_eg.MvsSlnTest
                 Assert.AreEqual(0, sln.Result.ProjectDependencies.Dependencies["{97F0E2FF-42DB-4506-856D-8694DD99F827}"].Count);
                 Assert.AreEqual(0, sln.Result.ProjectDependencies.Dependencies["{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}"].Count);
                 Assert.AreEqual(0, sln.Result.ProjectDependencies.Dependencies["{9673A8FC-07E1-4BB3-A97E-020481A5275E}"].Count);
+            }
+        }
+
+        [TestMethod]
+        public void ExtensibilityGlobalsTest1()
+        {
+            using(var sln = new Sln(SlnItems.All &~ SlnItems.ExtItems, SlnSamplesResource.ExtensibilityGlobals))
+            {
+                Assert.AreEqual(null, sln.Result.ExtItems);
+            }
+        }
+
+        [TestMethod]
+        public void ExtensibilityGlobalsTest2()
+        {
+            using(var sln = new Sln(SlnItems.ExtItems, SlnSamplesResource.ExtensibilityGlobals))
+            {
+                Assert.AreEqual(4, sln.Result.ExtItems.Count());
+
+                Assert.AreEqual(true, sln.Result.ExtItems.ContainsKey("SolutionGuid"));
+                Assert.AreEqual(true, sln.Result.ExtItems.ContainsKey("SomeOtherEmptyData"));
+                Assert.AreEqual(true, sln.Result.ExtItems.ContainsKey("SomeNullData"));
+                Assert.AreEqual(true, sln.Result.ExtItems.ContainsKey("EnterpriseLibraryConfigurationToolBinariesPath"));
+
+                Assert.AreEqual("{B3244B90-20DE-4D69-8692-EBC686503F90}", sln.Result.ExtItems["SolutionGuid"]);
+                Assert.AreEqual(String.Empty, sln.Result.ExtItems["SomeOtherEmptyData"]);
+                Assert.AreEqual(null, sln.Result.ExtItems["SomeNullData"]);
+                Assert.AreEqual(@"packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin", sln.Result.ExtItems["EnterpriseLibraryConfigurationToolBinariesPath"]);
             }
         }
 

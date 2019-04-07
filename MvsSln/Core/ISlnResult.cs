@@ -89,6 +89,14 @@ namespace net.r_eg.MvsSln.Core
         ISlnPDManager ProjectDependencies { get; }
 
         /// <summary>
+        /// Optional Key[-Value] records like `SolutionGuid` and so on
+        /// that can be presented inside an ExtensibilityGlobals section.
+        /// 
+        /// ie. Flags/Key-only records are possible too (values will contain null).
+        /// </summary>
+        IDictionary<string, string> ExtItems { get; set; }
+
+        /// <summary>
         /// Environment for current data.
         /// </summary>
         IEnvironment Env { get; }

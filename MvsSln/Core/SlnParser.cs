@@ -84,6 +84,7 @@ namespace net.r_eg.MvsSln.Core
             SlnHandlers.Register(new LNestedProjects());
             SlnHandlers.Register(new LProjectConfigurationPlatforms());
             SlnHandlers.Register(new LSolutionConfigurationPlatforms());
+            SlnHandlers.Register(new LExtensibilityGlobals());
 
             // TODO: validate CoHandlers ref
         }
