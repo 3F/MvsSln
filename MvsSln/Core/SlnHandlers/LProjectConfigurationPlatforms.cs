@@ -1,18 +1,18 @@
 ﻿/*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,8 +35,8 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         {
             public bool Equals(Cortege a, Cortege b)
             {
-                if(a.pGuid != b.pGuid 
-                    || a.csln != b.csln 
+                if(a.pGuid != b.pGuid
+                    || a.csln != b.csln
                     || a.cprj != b.cprj
                     )
                 {
@@ -120,8 +120,9 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 
                 bool isActiveCfg    = type.Equals("ActiveCfg", StringComparison.OrdinalIgnoreCase);
                 bool isBuild0       = type.Equals("Build.0", StringComparison.OrdinalIgnoreCase);
+                bool isDeploy0       = type.Equals("Deploy.0", StringComparison.OrdinalIgnoreCase);
 
-                if(!isActiveCfg && !isBuild0) {
+                if(!isActiveCfg && !isBuild0 && !isDeploy0) {
                     LSender.Send(this, $"Project Configuration has been ignored for line '{_line}'", Message.Level.Debug);
                     continue;
                 }
@@ -144,6 +145,13 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 {
                     LSender.Send(this, $"Project Configuration, update Build.0  `{pGuid}`", Message.Level.Debug);
                     cortege[ident].IncludeInBuild = true;
+                    continue;
+                }
+
+                if(isDeploy0)
+                {
+                    LSender.Send(this, $"Project Configuration, update Deploy.0  `{pGuid}`", Message.Level.Debug);
+                    cortege[ident].IncludeInDeploy = true;
                     continue;
                 }
             }

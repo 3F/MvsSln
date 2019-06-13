@@ -180,7 +180,7 @@ namespace net.r_eg.MvsSlnTest {
         /// <summary>
         ///   Looks up a localized string similar to 	GlobalSection(ExtensibilityGlobals) = postSolution
         ///		SolutionGuid = {B3244B90-20DE-4D69-8692-EBC686503F90}
-        ///		SomeOtherEmptyData = 
+        ///		SomeOtherEmptyData =
         ///		SomeNullData
         ///		EnterpriseLibraryConfigurationToolBinariesPath = packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin
         ///	EndGlobalSection.
