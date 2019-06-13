@@ -82,15 +82,14 @@ namespace net.r_eg.MvsSlnTest {
         ///VisualStudioVersion = 15.0.26228.4
         ///MinimumVisualStudioVersion = 10.0.30319.1
         ///Project(&quot;{2150E333-8FDC-42A3-9474-1A3956D46DE8}&quot;) = &quot;root&quot;, &quot;root&quot;, &quot;{571DA510-79F7-48C0-9024-9632E16353DF}&quot;
-        ///	ProjectSection(SolutionItems) = preProject
-        ///		.gitignore = .gitignore
-        ///		.version = .version
-        ///		build.bat = build.bat
-        ///		changelog.txt = changelog.txt
-        ///		gnt.core = gnt.core
-        ///		LICENSE = LICENSE
-        ///		packages.config = packages.config
-        ///		Readme [rest of string was truncated]&quot;;.
+        ///  ProjectSection(SolutionItems) = preProject
+        ///    .gitignore = .gitignore
+        ///    .version = .version
+        ///    build.bat = build.bat
+        ///    changelog.txt = changelog.txt
+        ///    gnt.core = gnt.core
+        ///    LICENSE = LICENSE
+        ///    packages.config = packages.c [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string regXwild {
             get {
@@ -112,11 +111,11 @@ namespace net.r_eg.MvsSlnTest {
         
         /// <summary>
         ///   Looks up a localized string similar to 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-        ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.ActiveCfg = Release_net45|Any CPU
-        ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.Build.0 = Release_net45|Any CPU
-        ///		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug|Any CPU.ActiveCfg = Release|Any CPU
-        ///		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any CPU.ActiveCfg = CI_Release_net45|Any CPU
-        ///		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any C [rest of string was truncated]&quot;;.
+        ///    {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.ActiveCfg = Release_net45|Any CPU
+        ///    {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug_net45|Any CPU.Build.0 = Release_net45|Any CPU
+        ///    {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Debug|Any CPU.ActiveCfg = Release|Any CPU
+        ///    {32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_net45|Any CPU.ActiveCfg = CI_Release_net45|Any CPU
+        ///    {32E44995-F621-4E77-B46A-8F65D64E7FEA}.CI_Release_n [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Section_Prj_Config {
             get {
@@ -128,11 +127,11 @@ namespace net.r_eg.MvsSlnTest {
         ///   Looks up a localized string similar to Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;Bridge&quot;, &quot;Bridge\Bridge.csproj&quot;, &quot;{73919171-44B6-4536-B892-F1FCA653887C}&quot;
         ///EndProject
         ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;CIMLib&quot;, &quot;CIMLib\CIMLib.csproj&quot;, &quot;{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}&quot;
-        ///	ProjectSection(ProjectDependencies) = postProject
-        ///		{73919171-44B6-4536-B892-F1FCA653887C} = {73919171-44B6-4536-B892-F1FCA653887C}
-        ///		{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} = {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}
-        ///	EndProjectSection
-        ///EndPro [rest of string was truncated]&quot;;.
+        ///  ProjectSection(ProjectDependencies) = postProject
+        ///    {73919171-44B6-4536-B892-F1FCA653887C} = {73919171-44B6-4536-B892-F1FCA653887C}
+        ///    {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} = {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}
+        ///  EndProjectSection
+        /// [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Section_Project_Dep {
             get {
@@ -142,15 +141,15 @@ namespace net.r_eg.MvsSlnTest {
         
         /// <summary>
         ///   Looks up a localized string similar to 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-        ///		CI_Debug_net45|Any CPU = CI_Debug_net45|Any CPU
-        ///		CI_Debug|Any CPU = CI_Debug|Any CPU
-        ///		CI_Release_net45|Any CPU = CI_Release_net45|Any CPU
-        ///		CI_Release|x86 = CI_Release|x86
-        ///		Debug_net45|Any CPU = Debug_net45|Any CPU
-        ///		Debug|Any CPU = Debug|Any CPU
-        ///		Release_net45|Any CPU = Release_net45|Any CPU
-        ///		Release|x64 = Release|x64
-        ///	EndGlobalSection.
+        ///    CI_Debug_net45|Any CPU = CI_Debug_net45|Any CPU
+        ///    CI_Debug|Any CPU = CI_Debug|Any CPU
+        ///    CI_Release_net45|Any CPU = CI_Release_net45|Any CPU
+        ///    CI_Release|x86 = CI_Release|x86
+        ///    Debug_net45|Any CPU = Debug_net45|Any CPU
+        ///    Debug|Any CPU = Debug|Any CPU
+        ///    Release_net45|Any CPU = Release_net45|Any CPU
+        ///    Release|x64 = Release|x64
+        ///  EndGlobalSection.
         /// </summary>
         internal static string Section_Sln_Config {
             get {
@@ -160,15 +159,15 @@ namespace net.r_eg.MvsSlnTest {
         
         /// <summary>
         ///   Looks up a localized string similar to Project(&quot;{2150E333-8FDC-42A3-9474-1A3956D46DE8}&quot;) = &quot;.gnt&quot;, &quot;.gnt&quot;, &quot;{65FF5D56-E814-4956-89BD-7C53EC557BFE}&quot;
-        ///	ProjectSection(SolutionItems) = preProject
-        ///		.gnt\gnt.core = .gnt\gnt.core
-        ///		.gnt\packages.config = .gnt\packages.config
-        ///	EndProjectSection
+        ///  ProjectSection(SolutionItems) = preProject
+        ///    .gnt\gnt.core = .gnt\gnt.core
+        ///    .gnt\packages.config = .gnt\packages.config
+        ///  EndProjectSection
         ///EndProject
         ///Project(&quot;{2150E333-8FDC-42A3-9474-1A3956D46DE8}&quot;) = &quot;tools&quot;, &quot;tools&quot;, &quot;{849DD790-F856-493C-A19E-2560A21F6AF1}&quot;
-        ///	ProjectSection(SolutionItems) = preProject
-        ///		tools\gnt.bat = tools\gnt.bat
-        ///	EndProjectSection
+        ///  ProjectSection(SolutionItems) = preProject
+        ///    tools\gnt.bat = tools\gnt.bat
+        ///  EndProjectSection
         ///EndProject.
         /// </summary>
         internal static string Section_Sln_Items {
@@ -179,11 +178,11 @@ namespace net.r_eg.MvsSlnTest {
         
         /// <summary>
         ///   Looks up a localized string similar to 	GlobalSection(ExtensibilityGlobals) = postSolution
-        ///		SolutionGuid = {B3244B90-20DE-4D69-8692-EBC686503F90}
-        ///		SomeOtherEmptyData =
-        ///		SomeNullData
-        ///		EnterpriseLibraryConfigurationToolBinariesPath = packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin
-        ///	EndGlobalSection.
+        ///    SolutionGuid = {B3244B90-20DE-4D69-8692-EBC686503F90}
+        ///    SomeOtherEmptyData =
+        ///    SomeNullData
+        ///    EnterpriseLibraryConfigurationToolBinariesPath = packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin
+        ///  EndGlobalSection.
         /// </summary>
         internal static string Section_WExtensibilityGlobals_Test {
             get {
@@ -193,10 +192,10 @@ namespace net.r_eg.MvsSlnTest {
         
         /// <summary>
         ///   Looks up a localized string similar to 	GlobalSection(NestedProjects) = preSolution
-        ///		{BEB7D6F5-5065-4427-9797-2AD7511862D8} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
-        ///		{1257C186-1EC7-41C6-9344-14B2341BE6F6} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
-        ///		{80AEF083-D86A-416E-88B8-300DF20399AF} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
-        ///	EndGlobalSection.
+        ///    {BEB7D6F5-5065-4427-9797-2AD7511862D8} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
+        ///    {1257C186-1EC7-41C6-9344-14B2341BE6F6} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
+        ///    {80AEF083-D86A-416E-88B8-300DF20399AF} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
+        ///  EndGlobalSection.
         /// </summary>
         internal static string Section_WNestedProjects_Test2 {
             get {
@@ -206,10 +205,10 @@ namespace net.r_eg.MvsSlnTest {
         
         /// <summary>
         ///   Looks up a localized string similar to 	GlobalSection(NestedProjects) = preSolution
-        ///		{A2D23001-08A8-49AF-A975-64ADA41EB08A} = {1257C186-1EC7-41C6-9344-14B2341BE6F6}
-        ///		{C4C66B30-66CD-4D68-9A95-372CA4A13611} = {80AEF083-D86A-416E-88B8-300DF20399AF}
-        ///		{C1A3BCC3-F120-471D-A31E-4B835A06F42D} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
-        ///	EndGlobalSection.
+        ///    {A2D23001-08A8-49AF-A975-64ADA41EB08A} = {1257C186-1EC7-41C6-9344-14B2341BE6F6}
+        ///    {C4C66B30-66CD-4D68-9A95-372CA4A13611} = {80AEF083-D86A-416E-88B8-300DF20399AF}
+        ///    {C1A3BCC3-F120-471D-A31E-4B835A06F42D} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
+        ///  EndGlobalSection.
         /// </summary>
         internal static string Section_WNestedProjects_Test3 {
             get {
@@ -219,12 +218,12 @@ namespace net.r_eg.MvsSlnTest {
         
         /// <summary>
         ///   Looks up a localized string similar to 	GlobalSection(NestedProjects) = preSolution
-        ///		{BEB7D6F5-5065-4427-9797-2AD7511862D8} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
-        ///		{1257C186-1EC7-41C6-9344-14B2341BE6F6} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
-        ///		{80AEF083-D86A-416E-88B8-300DF20399AF} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
-        ///		{A2D23001-08A8-49AF-A975-64ADA41EB08A} = {1257C186-1EC7-41C6-9344-14B2341BE6F6}
-        ///		{C4C66B30-66CD-4D68-9A95-372CA4A13611} = {80AEF083-D86A-416E-88B8-300DF20399AF}
-        ///		{C1A3BCC3-F120-471D-A31E-4B835A06F42D} = {BEB7D6F [rest of string was truncated]&quot;;.
+        ///    {BEB7D6F5-5065-4427-9797-2AD7511862D8} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
+        ///    {1257C186-1EC7-41C6-9344-14B2341BE6F6} = {BEB7D6F5-5065-4427-9797-2AD7511862D8}
+        ///    {80AEF083-D86A-416E-88B8-300DF20399AF} = {8B05CE1C-999E-460D-80FF-E44DFEC019E7}
+        ///    {A2D23001-08A8-49AF-A975-64ADA41EB08A} = {1257C186-1EC7-41C6-9344-14B2341BE6F6}
+        ///    {C4C66B30-66CD-4D68-9A95-372CA4A13611} = {80AEF083-D86A-416E-88B8-300DF20399AF}
+        ///    {C1A3BCC3-F120-471D-A31E-4B835A06F42D [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Section_WNestedProjects_Test4 {
             get {
@@ -258,7 +257,7 @@ namespace net.r_eg.MvsSlnTest {
         ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;CIMLib&quot;, &quot;CIMLib\CIMLib.csproj&quot;, &quot;{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}&quot;
         ///EndProject
         ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;vsSolutionBuildEvent&quot;, &quot;vsSolutionBuildEvent\vsSolutionBuildEvent.csproj&quot;, &quot;{32E44995-F621-4E77-B46A-8F65D64E7FEA}&quot;
-        ///	ProjectSection(ProjectDependencies) = pos [rest of string was truncated]&quot;;.
+        ///  ProjectSection(ProjectDependencies) = po [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string vsSolutionBuildEvent {
             get {
@@ -271,9 +270,9 @@ namespace net.r_eg.MvsSlnTest {
         ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;Provider&quot;, &quot;Provider\Provider.csproj&quot;, &quot;{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}&quot;
         ///EndProject
         ///Project(&quot;{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}&quot;) = &quot;vsSolutionBuildEvent&quot;, &quot;vsSolutionBuildEvent\vsSolutionBuildEvent.csproj&quot;, &quot;{32E44995-F621-4E77-B46A-8F65D64E7FEA}&quot;
-        ///	ProjectSection(ProjectDependencies) = postProject
-        ///		{4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} = {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}
-        ///	EndProjectSection [rest of string was truncated]&quot;;.
+        ///  ProjectSection(ProjectDependencies) = postProject
+        ///    {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} = {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B}
+        ///  EndProjectSec [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string vsSolutionBuildEvent_map {
             get {
