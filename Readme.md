@@ -26,8 +26,9 @@ The [MIT License (MIT)](https://github.com/3F/MvsSln/blob/master/License.txt)
 ```
 Copyright (c) 2013-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 ```
+MvsSln contributors: https://github.com/3F/MvsSln/graphs/contributors
 
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif) ☕](https://3F.github.io/Donation/) 
+[ [ ☕ Donate ](https://3F.github.com/Donation/) ]
 
 ## Why MvsSln ?
 
@@ -324,6 +325,4 @@ Available variants:
 * NuGet PM: `Install-Package MvsSln`
 * NuGet Commandline: `nuget install MvsSln`
 * [GitHub Releases](https://github.com/3F/MvsSln/releases) [ [latest](https://github.com/3F/MvsSln/releases/latest) ]
-* [Nightly builds](https://ci.appveyor.com/project/3Fs/mvssln/history) (`/artifacts` page). It can be unstable or not work at all. Use this for tests of latest changes.
-  * Artifacts [older than 6 months](https://www.appveyor.com/docs/packaging-artifacts/#artifacts-retention-policy) you can also find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/MvsSln/releases) page.
-
+* CI builds: [`/artifacts` page](https://ci.appveyor.com/project/3Fs/mvssln/history) or find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/MvsSln/releases) page.
