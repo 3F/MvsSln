@@ -24,7 +24,7 @@
 
 namespace net.r_eg.MvsSln.Core
 {
-    public interface IConfPlatformPrj : IConfPlatform
+    public interface IConfPlatformPrj: IConfPlatform
     {
         /// <summary>
         /// Project Guid.

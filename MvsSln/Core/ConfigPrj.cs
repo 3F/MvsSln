@@ -30,7 +30,7 @@ namespace net.r_eg.MvsSln.Core
     /// Project Configuration
     /// </summary>
     [DebuggerDisplay("{DbgDisplay}")]
-    public class ConfigPrj : ConfigItem, IConfPlatform, IConfPlatformPrj
+    public class ConfigPrj: ConfigItem, IConfPlatform, IConfPlatformPrj
     {
         /// <summary>
         /// Project Guid.
