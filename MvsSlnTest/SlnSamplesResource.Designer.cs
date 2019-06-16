@@ -61,6 +61,26 @@ namespace net.r_eg.MvsSlnTest {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Microsoft Visual Studio Solution File, Format Version 11.00
+        ///# Visual Studio 14
+        ///VisualStudioVersion = 14.0.25420.1
+        ///MinimumVisualStudioVersion = 10.0.30319.1
+        ///Global
+        /// GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        ///  CI.Debug.net45|Any.CPU.etc = CI.Debug.net45|Any.CPU.etc
+        ///  CI.Debug|Any.CPU.etc = CI.Debug|Any.CPU.etc
+        ///  CI.Release.net45|Any.CPU.etc = CI.Release.net45|Any.CPU.etc
+        ///  CI.Release|Any.CPU.etc = CI.Release|Any.CPU.etc
+        ///  Debug.net45|Any.CPU.etc = Debug.net45|Any.CPU.etc
+        ///  Debug.x [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ConfNamesDots {
+            get {
+                return ResourceManager.GetString("ConfNamesDots", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 
         ///Microsoft Visual Studio Solution File, Format Version 12.00
         ///# Visual Studio 15

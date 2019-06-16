@@ -197,6 +197,57 @@ namespace net.r_eg.MvsSlnTest
         }
 
         [TestMethod]
+        public void SlnResultTest6()
+        {
+            using(var sln = new Sln(SlnItems.ProjectConfPlatforms, SlnSamplesResource.ConfNamesDots))
+            {
+                Assert.AreEqual(6, sln.Result.ProjectConfigs.Count());
+
+                var cfg = sln.Result.ProjectConfigs.ElementAt(0);
+                Assert.AreEqual(new ConfigItem("Release.net45", "x64"), (ConfigItem)cfg);
+                Assert.AreEqual(false, cfg.IncludeInBuild);
+                Assert.AreEqual(false, cfg.IncludeInDeploy);
+                Assert.AreEqual("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
+                Assert.AreEqual(new ConfigItem("CI.Debug.net45", "Any.CPU.etc"), cfg.Sln);
+
+                cfg = sln.Result.ProjectConfigs.ElementAt(1);
+                Assert.AreEqual(new ConfigItem("Release", "x64"), (ConfigItem)cfg);
+                Assert.AreEqual(true, cfg.IncludeInBuild);
+                Assert.AreEqual(false, cfg.IncludeInDeploy);
+                Assert.AreEqual("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
+                Assert.AreEqual(new ConfigItem("CI.Debug", "Any.CPU.etc"), cfg.Sln);
+
+                cfg = sln.Result.ProjectConfigs.ElementAt(2);
+                Assert.AreEqual(new ConfigItem("Release.net45", "Any.CPU.etc"), (ConfigItem)cfg);
+                Assert.AreEqual(false, cfg.IncludeInBuild);
+                Assert.AreEqual(false, cfg.IncludeInDeploy);
+                Assert.AreEqual("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
+                Assert.AreEqual(new ConfigItem("CI.Release.net45", "Any.CPU.etc"), cfg.Sln);
+
+                cfg = sln.Result.ProjectConfigs.ElementAt(3);
+                Assert.AreEqual(new ConfigItem("Release", "Any.CPU.etc"), (ConfigItem)cfg);
+                Assert.AreEqual(true, cfg.IncludeInBuild);
+                Assert.AreEqual(true, cfg.IncludeInDeploy);
+                Assert.AreEqual("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
+                Assert.AreEqual(new ConfigItem("CI.Release", "Any.CPU.etc"), cfg.Sln);
+
+                cfg = sln.Result.ProjectConfigs.ElementAt(4);
+                Assert.AreEqual(new ConfigItem("Debug.x64.x86", "x86"), (ConfigItem)cfg);
+                Assert.AreEqual(true, cfg.IncludeInBuild);
+                Assert.AreEqual(false, cfg.IncludeInDeploy);
+                Assert.AreEqual("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg.PGuid);
+                Assert.AreEqual(new ConfigItem("Debug.x64.x86", "Any.CPU.etc"), cfg.Sln);
+
+                cfg = sln.Result.ProjectConfigs.ElementAt(5);
+                Assert.AreEqual(new ConfigItem("Release", "Any.CPU.etc"), (ConfigItem)cfg);
+                Assert.AreEqual(true, cfg.IncludeInBuild);
+                Assert.AreEqual(false, cfg.IncludeInDeploy);
+                Assert.AreEqual("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg.PGuid);
+                Assert.AreEqual(new ConfigItem("Release", "Any.CPU.etc"), cfg.Sln);
+            }
+        }
+
+        [TestMethod]
         public void ExtensibilityGlobalsTest1()
         {
             using(var sln = new Sln(SlnItems.All &~ SlnItems.ExtItems, SlnSamplesResource.ExtensibilityGlobals))

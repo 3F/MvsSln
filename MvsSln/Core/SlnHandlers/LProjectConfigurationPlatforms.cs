@@ -32,36 +32,39 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
     public class LProjectConfigurationPlatforms: LAbstract, ISlnHandler
     {
-        protected class EqCortegeComparer: IEqualityComparer<Cortege>
+        protected enum LineAttr
         {
-            public bool Equals(Cortege a, Cortege b)
-            {
-                if(a.pGuid != b.pGuid
-                    || a.csln != b.csln
-                    || a.cprj != b.cprj
-                    )
-                {
-                    return false;
-                }
-                return true;
-            }
+            InvalidOrUnknown,
 
-            public int GetHashCode(Cortege obj)
-            {
-                return 0.CalculateHashCode
-                (
-                    obj.pGuid.GetHashCode(),
-                    obj.csln.GetHashCode(),
-                    obj.cprj.GetHashCode()
-                );
-            }
+            ActiveCfg,
+            Build0,
+            Deploy0
         }
 
         protected struct Cortege
         {
-            public string pGuid;
-            public string csln;
-            public string cprj;
+            public string pGuid, csln, cprj;
+
+            public override string ToString()
+            {
+                return $"`{pGuid}`, `{csln}` = `{cprj}`";
+            }
+        }
+
+        protected class EqCortegeComparer: IEqualityComparer<Cortege>
+        {
+            public bool Equals(Cortege a, Cortege b)
+            {
+                return a.pGuid == b.pGuid && a.csln == b.csln && a.cprj == b.cprj;
+            }
+
+            public int GetHashCode(Cortege x)
+            {
+                return 0.CalculateHashCode
+                (
+                    x.pGuid.GetHashCode(), x.csln.GetHashCode(), x.cprj.GetHashCode()
+                );
+            }
         }
 
         /// <summary>
@@ -96,68 +99,118 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 svc.Sln.ProjectConfigList = new List<IConfPlatformPrj>();
             }
 
-            /*
-               [Projects Guid]                        [Solution pair]                [Project pair]
-               {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.ActiveCfg = Release|Any CPU   - configuration name
-               {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Build.0 = Release|Any CPU     - flag of build  (this line exists only when this flag is true)
-            */
-            string _line;
+            var records = new Dictionary<Cortege, ConfigPrj>(new EqCortegeComparer());
 
-            var cortege = new Dictionary<Cortege, ConfigPrj>(new EqCortegeComparer());
+            string _line;
             while((_line = svc.ReadLine(this)) != null && _line.Trim() != "EndGlobalSection")
             {
-                int x, y;
+                var v = Parse(ref _line, out LineAttr ltype);
 
-                x           = _line.IndexOf('.');
-                var pGuid   = _line.Substring(0, x).Trim();
-
-                y           = _line.IndexOf('.', ++x);
-                string csln = _line.Substring(x, y - x).Trim();
-
-                x           = _line.IndexOf('=', ++y);
-                string type = _line.Substring(y, x - y).Trim();
-
-                string cprj = _line.Substring(x + 1).Trim();
-
-                bool isActiveCfg    = type.Equals("ActiveCfg", StringComparison.OrdinalIgnoreCase);
-                bool isBuild0       = type.Equals("Build.0", StringComparison.OrdinalIgnoreCase);
-                bool isDeploy0       = type.Equals("Deploy.0", StringComparison.OrdinalIgnoreCase);
-
-                if(!isActiveCfg && !isBuild0 && !isDeploy0) {
-                    LSender.Send(this, $"Project Configuration has been ignored for line '{_line}'", Message.Level.Debug);
+                if(ltype == LineAttr.InvalidOrUnknown)
+                {
+                    LSender.Send(this, $"Incorrect Project Configuration: {v}; raw: '{_line}'", Message.Level.Warn);
                     continue;
                 }
 
-                var ident = new Cortege() {
-                    pGuid   = pGuid,
-                    csln    = csln,
-                    cprj    = cprj,
-                };
-
-                if(!cortege.ContainsKey(ident))
+                //NOTE: Build0 and Deploy0 records are valid too. Even if an ActiveCfg is corrupted and does not exist at all.
+                if(!records.ContainsKey(v))
                 {
-                    LSender.Send(this, $"New Project Configuration `{pGuid}`, `{csln}` = `{cprj}` /{type}", Message.Level.Info);
-                    cortege[ident] = new ConfigPrj(cprj, pGuid, isBuild0, new ConfigSln(csln));
-                    svc.Sln.ProjectConfigList.Add(cortege[ident]);
+                    LSender.Send(this, $"Found Project Configuration: {v}", Message.Level.Info);
+
+                    records[v] = new ConfigPrj(v.cprj, v.pGuid, false, new ConfigSln(v.csln));
+                    svc.Sln.ProjectConfigList.Add(records[v]);
+                }
+
+                if(ltype == LineAttr.Build0)
+                {
+                    LSender.Send(this, $"Project Configuration, update Build.0  {v}", Message.Level.Debug);
+                    records[v].IncludeInBuild = true;
                     continue;
                 }
 
-                if(isBuild0)
+                if(ltype == LineAttr.Deploy0)
                 {
-                    LSender.Send(this, $"Project Configuration, update Build.0  `{pGuid}`", Message.Level.Debug);
-                    cortege[ident].IncludeInBuild = true;
-                    continue;
-                }
-
-                if(isDeploy0)
-                {
-                    LSender.Send(this, $"Project Configuration, update Deploy.0  `{pGuid}`", Message.Level.Debug);
-                    cortege[ident].IncludeInDeploy = true;
+                    LSender.Send(this, $"Project Configuration, update Deploy.0  {v}", Message.Level.Debug);
+                    records[v].IncludeInDeploy = true;
                     continue;
                 }
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// [Projects Guid]                        [Solution pair]     [ltype]     [Project pair]
+        /// {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.ActiveCfg = Release|Any CPU   - available configuration
+        /// {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Build.0 = Release|Any CPU     - active Build (this line exists only when this flag is true)
+        /// {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Deploy.0 = Release|Any CPU    - active Deployment (this line exists only when this flag is true)
+        /// 
+        /// Possible symbols for Solution/Project pair includes `.` and `=`:
+        /// https://github.com/3F/MvsSln/issues/13
+        /// 
+        /// -_- awesome format as follow:
+        /// {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.Debug.x64.x86|Any.CPU.etc.Build.0 = Debug.x64.x86|Any.CPU.etc
+        /// \___________________________________/  \___________/ \_________/ \_____/ ^ \___________/ \_________/
+        /// 
+        /// For `=` we will not support this due to errors by VS itself (VS bug from VS2010 to modern VS2019)
+        /// https://github.com/3F/MvsSln/issues/13#issuecomment-501346079
+        /// </summary>
+        /// <param name="raw"></param>
+        /// <param name="ltype"></param>
+        /// <returns></returns>
+        protected Cortege Parse(ref string raw, out LineAttr ltype)
+        {
+            int splitter = raw.IndexOf('=');
+
+            if(splitter == -1)
+            {
+                ltype = LineAttr.InvalidOrUnknown;
+                return default(Cortege);
+            }
+
+            string cprj = raw.Substring(splitter + 1);
+
+            splitter    = raw.FirstNonWhiteSpace(splitter - 1, true) + 1;
+            int rpos    = raw.LastIndexOf('.', splitter); // .ActiveCfg =
+                                                          // .Build.0 =
+                                                          // ------^
+
+            if(splitter - rpos == 2) { // .0
+                rpos = raw.LastIndexOf('.', rpos - 1);
+            }
+
+            int lpos        = raw.IndexOf('.');
+            string pGuid    = raw.Substring(0, lpos);
+
+            string csln     = raw.Substring(++lpos, rpos - lpos);
+            string type     = raw.Substring(++rpos, splitter - rpos);
+
+            ltype = GetAttribute(type.Trim());
+
+            return new Cortege()
+            {
+                pGuid   = pGuid.Trim(),
+                csln    = csln.Trim(),
+                cprj    = cprj.Trim(),
+            };
+        }
+
+        protected LineAttr GetAttribute(string raw)
+        {
+            if(raw.Equals("ActiveCfg", StringComparison.InvariantCulture)) {
+                return LineAttr.ActiveCfg;
+            }
+
+            if(raw.Equals("Build.0", StringComparison.InvariantCulture)) {
+                return LineAttr.Build0;
+            }
+
+            if(raw.Equals("Deploy.0", StringComparison.InvariantCulture)) {
+                return LineAttr.Deploy0;
+            }
+
+            return LineAttr.InvalidOrUnknown;
         }
     }
 }

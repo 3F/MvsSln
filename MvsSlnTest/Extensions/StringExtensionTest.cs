@@ -98,5 +98,71 @@ namespace net.r_eg.MvsSlnTest.Extensions
 
             Assert.AreEqual(null, @"path\to\dir1".MakeRelativePath(@"D:\path\to\dir1\bin\Release\file"));
         }
+
+        [TestMethod]
+        public void FirstNonWhiteSpaceTest1()
+        {
+            Assert.AreEqual(10, "  ActiveCfg  = ".FirstNonWhiteSpace(12, true));
+            Assert.AreEqual(10, "  ActiveCfg = ".FirstNonWhiteSpace(11, true));
+
+            Assert.AreEqual(13, "  ActiveCfg  = ".FirstNonWhiteSpace(12, false));
+            Assert.AreEqual(14, "  ActiveCfg   = ".FirstNonWhiteSpace(12, false));
+
+            Assert.AreEqual(2, "  A ctiveCfg".FirstNonWhiteSpace(0, false));
+            Assert.AreEqual(4, "  A ctiveCfg".FirstNonWhiteSpace(4, true));
+            Assert.AreEqual(2, "  A ctiveCfg".FirstNonWhiteSpace(3, true));
+            Assert.AreEqual(0, "A ctiveCfg".FirstNonWhiteSpace(0, false));
+        }
+
+        [TestMethod]
+        public void FirstNonWhiteSpaceTest2()
+        {
+            Assert.AreEqual(-1, "  ActiveCfg = ".FirstNonWhiteSpace(0, true));
+            Assert.AreEqual(0, "ActiveCfg = ".FirstNonWhiteSpace(0, true));
+
+            Assert.AreEqual(-1, "  ActiveCfg = ".FirstNonWhiteSpace(1, true));
+            Assert.AreEqual(1, "ActiveCfg = ".FirstNonWhiteSpace(1, true));
+
+            Assert.AreEqual(-1, "  ActiveCfg = ".FirstNonWhiteSpace(13, false));
+            Assert.AreEqual(-1, "  ActiveCfg =".FirstNonWhiteSpace(13, false));
+
+            Assert.AreEqual(12, "  ActiveCfg = ".FirstNonWhiteSpace(12, false));
+            Assert.AreEqual(12, "  ActiveCfg =".FirstNonWhiteSpace(12, false));
+        }
+
+        [TestMethod]
+        public void FirstNonWhiteSpaceTest3()
+        {
+            Assert.AreEqual(-1, "ActiveCfg".FirstNonWhiteSpace(50, false));
+            Assert.AreEqual(-1, "ActiveCfg".FirstNonWhiteSpace(50, true));
+
+            Assert.AreEqual(-1, " ActiveCfg ".FirstNonWhiteSpace(50, false));
+            Assert.AreEqual(-1, " ActiveCfg ".FirstNonWhiteSpace(50, true));
+
+            Assert.AreEqual(-1, "ActiveCfg".FirstNonWhiteSpace(-50, false));
+            Assert.AreEqual(-1, "ActiveCfg".FirstNonWhiteSpace(-50, true));
+
+            Assert.AreEqual(-1, " ActiveCfg ".FirstNonWhiteSpace(-50, false));
+            Assert.AreEqual(-1, " ActiveCfg ".FirstNonWhiteSpace(-50, true));
+        }
+
+        [TestMethod]
+        public void FirstNonWhiteSpaceTest4()
+        {
+            Assert.AreEqual(-1, "  ".FirstNonWhiteSpace(0, false));
+            Assert.AreEqual(-1, " ".FirstNonWhiteSpace(0, false));
+            Assert.AreEqual(-1, String.Empty.FirstNonWhiteSpace(0, false));
+            Assert.AreEqual(-1, ((string)null).FirstNonWhiteSpace(0, false));
+
+            Assert.AreEqual(-1, "  ".FirstNonWhiteSpace(0, true));
+            Assert.AreEqual(-1, " ".FirstNonWhiteSpace(0, true));
+            Assert.AreEqual(-1, String.Empty.FirstNonWhiteSpace(0, true));
+            Assert.AreEqual(-1, ((string)null).FirstNonWhiteSpace(0, true));
+
+            Assert.AreEqual(-1, "  ".FirstNonWhiteSpace(1, true));
+            Assert.AreEqual(-1, " ".FirstNonWhiteSpace(1, true));
+            Assert.AreEqual(-1, String.Empty.FirstNonWhiteSpace(1, true));
+            Assert.AreEqual(-1, ((string)null).FirstNonWhiteSpace(1, true));
+        }
     }
 }

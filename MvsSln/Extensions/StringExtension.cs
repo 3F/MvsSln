@@ -91,6 +91,35 @@ namespace net.r_eg.MvsSln.Extensions
         }
 
         /// <summary>
+        /// Get position of first non-WhiteSpace character from string.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="offset">Initial position.</param>
+        /// <param name="rightToLeft">Moving from right to left if true. Otherwise from left to right if false.</param>
+        /// <returns></returns>
+        public static int FirstNonWhiteSpace(this string str, int offset = 0, bool rightToLeft = false)
+        {
+            if(str == null) {
+                return -1;
+            }
+
+            int i = offset;
+
+            while(true)
+            {
+                if(i < 0 || i > str.Length - 1) {
+                    return -1;
+                }
+
+                if(!char.IsWhiteSpace(str[i])) {
+                    return i;
+                }
+
+                i += rightToLeft ? -1 : 1;
+            }
+        }
+
+        /// <summary>
         /// Formatting of the path to directory.
         /// </summary>
         /// <param name="path"></param>

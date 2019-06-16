@@ -71,7 +71,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 if(left == null 
                     || String.Compare(left, "DESCRIPTION", StringComparison.OrdinalIgnoreCase) == 0)
                 {
-                    LSender.Send(this, $"Solution Configuration has been ignored for line '{_line}'", Message.Level.Debug);
+                    LSender.Send(this, $"Solution Configuration has been ignored for line '{_line}'", Message.Level.Warn);
                     continue;
                 }
 
