@@ -2,6 +2,33 @@
 MvsSln  :: https://github.com/3F/MvsSln
 _ _ _ _
 
+[v2.3] 2019.06.17
+
+    * FIXED: Added support of `.` character in solution/project configuration name. 
+             Issue #13.
+             ~
+            ```
+             {Guid}.Debug.x64.x86|Any.CPU.etc.Build.0 = Debug.x64.x86|Any.CPU.etc
+                    \___________/ \_________/ \_____/ ^ \___________/ \_________/
+            ```
+    
+    * FIXED: [Broken in 2.2] Processing solution breaks when solution contains 
+             some unsupported/unknown project type. Issue #14. (Thanks @wouterroos).
+
+    * NEW: An `Deploy` flag support. PR #16 (Thanks @wouterroos).
+    
+           +IConfPlatformPrj.IncludeInDeploy
+
+    * NEW: Added new the following project types below. PR #15 (Thanks @wouterroos).
+    
+           +ProjectType.Deploy
+           +ProjectType.Sf
+
+    * CHANGED: Updated package's tool hMSBuild 2.1
+    
+               Release notes:
+               https://github.com/3F/hMSBuild/releases/tag/v2.1
+
 [v2.2] 2019.04.08
 
     * FIXED: Fixed possible error when loading all found projects: 
