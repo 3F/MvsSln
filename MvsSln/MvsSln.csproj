@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
+    <Compile Include="Core\IXProjectEnv.cs" />
+    <Compile Include="Core\XProjectEnv.cs" />
     <Compile Include="Core\ObjHandlers\WExtensibilityGlobals.cs" />
     <Compile Include="Core\ObjHandlers\WNestedProjects.cs" />
     <Compile Include="Core\ObjHandlers\WVisualStudioVersion.cs" />
@@ -127,6 +129,7 @@
     <Compile Include="Log\LSender.cs" />
     <Compile Include="Log\Message.cs" />
     <Compile Include="MvsSlnVersion.cs" />
+    <Compile Include="PropertyNames.cs" />
     <Compile Include="SlnItems.cs" />
     <Compile Include="Sln.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -135,6 +138,7 @@
     <Compile Include="Core\SlnParser.cs" />
     <Compile Include="Core\ProjectItem.cs" />
     <Compile Include="Core\SynchSubscribers.cs" />
+    <Compile Include="Types\Kinds.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

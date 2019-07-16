@@ -122,7 +122,7 @@ namespace net.r_eg.MvsSln.Core
             string sln = (reader.BaseStream is FileStream) ? ((FileStream)reader.BaseStream).Name : MEM_FILE;
 
             var data = new SlnResult() {
-                SolutionDir = GetDirectoryFromFile(sln),
+                SolutionDir = sln.GetDirectoryFromFile(),
                 ResultType  = type,
             };
 
@@ -261,15 +261,10 @@ namespace net.r_eg.MvsSln.Core
 
         protected RoProperties GlobalProperties(string sln, string configuration, string platform)
         {
-            return new RoProperties(new Dictionary<string, string>()
+            return new RoProperties(new Dictionary<string, string>(sln.GetFileProperties())
             {
-                ["SolutionDir"]         = GetDirectoryFromFile(sln),
-                ["SolutionExt"]         = Path.GetExtension(sln),
-                ["SolutionFileName"]    = Path.GetFileName(sln),
-                ["SolutionName"]        = Path.GetFileNameWithoutExtension(sln),
-                ["SolutionPath"]        = sln,
-                ["Configuration"]       = configuration,
-                ["Platform"]            = platform
+                [PropertyNames.CONFIG]      = configuration,
+                [PropertyNames.PLATFORM]    = platform
             });
         }
 
@@ -304,11 +299,6 @@ namespace net.r_eg.MvsSln.Core
                 return c.Platform;
             }
             return null;
-        }
-
-        protected string GetDirectoryFromFile(string file)
-        {
-            return Path.GetDirectoryName(file).DirectoryPathFormat();
         }
 
         private bool TrackedPosition(ISlnHandler h, ISvc svc, RawText line)

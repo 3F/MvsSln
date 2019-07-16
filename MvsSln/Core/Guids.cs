@@ -26,6 +26,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+// TODO: move to '.Types' namespace
 namespace net.r_eg.MvsSln.Core
 {
     public static class Guids

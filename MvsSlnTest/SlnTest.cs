@@ -18,14 +18,14 @@ namespace net.r_eg.MvsSlnTest
             using(var sln = new Sln(SlnItems.Projects, SlnSamplesResource.vsSolutionBuildEvent))
             {
                 Assert.AreEqual("\\", sln.Result.SolutionDir);
-                Assert.AreEqual(SlnParser.MEM_FILE, sln.Result.Properties["SolutionPath"]);
+                Assert.AreEqual(SlnParser.MEM_FILE, sln.Result.Properties[PropertyNames.SLN_PATH]);
 
-                Assert.AreEqual(sln.Result.SolutionDir, sln.Result.Properties["SolutionDir"]);
-                Assert.AreEqual(Path.GetExtension(SlnParser.MEM_FILE), sln.Result.Properties["SolutionExt"]);
-                Assert.AreEqual(Path.GetFileName(SlnParser.MEM_FILE), sln.Result.Properties["SolutionFileName"]);
-                Assert.AreEqual(Path.GetFileNameWithoutExtension(SlnParser.MEM_FILE), sln.Result.Properties["SolutionName"]);
-                Assert.AreEqual(null, sln.Result.Properties["Configuration"]);
-                Assert.AreEqual(null, sln.Result.Properties["Platform"]);
+                Assert.AreEqual(sln.Result.SolutionDir, sln.Result.Properties[PropertyNames.SLN_DIR]);
+                Assert.AreEqual(Path.GetExtension(SlnParser.MEM_FILE), sln.Result.Properties[PropertyNames.SLN_EXT]);
+                Assert.AreEqual(Path.GetFileName(SlnParser.MEM_FILE), sln.Result.Properties[PropertyNames.SLN_FNAME]);
+                Assert.AreEqual(Path.GetFileNameWithoutExtension(SlnParser.MEM_FILE), sln.Result.Properties[PropertyNames.SLN_NAME]);
+                Assert.AreEqual(null, sln.Result.Properties[PropertyNames.CONFIG]);
+                Assert.AreEqual(null, sln.Result.Properties[PropertyNames.PLATFORM]);
             }
         }
 

@@ -23,20 +23,11 @@
  * THE SOFTWARE.
 */
 
-using Microsoft.Build.Evaluation;
-
-namespace net.r_eg.MvsSln.Extensions
+namespace net.r_eg.MvsSln.Types
 {
-    public static class ProjectExtension
+    public static class Kinds
     {
-        public static string GetProjectGuid(this Project eProject)
-        {
-            return eProject?.GetPropertyValue(PropertyNames.PRJ_GUID);
-        }
-
-        public static string GetProjectName(this Project eProject)
-        {
-            return eProject?.GetPropertyValue(PropertyNames.PRJ_NAME);
-        }
+        public const string PRJ_UNLOADED    = "{67294A52-A4F0-11D2-AA88-00C04F688DDE}";
+        public const string PRJ_SLN_DIR     = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
     }
 }

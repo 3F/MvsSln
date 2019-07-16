@@ -46,5 +46,26 @@ namespace net.r_eg.MvsSln.Extensions
                 act(item);
             }
         }
+
+        /// <summary>
+        /// Adds/Updates data in source via data from `items`.
+        /// 
+        /// Any duplicates will be just updated:
+        /// ie. similar to `Concat()` except internal restriction for `Insert()`.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="items"></param>
+        /// <returns>Updated source.</returns>
+        public static IDictionary<string, string> AddOrUpdate(this IDictionary<string, string> source, IDictionary<string, string> items)
+        {
+            if(items == null) {
+                return source;
+            }
+
+            foreach(var i in items) {
+                source[i.Key] = i.Value;
+            }
+            return source;
+        }
     }
 }
