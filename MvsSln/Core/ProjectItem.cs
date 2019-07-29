@@ -226,8 +226,8 @@ namespace net.r_eg.MvsSln.Core
 
         private void SetFields(string pGuid, string name, string path, string slnDir, SolutionFolder? parent = null)
         {
-            this.name   = name.Trim();
-            this.path   = path.Trim();
+            this.name   = name?.Trim();
+            this.path   = path?.Trim();
             this.pGuid  = pGuid.ReformatSlnGuid();
 
             SetFullPath(slnDir);
@@ -254,11 +254,15 @@ namespace net.r_eg.MvsSln.Core
 
         private void SetFullPath(string slnDir)
         {
+            if(path == null) {
+                return;
+            }
+
             if(Path.IsPathRooted(path)) {
                 fullPath = path;
             }
             else {
-                fullPath = (slnDir != null && path != null) ? Path.Combine(slnDir, path) : path;
+                fullPath = (slnDir != null) ? Path.Combine(slnDir, path) : path;
             }
 
             fullPath = Path.GetFullPath(fullPath); // D:\a\b\c\..\..\MvsSlnTest.csproj -> D:\a\MvsSlnTest.csproj
