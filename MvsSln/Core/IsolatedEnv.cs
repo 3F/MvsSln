@@ -61,6 +61,8 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         protected IDictionary<string, RawText> rawXmlProjects;
 
+        protected List<IXProject> xpProjects = new List<IXProject>();
+
         /// <summary>
         /// Access to Solution data.
         /// </summary>
@@ -76,8 +78,7 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public IEnumerable<IXProject> Projects
         {
-            get;
-            set;
+            get => xpProjects;
         }
 
         /// <summary>
@@ -264,7 +265,13 @@ namespace net.r_eg.MvsSln.Core
         /// <returns>Loaded projects.</returns>
         public virtual IEnumerable<IXProject> LoadProjects(IEnumerable<ProjectItemCfg> pItems = null)
         {
-            Projects = Load(pItems ?? Sln.ProjectItemsConfigs);
+            var loaded = Load(pItems ?? Sln.ProjectItemsConfigs);
+
+            if(loaded == null) {
+                return Projects;
+            }
+
+            xpProjects?.AddRange(loaded);
             return Projects;
         }
 
