@@ -23,22 +23,23 @@
  * THE SOFTWARE.
 */
 
-namespace net.r_eg.MvsSln.Core
+using System;
+
+namespace net.r_eg.MvsSln.Exceptions
 {
-    // TODO: move to '.Types' namespace
-    public enum ProjectType
+    [Serializable]
+    public class UnloadException<T>: CommonException
     {
-        Unknown,
-        Vb,
-        Cs,
-        Vj,
-        Vc,
-        Fs,
-        Db,
-        Wd,
-        Web,
-        SlnFolder,
-        Deploy,
-        Sf
+        public T UnloadedInstance
+        {
+            get;
+            protected set;
+        }
+
+        public UnloadException(string message, T instance)
+            : base(message)
+        {
+            UnloadedInstance = instance;
+        }
     }
 }

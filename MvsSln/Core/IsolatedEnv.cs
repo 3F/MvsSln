@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -51,44 +50,10 @@ namespace net.r_eg.MvsSln.Core
 
         }
 
-        //TODO: user option along with `LoadProjects` func
-        protected bool Free()
-        {
-            if(Projects == null) {
-                return true;
-            }
-
-            LSender.Send(this, $"Release loaded projects for current environment (total: {PrjCollection.LoadedProjects.Count})", Message.Level.Debug);
-            foreach(var xp in Projects)
-            {
-                if(xp.Project == null) {
-                    continue;
-                }
-
-                try
-                {
-                    if(xp.Project.FullPath != null) {
-                        PrjCollection.UnloadProject(xp.Project);
-                    }
-                    else if(xp.Project.Xml != null) {
-                        PrjCollection.TryUnloadProject(xp.Project.Xml);
-                    }
-                }
-                catch(Exception ex) {
-                    LSender.Send(this, $"Project '{xp.ProjectGuid}:{xp.ProjectItem.projectConfig}' was not unloaded: '{ex.Message}'", Message.Level.Trace);
-                }
-            }
-
-            LSender.Send(this, $"Collection now contains '{PrjCollection.LoadedProjects.Count}' loaded projects.", Message.Level.Debug);
-            return true;
-        }
-
         #region IDisposable
 
-        // To detect redundant calls
         private bool disposed = false;
 
-        // To correctly implement the disposable pattern.
         public void Dispose()
         {
             Dispose(true);
@@ -101,8 +66,9 @@ namespace net.r_eg.MvsSln.Core
             }
             disposed = true;
 
-            //...
-            Free();
+            if(Projects != null) {
+                UnloadAll(false);
+            }
         }
 
         #endregion

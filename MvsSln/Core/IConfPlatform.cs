@@ -33,7 +33,8 @@ namespace net.r_eg.MvsSln.Core
         IRuleOfConfig Rule { get; }
 
         /// <summary>
-        /// To use virtual `Sensitivity` method to compare objects.
+        /// To use an `Sensitivity` logic when comparing {IConfPlatform}
+        /// together with `==` , `!=`.
         /// </summary>
         bool SensitivityComparing { get; set; }
 
@@ -41,12 +42,29 @@ namespace net.r_eg.MvsSln.Core
 
         string ConfigurationByRule { get; }
 
+        /// <summary>
+        /// {ConfigurationByRule} with optional case insensitive logic.
+        /// Uses {SensitivityComparing} flag.
+        /// </summary>
         string ConfigurationByRuleICase { get; }
 
         string Platform { get; }
 
         string PlatformByRule { get; }
 
+        /// <summary>
+        /// {PlatformByRule} with optional case insensitive logic.
+        /// Uses {SensitivityComparing} flag.
+        /// </summary>
         string PlatformByRuleICase { get; }
+
+        /// <summary>
+        /// Checking an config/platform by using {Rule} instance.
+        /// </summary>
+        /// <param name="config">Configuration name.</param>
+        /// <param name="platform">Platform name.</param>
+        /// <param name="icase">Case insensitive flag.</param>
+        /// <returns></returns>
+        bool IsEqualByRule(string config, string platform, bool icase = false);
     }
 }

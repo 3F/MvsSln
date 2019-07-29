@@ -58,7 +58,7 @@ namespace net.r_eg.MvsSln.Extensions
         /// <returns>Updated source.</returns>
         public static IDictionary<string, string> AddOrUpdate(this IDictionary<string, string> source, IDictionary<string, string> items)
         {
-            if(items == null) {
+            if(source == null || items == null) {
                 return source;
             }
 
@@ -66,6 +66,23 @@ namespace net.r_eg.MvsSln.Extensions
                 source[i.Key] = i.Value;
             }
             return source;
+        }
+
+        /// <summary>
+        /// Returns either value from dictionary or configured default value.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TVal"></typeparam>
+        /// <param name="data"></param>
+        /// <param name="key"></param>
+        /// <param name="def">Use this if key is not found.</param>
+        /// <returns></returns>
+        public static TVal GetOrDefault<TKey, TVal>(this IDictionary<TKey, TVal> data, TKey key, TVal def = default(TVal))
+        {
+            if(data == null) {
+                return def;
+            }
+            return data.ContainsKey(key) ? data[key] : def;
         }
     }
 }

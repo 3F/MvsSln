@@ -24,6 +24,7 @@
 */
 
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -36,6 +37,14 @@ namespace net.r_eg.MvsSln.Core
         {
             get;
             set;
+        }
+
+        /// <summary>
+        /// Full path to an solution file.
+        /// </summary>
+        public string SolutionFile
+        {
+            get => Properties?.GetOrDefault(PropertyNames.SLN_PATH);
         }
 
         /// <summary>
@@ -117,6 +126,7 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// All available global properties for solution.
+        /// Use optional {PropertyNames} to access to popular properties.
         /// </summary>
         public RoProperties Properties
         {
