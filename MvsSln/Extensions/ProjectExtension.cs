@@ -29,14 +29,56 @@ namespace net.r_eg.MvsSln.Extensions
 {
     public static class ProjectExtension
     {
+        public static bool IsEqual(this Project a, Project b)
+        {
+            if(a == null || b == null) {
+                return a == b;
+            }
+
+            return a.FullPath == b.FullPath
+                && a.GetConfig() == b.GetConfig()
+                && a.GetPlatform() == b.GetPlatform()
+                && a.GetProjectGuid() == b.GetProjectGuid()
+                && a.GetProjectName() == b.GetProjectName();
+        }
+
+        public static string GetSolutionDir(this Project eProject)
+        {
+            return eProject?.GetPropertyValue(PropertyNames.SLN_DIR);
+        }
+
+        public static string GetProjectRelativePath(this Project eProject)
+        {
+            if(eProject == null) {
+                return null;
+            }
+            return eProject.GetSolutionDir().MakeRelativePath(eProject.FullPath);
+        }
+
+        public static string GetConfig(this Project eProject)
+        {
+            return eProject?.GetPropertyValue(PropertyNames.CONFIG);
+        }
+
+        public static string GetPlatform(this Project eProject)
+        {
+            return eProject?.GetPropertyValue(PropertyNames.PLATFORM);
+        }
+
+        public static string GetSolutionExt(this Project eProject)
+        {
+            return eProject?.GetPropertyValue(PropertyNames.SLN_EXT);
+        }
+
         public static string GetProjectGuid(this Project eProject)
         {
-            return eProject?.GetPropertyValue("ProjectGuid");
+            return eProject?.GetPropertyValue(PropertyNames.PRJ_GUID);
         }
 
         public static string GetProjectName(this Project eProject)
         {
-            return eProject?.GetPropertyValue("ProjectName");
+            //NOTE: this property can also define an unified project name between various .sln files (_2010.sln, _2017.sln)
+            return eProject?.GetPropertyValue(PropertyNames.PRJ_NAME);
         }
     }
 }

@@ -24,6 +24,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -91,6 +92,36 @@ namespace net.r_eg.MvsSln.Extensions
         }
 
         /// <summary>
+        /// Extracts file properties:
+        /// SLN_DIR; SLN_EXT; SLN_FNAME; SLN_NAME; SLN_PATH
+        /// </summary>
+        /// <param name="file">Path to Solution file.</param>
+        /// <returns>Use {PropertyNames} for accessing to extracted data.</returns>
+        public static Dictionary<string, string> GetFileProperties(this string file)
+        {
+            if(string.IsNullOrEmpty(file))
+            {
+                return new Dictionary<string, string>()
+                {
+                    [PropertyNames.SLN_DIR]     = PropertyNames.UNDEFINED,
+                    [PropertyNames.SLN_EXT]     = PropertyNames.UNDEFINED,
+                    [PropertyNames.SLN_FNAME]   = PropertyNames.UNDEFINED,
+                    [PropertyNames.SLN_NAME]    = PropertyNames.UNDEFINED,
+                    [PropertyNames.SLN_PATH]    = PropertyNames.UNDEFINED,
+                };
+            }
+
+            return new Dictionary<string, string>()
+            {
+                [PropertyNames.SLN_DIR]     = GetDirectoryFromFile(file),
+                [PropertyNames.SLN_EXT]     = Path.GetExtension(file),
+                [PropertyNames.SLN_FNAME]   = Path.GetFileName(file),
+                [PropertyNames.SLN_NAME]    = Path.GetFileNameWithoutExtension(file),
+                [PropertyNames.SLN_PATH]    = file,
+            };
+        }
+
+        /// <summary>
         /// Get position of first non-WhiteSpace character from string.
         /// </summary>
         /// <param name="str"></param>
@@ -117,6 +148,16 @@ namespace net.r_eg.MvsSln.Extensions
 
                 i += rightToLeft ? -1 : 1;
             }
+        }
+
+        /// <param name="file">File path; null is possible.</param>
+        /// <returns></returns>
+        public static string GetDirectoryFromFile(this string file)
+        {
+            if(file != null) {
+                file = Path.GetDirectoryName(file);
+            }
+            return file.DirectoryPathFormat();
         }
 
         /// <summary>

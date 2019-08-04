@@ -25,7 +25,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using net.r_eg.MvsSln.Extensions;
 
+// TODO: move to '.Types' namespace and split ProjectType processing into new additional type.
 namespace net.r_eg.MvsSln.Core
 {
     public static class Guids
@@ -33,20 +35,59 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Solution Folder.
         /// </summary>
-        public const string SLN_FOLDER     = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
+        public const string SLN_FOLDER = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
 
-        public const string PROJECT_CS     = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
-        public const string PROJECT_DB     = "{C8D11400-126E-41CD-887F-60BD40844F9E}";
-        public const string PROJECT_FS     = "{F2A71F9B-5D33-465A-A702-920D77279786}";
-        public const string PROJECT_VB     = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}";
-        public const string PROJECT_VC     = "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}";
-        public const string PROJECT_VJ     = "{E6FDF86B-F3D1-11D4-8576-0002A516ECE8}";
-        public const string PROJECT_WD     = "{2CFEAB61-6A3B-4EB8-B523-560B4BEEF521}";
-        public const string PROJECT_WEB    = "{E24C65DC-7377-472B-9ABA-BC803B73C61A}";
+        /// <summary>
+        /// .csproj
+        /// </summary>
+        public const string PROJECT_CS = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
+
+        /// <summary>
+        /// .dbproj
+        /// </summary>
+        public const string PROJECT_DB = "{C8D11400-126E-41CD-887F-60BD40844F9E}";
+
+        /// <summary>
+        /// .fsproj
+        /// </summary>
+        public const string PROJECT_FS = "{F2A71F9B-5D33-465A-A702-920D77279786}";
+
+        /// <summary>
+        /// .vbproj
+        /// </summary>
+        public const string PROJECT_VB = "{F184B08F-C81C-45F6-A57F-5ABD9991F28F}";
+
+        /// <summary>
+        /// .vcxproj
+        /// </summary>
+        public const string PROJECT_VC = "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}";
+
+        /// <summary>
+        /// .vjsproj
+        /// </summary>
+        public const string PROJECT_VJ = "{E6FDF86B-F3D1-11D4-8576-0002A516ECE8}";
+
+        /// <summary>
+        /// .wdproj
+        /// </summary>
+        public const string PROJECT_WD = "{2CFEAB61-6A3B-4EB8-B523-560B4BEEF521}";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string PROJECT_WEB = "{E24C65DC-7377-472B-9ABA-BC803B73C61A}";
+
+        /// <summary>
+        /// .deployproj
+        /// </summary>
         public const string PROJECT_DEPLOY = "{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}";
-        public const string PROJECT_SF     = "{A07B5EB6-E848-4116-A8D0-A826331D98C6}";
 
-        private static Dictionary<ProjectType, string> ProjectTypeGuids = new Dictionary<ProjectType, string>()
+        /// <summary>
+        /// .sfproj
+        /// </summary>
+        public const string PROJECT_SF = "{A07B5EB6-E848-4116-A8D0-A826331D98C6}";
+
+        private static Dictionary<ProjectType, string> projectTypeGuids = new Dictionary<ProjectType, string>()
         {
             { ProjectType.Cs, PROJECT_CS },
             { ProjectType.Db, PROJECT_DB },
@@ -69,7 +110,7 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public static ProjectType ProjectTypeBy(string guid)
         {
-            return ProjectTypeGuids.FirstOrDefault(p => p.Value == guid).Key;
+            return projectTypeGuids.FirstOrDefault(p => p.Value == guid).Key;
         }
 
         /// <summary>
@@ -79,7 +120,7 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public static string GuidBy(ProjectType type)
         {
-            return ProjectTypeGuids[type];
+            return projectTypeGuids.GetOrDefault(type);
         }
     }
 }

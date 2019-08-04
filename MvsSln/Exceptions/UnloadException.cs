@@ -23,22 +23,32 @@
  * THE SOFTWARE.
 */
 
-namespace net.r_eg.MvsSln.Core
+using System;
+using System.Runtime.Serialization;
+using System.Security.Permissions;
+
+namespace net.r_eg.MvsSln.Exceptions
 {
-    // TODO: move to '.Types' namespace
-    public enum ProjectType
+    [Serializable]
+    public class UnloadException<T>: CommonException
     {
-        Unknown,
-        Vb,
-        Cs,
-        Vj,
-        Vc,
-        Fs,
-        Db,
-        Wd,
-        Web,
-        SlnFolder,
-        Deploy,
-        Sf
+        public T UnloadedInstance
+        {
+            get;
+            protected set;
+        }
+
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue(nameof(UnloadedInstance), UnloadedInstance);
+        }
+
+        public UnloadException(string message, T instance)
+            : base(message)
+        {
+            UnloadedInstance = instance;
+        }
     }
 }

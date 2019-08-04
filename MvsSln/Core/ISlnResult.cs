@@ -35,6 +35,11 @@ namespace net.r_eg.MvsSln.Core
         string SolutionDir { get; }
 
         /// <summary>
+        /// Full path to an solution file.
+        /// </summary>
+        string SolutionFile { get; }
+
+        /// <summary>
         /// Processed type for result.
         /// </summary>
         SlnItems ResultType { get; }
@@ -81,6 +86,7 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// All available global properties for solution.
+        /// Use optional {PropertyNames} to access to popular properties.
         /// </summary>
         RoProperties Properties { get; }
 

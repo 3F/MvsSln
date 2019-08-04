@@ -45,7 +45,8 @@ namespace net.r_eg.MvsSln.Core
         } = new RuleOfConfig();
 
         /// <summary>
-        /// To use virtual `Sensitivity` method in comparing objects.
+        /// To use an `Sensitivity` logic when comparing {IConfPlatform}
+        /// together with `==` , `!=`.
         /// </summary>
         public bool SensitivityComparing
         {
@@ -64,6 +65,10 @@ namespace net.r_eg.MvsSln.Core
             get => Rule?.Configuration(Configuration);
         }
 
+        /// <summary>
+        /// {ConfigurationByRule} with optional case insensitive logic.
+        /// Uses {SensitivityComparing} flag.
+        /// </summary>
         public string ConfigurationByRuleICase
         {
             get => Sensitivity(ConfigurationByRule);
@@ -80,9 +85,29 @@ namespace net.r_eg.MvsSln.Core
             get => Rule?.Platform(Platform);
         }
 
+        /// <summary>
+        /// {PlatformByRule} with optional case insensitive logic.
+        /// Uses {SensitivityComparing} flag.
+        /// </summary>
         public string PlatformByRuleICase
         {
             get => Sensitivity(PlatformByRule);
+        }
+
+        /// <summary>
+        /// Checking an config/platform by using {Rule} instance.
+        /// </summary>
+        /// <param name="config">Configuration name.</param>
+        /// <param name="platform">Platform name.</param>
+        /// <param name="icase">Case insensitive flag.</param>
+        /// <returns></returns>
+        public bool IsEqualByRule(string config, string platform, bool icase = false)
+        {
+            var cmp = icase ? StringComparison.InvariantCultureIgnoreCase 
+                            : StringComparison.InvariantCulture;
+
+            return string.Equals(ConfigurationByRule, Rule?.Configuration(config), cmp)
+                && string.Equals(PlatformByRule, Rule?.Platform(platform), cmp);
         }
 
         public static bool operator ==(ConfigItem a, ConfigItem b)
@@ -104,6 +129,8 @@ namespace net.r_eg.MvsSln.Core
 
             var b = (ConfigItem)obj;
 
+            // NOTE: {SensitivityComparing} will control an `Sensitivity` logic, 
+            //       thus we need only `...ByRuleICase` properties:
             return ConfigurationByRuleICase == b.ConfigurationByRuleICase 
                     && PlatformByRuleICase == b.PlatformByRuleICase;
         }

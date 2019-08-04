@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildType.cs" />
+    <Compile Include="Core\IXProjectEnv.cs" />
+    <Compile Include="Core\XProjectEnv.cs" />
     <Compile Include="Core\ObjHandlers\WExtensibilityGlobals.cs" />
     <Compile Include="Core\ObjHandlers\WNestedProjects.cs" />
     <Compile Include="Core\ObjHandlers\WVisualStudioVersion.cs" />
@@ -92,8 +94,10 @@
     <Compile Include="EnvDTE\DProject.cs" />
     <Compile Include="EnvDTE\DynDteProject.cs" />
     <Compile Include="Exceptions\CoHandlerRuleException.cs" />
+    <Compile Include="Exceptions\UnloadException.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Extensions\MathExtension.cs" />
+    <Compile Include="Extensions\XProjectExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Projects\ImportElement.cs" />
     <Compile Include="Projects\Item.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="Log\LSender.cs" />
     <Compile Include="Log\Message.cs" />
     <Compile Include="MvsSlnVersion.cs" />
+    <Compile Include="PropertyNames.cs" />
     <Compile Include="SlnItems.cs" />
     <Compile Include="Sln.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -135,6 +140,8 @@
     <Compile Include="Core\SlnParser.cs" />
     <Compile Include="Core\ProjectItem.cs" />
     <Compile Include="Core\SynchSubscribers.cs" />
+    <Compile Include="Types\FileExt.cs" />
+    <Compile Include="Types\Kinds.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

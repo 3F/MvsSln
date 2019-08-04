@@ -23,22 +23,30 @@
  * THE SOFTWARE.
 */
 
-namespace net.r_eg.MvsSln.Core
+using net.r_eg.MvsSln.Core;
+
+namespace net.r_eg.MvsSln.Extensions
 {
-    // TODO: move to '.Types' namespace
-    public enum ProjectType
+    public static class XProjectExtension
     {
-        Unknown,
-        Vb,
-        Cs,
-        Vj,
-        Vc,
-        Fs,
-        Db,
-        Wd,
-        Web,
-        SlnFolder,
-        Deploy,
-        Sf
+        /// <summary>
+        /// Checking of equality by limited project attributes like full path and its configuration.
+        /// IXProject does not override Equals() and GetHashCode() 
+        /// And this can help to compare projects by minimal information for Unload() methods etc.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="prj"></param>
+        /// <returns></returns>
+        public static bool IsLimEqual(this IXProject x, IXProject prj)
+        {
+            if(x == null) {
+                return x == prj;
+            }
+
+            return x.ProjectFullPath == prj.ProjectFullPath
+                && x.ProjectItem.project == prj.ProjectItem.project
+                && (ConfigItem)x.ProjectItem.solutionConfig == (ConfigItem)prj.ProjectItem.solutionConfig
+                && (ConfigItem)x.ProjectItem.projectConfig == (ConfigItem)prj.ProjectItem.projectConfig;
+        }
     }
 }

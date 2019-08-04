@@ -38,13 +38,83 @@ namespace net.r_eg.MvsSln.Extensions
         /// <param name="act">The action that should be executed for each item.</param>
         public static void ForEach<T>(this IEnumerable<T> items, Action<T> act)
         {
+            items?.ForEach((x, i) => act(x));
+        }
+
+        /// <summary>
+        /// Foreach in Linq manner.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="act">The action that should be executed for each item.</param>
+        public static void ForEach<T>(this IEnumerable<T> items, Action<T, long> act)
+        {
             if(items == null) {
                 return;
             }
 
+            long n = 0;
             foreach(var item in items) {
-                act(item);
+                act(item, n++);
             }
+        }
+
+        /// <summary>
+        /// Adds/Updates data in source via data from `items`.
+        /// 
+        /// Any duplicates will be just updated:
+        /// ie. similar to `Concat()` except internal restriction for `Insert()`.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="items"></param>
+        /// <returns>Updated source.</returns>
+        public static IDictionary<string, string> AddOrUpdate(this IDictionary<string, string> source, IDictionary<string, string> items)
+        {
+            if(source == null || items == null) {
+                return source;
+            }
+
+            foreach(var i in items) {
+                source[i.Key] = i.Value;
+            }
+            return source;
+        }
+
+        /// <summary>
+        /// Returns either value from dictionary or configured default value.
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TVal"></typeparam>
+        /// <param name="data"></param>
+        /// <param name="key"></param>
+        /// <param name="def">Use this if key is not found.</param>
+        /// <returns></returns>
+        public static TVal GetOrDefault<TKey, TVal>(this IDictionary<TKey, TVal> data, TKey key, TVal def = default(TVal))
+        {
+            if(data == null) {
+                return def;
+            }
+            return data.ContainsKey(key) ? data[key] : def;
+        }
+
+        /// <summary>
+        /// Removes element from list by using specific comparer.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="src"></param>
+        /// <param name="elem"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        public static bool Remove<T>(this IList<T> src, T elem, Func<T, T, bool> comparer)
+        {
+            for(int i = 0; i < src.Count; ++i)
+            {
+                if(comparer(src[i], elem)) {
+                    src.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

@@ -65,5 +65,22 @@ namespace net.r_eg.MvsSlnTest.Core
             Assert.AreNotEqual(new ConfigItem("Debug", "Platform1") { SensitivityComparing = false }, new ConfigItem("deBUG", "platFORM1") { SensitivityComparing = false });
             Assert.AreNotEqual(new ConfigItem("Debug", "Platform1") { SensitivityComparing = false }, new ConfigItem("deBUG", "platFORM1") { SensitivityComparing = true });
         }
+
+        [TestMethod]
+        public void IsEqualByRuleTest1()
+        {
+            var target = new ConfigItem("Debug", "Any CPU");
+
+            Assert.AreEqual(true, target.IsEqualByRule("Debug", "Any CPU", false));
+            Assert.AreEqual(false, target.IsEqualByRule("debug", "Any CPU", false));
+
+            Assert.AreEqual(true, target.IsEqualByRule("Debug", "AnyCPU", false));
+            Assert.AreEqual(false, target.IsEqualByRule("Debug", "Anycpu", false));
+
+            Assert.AreEqual(true, target.IsEqualByRule("Debug", "Anycpu", true));
+
+            Assert.AreEqual(false, target.IsEqualByRule(null, null, false));
+            Assert.AreEqual(false, target.IsEqualByRule(null, null, true));
+        }
     }
 }
