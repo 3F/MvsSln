@@ -38,12 +38,24 @@ namespace net.r_eg.MvsSln.Extensions
         /// <param name="act">The action that should be executed for each item.</param>
         public static void ForEach<T>(this IEnumerable<T> items, Action<T> act)
         {
+            items?.ForEach((x, i) => act(x));
+        }
+
+        /// <summary>
+        /// Foreach in Linq manner.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="act">The action that should be executed for each item.</param>
+        public static void ForEach<T>(this IEnumerable<T> items, Action<T, long> act)
+        {
             if(items == null) {
                 return;
             }
 
+            long n = 0;
             foreach(var item in items) {
-                act(item);
+                act(item, n++);
             }
         }
 
@@ -83,6 +95,26 @@ namespace net.r_eg.MvsSln.Extensions
                 return def;
             }
             return data.ContainsKey(key) ? data[key] : def;
+        }
+
+        /// <summary>
+        /// Removes element from list by using specific comparer.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="src"></param>
+        /// <param name="elem"></param>
+        /// <param name="comparer"></param>
+        /// <returns></returns>
+        public static bool Remove<T>(this IList<T> src, T elem, Func<T, T, bool> comparer)
+        {
+            for(int i = 0; i < src.Count; ++i)
+            {
+                if(comparer(src[i], elem)) {
+                    src.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

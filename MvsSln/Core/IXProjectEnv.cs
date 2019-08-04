@@ -58,7 +58,7 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// List of valid projects from {PrjCollection}.
-        /// Such as something except `.user` but contains FirstChild / LastChild XML node.
+        /// Such as something except `.user`,`.metaproj` but contains FirstChild / LastChild XML node.
         /// Only if you know what you're doing.
         /// </summary>
         IEnumerable<Project> ValidProjects { get; }

@@ -23,32 +23,30 @@
  * THE SOFTWARE.
 */
 
-using System;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
+using net.r_eg.MvsSln.Core;
 
-namespace net.r_eg.MvsSln.Exceptions
+namespace net.r_eg.MvsSln.Extensions
 {
-    [Serializable]
-    public class UnloadException<T>: CommonException
+    public static class XProjectExtension
     {
-        public T UnloadedInstance
+        /// <summary>
+        /// Checking of equality by limited project attributes like full path and its configuration.
+        /// IXProject does not override Equals() and GetHashCode() 
+        /// And this can help to compare projects by minimal information for Unload() methods etc.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="prj"></param>
+        /// <returns></returns>
+        public static bool IsLimEqual(this IXProject x, IXProject prj)
         {
-            get;
-            protected set;
-        }
+            if(x == null) {
+                return x == prj;
+            }
 
-        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue(nameof(UnloadedInstance), UnloadedInstance);
-        }
-
-        public UnloadException(string message, T instance)
-            : base(message)
-        {
-            UnloadedInstance = instance;
+            return x.ProjectFullPath == prj.ProjectFullPath
+                && x.ProjectItem.project == prj.ProjectItem.project
+                && (ConfigItem)x.ProjectItem.solutionConfig == (ConfigItem)prj.ProjectItem.solutionConfig
+                && (ConfigItem)x.ProjectItem.projectConfig == (ConfigItem)prj.ProjectItem.projectConfig;
         }
     }
 }

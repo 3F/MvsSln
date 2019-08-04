@@ -96,14 +96,15 @@ namespace net.r_eg.MvsSln.Core
 
         /// <summary>
         /// List of valid projects from {PrjCollection}.
-        /// Such as something except `.user` but contains FirstChild / LastChild XML node.
+        /// Such as something except `.user`,`.metaproj` but contains FirstChild / LastChild XML node.
         /// Only if you know what you're doing.
         /// </summary>
         public IEnumerable<Project> ValidProjects
         {
             get => PrjCollection.LoadedProjects
                     .Where(p => p.Xml.FirstChild != null && p.Xml.LastChild != null)
-                    .Where(p => !p.FullPath.ToLower().EndsWith(".user", StringComparison.InvariantCultureIgnoreCase));
+                    .Where(p => !p.FullPath.EndsWith(".user", StringComparison.InvariantCultureIgnoreCase))
+                    .Where(p => !p.FullPath.EndsWith(".metaproj", StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
@@ -413,7 +414,12 @@ namespace net.r_eg.MvsSln.Core
         {
             LSender.Send(this, $"Release all loaded projects for current environment (total: {PrjCollection.LoadedProjects.Count})", Message.Level.Debug);
 
-            foreach(var xp in Projects)
+            if(PrjCollection.LoadedProjects.Count < 1) { // nothing to release, thus we need only to reset xp collection
+                xpProjects.Clear();
+                return;
+            }
+
+            foreach(var xp in Projects.ToArray())
             {
                 if(!Unload(xp) && throwIfErr) {
                     throw new UnloadException<IXProject>($"Failed unload: '{xp.ProjectGuid}:{xp.ProjectItem.projectConfig}'", xp);
@@ -431,11 +437,11 @@ namespace net.r_eg.MvsSln.Core
         /// <returns>False if project was not unloaded by some reason. Otherwise true.</returns>
         public bool Unload(IXProject xp)
         {
-            if(xp.Project == null) {
+            if(xp?.Project == null) {
                 return false;
             }
 
-            LSender.Send(this, $"Release loaded project {xp.ProjectGuid}:{xp.ProjectItem.projectConfig}", Message.Level.Debug);
+            LSender.Send(this, $"Trying to release loaded project {xp.ProjectGuid}:{xp.ProjectItem.projectConfig}", Message.Level.Debug);
             try
             {
                 if(xp.Project.FullPath != null) {
@@ -449,8 +455,12 @@ namespace net.r_eg.MvsSln.Core
             }
             catch(Exception ex)
             {
-                LSender.Send(this, $"Project '{xp.ProjectGuid}:{xp.ProjectItem.projectConfig}':'{xp.ProjectFullPath}' was not unloaded: '{ex.Message}'", Message.Level.Warn);
+                LSender.Send(this, $"Project '{xp.ProjectGuid}:{xp.ProjectItem.projectConfig}':'{xp.ProjectFullPath}' is already unloaded or cannot be unloaded due to error: '{ex.Message}'", Message.Level.Debug);
                 return false;
+            }
+            finally
+            {
+                xpProjects?.Remove(xp, (a, b) => a.IsLimEqual(b));
             }
         }
 

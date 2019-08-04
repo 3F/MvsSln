@@ -97,6 +97,7 @@
     <Compile Include="Exceptions\UnloadException.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Extensions\MathExtension.cs" />
+    <Compile Include="Extensions\XProjectExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Projects\ImportElement.cs" />
     <Compile Include="Projects\Item.cs" />
