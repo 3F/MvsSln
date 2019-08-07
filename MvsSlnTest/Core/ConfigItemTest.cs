@@ -82,5 +82,43 @@ namespace net.r_eg.MvsSlnTest.Core
             Assert.AreEqual(false, target.IsEqualByRule(null, null, false));
             Assert.AreEqual(false, target.IsEqualByRule(null, null, true));
         }
+
+        [TestMethod]
+        public void NoPlatformTest1()
+        {
+            var target = new ConfigItem("Config");
+
+            Assert.AreEqual("Config", target.Configuration);
+            Assert.AreEqual(string.Empty, target.Platform);
+
+            target = new ConfigItem("Config|");
+
+            Assert.AreEqual("Config", target.Configuration);
+            Assert.AreEqual(string.Empty, target.Platform);
+
+            target = new ConfigItem("Config| ");
+
+            Assert.AreEqual("Config", target.Configuration);
+            Assert.AreEqual(" ", target.Platform);
+        }
+
+        [TestMethod]
+        public void CtorTest1()
+        {
+            var target = new ConfigItem("");
+
+            Assert.AreEqual(string.Empty, target.Configuration);
+            Assert.AreEqual(string.Empty, target.Platform);
+
+            target = new ConfigItem(" ");
+
+            Assert.AreEqual(" ", target.Configuration);
+            Assert.AreEqual(string.Empty, target.Platform);
+
+            target = new ConfigItem(null);
+
+            Assert.AreEqual(null, target.Configuration);
+            Assert.AreEqual(null, target.Platform);
+        }
     }
 }

@@ -171,17 +171,16 @@ namespace net.r_eg.MvsSln.Core
 
         public ConfigItem(string formatted)
         {
-            if(String.IsNullOrWhiteSpace(formatted)) {
+            if(formatted == null) {
                 return;
             }
 
             string[] cfg = formatted.Split('|');
-            if(cfg.Length < 2) {
-                throw new ArgumentException($"The format `{formatted}` of configuration is not supported.");
-            }
 
-            Configuration   = cfg[0];
-            Platform        = cfg[1];
+            Configuration = cfg[0];
+
+            // < 2 https://github.com/3F/MvsSln/issues/19
+            Platform = cfg.Length < 2 ? string.Empty : cfg[1];
         }
 
         protected virtual string Sensitivity(string name)
