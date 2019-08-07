@@ -2,9 +2,7 @@
 
 [![](https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png)](https://github.com/3F/MvsSln)
 
-MvsSln provides complex support (sln parser, r/w handlers, ...) of the Visual Studio .sln files and its projects (.vcxproj, .csproj., ...).
-
-It was part of the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) projects, but now it extracted into the new (specially for [DllExport](https://github.com/3F/DllExport) and for others).
+🧩 Customizable VisualStudio .sln parser, complex support of the projects (.vcxproj, .csproj., …), lightweight r/w handlers at runtime, and more.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/if1t4rhhntpf6ut3/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln/branch/master)
 [![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
@@ -26,20 +24,28 @@ The [MIT License (MIT)](https://github.com/3F/MvsSln/blob/master/License.txt)
 ```
 Copyright (c) 2013-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 ```
-MvsSln contributors: https://github.com/3F/MvsSln/graphs/contributors
 
 [ [ ☕ Donate ](https://3F.github.com/Donation/) ]
 
+MvsSln contributors: https://github.com/3F/MvsSln/graphs/contributors
+
+We're waiting for your awesome contributions!
+
 ## Why MvsSln ?
 
-Because today it still is the most easy way for complex work with Visual Studio .sln files and its projects (.vcxproj, .csproj., ...). Because it's free, because it's open.
+Because today it still is the most easy way for complex work with Visual Studio .sln files and their projects (.vcxproj, .csproj., ...). Because it's free, because it's open.
+
+1. 🌌 We're providing most convenient work with projects, their dependencies, their lazy loading, any folders, any items, references, and lot of other important things.
+2. 💡 We're customizable and extensible library at runtime. Make **your custom** .sln for everything!
+3. 🚀 We were born from other popular project to be more loyal for your preferences on the fly. Hello from 2013.
 
 Even if you just need the basic access to information or more complex work through our readers and writers. 
 
-* You can also easily control all your projects data (Reference, ProjectReference, Properties, Import sections, ...).
-* Or even create your **custom sln parsing** of anything **in a few steps.**
+Easily control all your projects data (Reference, ProjectReference, Properties, Import sections, ...). Or even create your **custom sln parsing** of anything in a few steps.
 
-Moreover, it has been re-licensed from vsSolutionBuildEvent projects (LGPLv3 -> MIT), so, enjoy with us.
+Specially extracted and re-licensed from vsSolutionBuildEvent projects (LGPLv3 -> MIT) for https://github.com/3F/DllExport and others!
+
+Enjoy with us. 🎈
 
 ```csharp
 using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All &~ SlnItems.ProjectDependencies))
@@ -48,6 +54,10 @@ using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All &~ SlnIte
     //    sln.Result.ProjectDependencies.FirstBy(BuildType.Rebuild).pGuid,
     //    new ConfigItem("Debug", "Any CPU")
     //);
+
+    var p = slnEnv.GetOrLoadProject(
+        sln.ProjectItems.FirstOrDefault(p => p.name == name)
+    );
 
     var paths = sln.Result.ProjectItems
                             .Select(p => new { p.pGuid, p.fullPath })
@@ -96,7 +106,7 @@ if((RawText)"data" == (RawText)"data") { ... }
 ````
 
 
-Use Subdirectories:
+Use 📂 Subdirectories:
 
 ```csharp
 new SolutionFolder("dir1", 
@@ -125,9 +135,11 @@ By the way, the any new solution handler (reader or writer) can be easily added 
 
 Control anything and have fun !
 
-## Examples of using
+## How or Where is used
 
-### DllExport Manager
+Let's consider examples of use in real projects below.
+
+### .NET DllExport
 
 DllExport project finally changed distribution of the packages starting with v1.6 release. The final manager now fully works via MvsSln:
 
@@ -135,8 +147,20 @@ DllExport project finally changed distribution of the packages starting with v1.
 
 ![](https://raw.githubusercontent.com/3F/MvsSln/master/resources/MvsSln_DllExport_example.png)
 
+### vsSolutionBuildEvent
 
-### Map of .sln & Writers
+vsSolutionBuildEvent now is completely integrated with MvsSln [[?](https://github.com/3F/vsSolutionBuildEvent/pull/53)]
+
+Fully removed original parser and replaced related processing from Environment/IsolatedEnv/MSBuild/CIM. Now it just contains lightweight invoking of relevant methods.
+
+https://github.com/3F/vsSolutionBuildEvent
+
+![](resources/vsSBE_and_MvsSln.png)
+
+![](resources/vsSBE_and_MvsSln_VS.png)
+
+
+## Map of .sln & Writers
 
 v2+ now also may provide map of analyzed data. To enable this, define a bit **0x0080** for type of operations to parser.
 
@@ -197,22 +221,16 @@ Second instance of project {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} with configura
 ...
 ```
 
-For example, the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) contains 8 projects and 8 solution configurations:
+For example, the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) contains 10 projects and 8 solution configurations:
 
 ```
-CI_Debug_net45|Any CPU
-CI_Debug|Any CPU
-CI_Release_net45|Any CPU
-CI_Release|Any CPU
-Debug_net45|Any CPU
-Debug|Any CPU
-Release_net45|Any CPU
-Release|Any CPU
+DBG_SDK10; DBG_SDK15; DCI_SDK10; DCI_SDK15; REL_SDK10; REL_SDK15; RCI_SDK10; RCI_SDK15
 ```
 
-Maximum possible configurations for each projects above should be calculated as 8 * 8 = 64, ie. 64 instances that *can be* loaded as each different project. `EnvWithProjects` will try load all available, but in fact, mostly 2 or more project-configuration can be related to the same 1 solution-configuration, therefore it can be just 30 or even 20 in reality, and so on.
+Maximum **possible** configurations for each projects above should be calculated as 10 * 8 = 80, ie. 80 instances that *can be* loaded as each different project. `EnvWithProjects` will try load all available, but in fact, mostly 2 or more project-configuration can be related to the same 1 solution-configuration, therefore it can be just 30 or even 20 in reality, and so on.
 
-However, if you only need to work with common data of selected project: you just need to use any available configuration. To load projects only with specific configuration, use for example `IEnvironment.LoadProjects`:
+However, **if you need** to work only with common data of specified project:
+* Just use any available configuration. That is, to load projects only with specific configuration, use for example `IEnvironment.LoadProjects`.
 
 ```csharp
 // SlnItems.Env will initialize environment without loading projects.
@@ -228,7 +246,7 @@ using(var sln = new Sln(@"vsSolutionBuildEvent.sln", SlnItems.Env))
 }
 ```
 
-**With latest version** should be also available `IEnvironment.LoadMinimalProjects` or `EnvWithMinimalProjects` flag.
+**For modern versions** also available `IEnvironment.LoadMinimalProjects` or `EnvWithMinimalProjects` flag.
 
 ### Adding Reference & Assembly name
 
@@ -237,8 +255,8 @@ XProject.AddReference(lib, false);
 ```
 
 ```xml
-<Reference Include="DllExport, Version=1.5.2.42159, Culture=neutral, PublicKeyToken=8337224c9ad9e356">
-  <HintPath>..\packages\DllExport.1.5.2\gcache\metalib\DllExport.dll</HintPath>
+<Reference Include="DllExport, Version=1.6.4.15293, Culture=neutral, PublicKeyToken=8337224c9ad9e356">
+  <HintPath>..\packages\DllExport.1.6.4\gcache\metalib\DllExport.dll</HintPath>
   <Private>False</Private>
 </Reference>
 ```
@@ -249,7 +267,7 @@ XProject.AddReference("DllExport", lib, false);
 
 ```xml
 <Reference Include="DllExport">
-  <HintPath>..\packages\DllExport.1.5.2\gcache\metalib\DllExport.dll</HintPath>
+  <HintPath>..\packages\DllExport.1.6.4\gcache\metalib\DllExport.dll</HintPath>
   <Private>False</Private>
 </Reference>
 ```
@@ -318,8 +336,6 @@ public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
 ```
 
 ## How to get MvsSln
-
-Available variants:
 
 * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="MvsSln"` or **[gnt](https://3f.github.io/GetNuTool/releases/latest/gnt/)** /p:ngpackages="MvsSln"
 * NuGet PM: `Install-Package MvsSln`

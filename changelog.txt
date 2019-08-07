@@ -15,6 +15,9 @@ _ _ _ _
     * FIXED: [Broken in 2.2] Processing solution breaks when solution contains 
              some unsupported/unknown project type. Issue #14. (Thanks @wouterroos).
 
+    * FIXED: Possible InvalidOperationException "Sequence contains no elements". 
+             Issue #20.
+    
     * NEW: An `Deploy` flag support. PR #16 (Thanks @wouterroos).
     
            +IConfPlatformPrj.IncludeInDeploy
@@ -222,5 +225,7 @@ _ _ _ _
 
 [v1.0] 2017.07.07
 
-    * Initial public release.
-      A tool for complex support of the Visual Studio .sln files and its projects.
+    * Initial public release. Extracted from vsSolutionBuildEvent project: 
+      https://github.com/3F/vsSolutionBuildEvent
+
+      A new independent tool for complex support of the Visual Studio .sln files and its projects.

@@ -3,7 +3,7 @@
   <metadata>
     <id>MvsSln</id>
     <version>2.3.0</version>
-    <title>[ MvsSln ] VisualStudio .sln files and its projects</title>
+    <title>[ MvsSln ] Customizable VisualStudio .sln parser, projects, r/w handlers at runtime</title>
     <authors>github.com/3F/MvsSln</authors>
     <license type="file">License.txt</license>
     <owners>reg</owners>
@@ -14,14 +14,19 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
     
-        MvsSln provides complex support (sln parser, r/w handlers, ...) of the Visual Studio .sln files and its projects (.vcxproj, .csproj., ...).
+        Customizable VisualStudio .sln parser, complex support of the projects (.vcxproj, .csproj., …), lightweight r/w handlers at runtime, and more.
 
-        Even if you just need the basic access to information or more complex work through our readers and writers.
+        1. 🌌 We're providing most convenient work with projects, their dependencies, their lazy loading, any folders, any items, references, and lot of other important things.
+        2. 💡 We're customizable and extensible library at runtime. Make [your custom] .sln for everything!
+        3. 🚀 We were born from other popular project to be more loyal for your preferences on the fly. Hello from 2013.
 
-        * You can also easily control all your projects data (Reference, ProjectReference, Properties, Import sections, ...).
-        * Or even create your custom sln parsing of anything in a few steps.
+        Easily control all your projects data (Reference, ProjectReference, Properties, Import sections, ...).
+        Or even create your custom sln parsing of anything in a few steps.
 
-        It was part of the https://github.com/3F/vsSolutionBuildEvent projects, but now it extracted into the new (specially for https://github.com/3F/DllExport and for others).
+        Specially extracted and re-licensed from vsSolutionBuildEvent projects (LGPLv3 -> MIT)
+        for https://github.com/3F/DllExport and others!
+
+        Enjoy with us. 🎈
         _ _ _ _ _ _
         Source code and all details here: https://github.com/3F/MvsSln
         
@@ -36,7 +41,7 @@
 {build_info}
         
     </description>
-    <summary>Complex support (sln parser, r/w handlers, ...) of the Visual Studio .sln files and its projects (.vcxproj, .csproj, ...) - https://github.com/3F/MvsSln</summary>
+    <summary>Customizable VisualStudio .sln parser, complex support of the projects (.vcxproj, .csproj., …), lightweight r/w handlers at runtime, and more. - https://github.com/3F/MvsSln</summary>
     <tags>sln visualstudio parser sln-parser projects sln-files csproj vcxproj visual-studio VS2019 VS2017 VS2015 VS2013 VS2012 VS2010 msbuild GetNuTool hMSBuild MvsSln</tags>
     <releaseNotes> changelog: https://github.com/3F/MvsSln/blob/master/changelog.txt </releaseNotes>
     <copyright>Copyright (c) 2013-2019  Denis Kuzmin [entry.reg@gmail.com] GitHub/3F </copyright>
