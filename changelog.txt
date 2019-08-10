@@ -1,6 +1,103 @@
-- - - -
-MvsSln  :: https://github.com/3F/MvsSln
-_ _ _ _
+MvsSln - https://github.com/3F/MvsSln
+_ _ _ _ 
+
+
+[v2.4] 2019.08.10
+
+    * FIXED: "The format ... of configuration is not supported". Issue #19.
+    
+    * FIXED: Fixed loading of projects via `IsolatedEnv.LoadProjects()`.
+    
+    * FIXED: Fixed possible NullReferenceException in `ProjectItem` constructors.
+    
+    * NEW: Introduces XProjectEnv. PR #17.
+           An splitted IsolatedEnv as the base but without IDisposable.
+        ```
+        IXProjectEnv slnEnv;
+        ...
+        slnEnv = new XProjectEnv(sln, properties);
+        ...
+        slnEnv = new IsolatedEnv(sln); // +IEnvironment, +IDisposable
+        slnEnv.Assign();
+        ...
+        ((IDisposable)slnEnv)?.Dispose();
+        ```
+        
+    * NEW: Added `PropertyNames` type. Regular MSBuild Properties and related.
+    
+    * NEW: Added `FileExt` type for work with `ProjectType` via its file only.
+    
+    * NEW: Added `Kinds` type: PRJ_UNLOADED; PRJ_SLN_DIR
+    
+    * NEW: New extension methods:
+        ```
+        +TVal GetOrDefault<TKey, TVal>(this IDictionary<TKey, TVal> data, TKey key, TVal def)
+        +bool IsEqual(this Project a, Project b)
+        +string GetSolutionDir(this Project eProject)
+        +string GetProjectRelativePath(this Project eProject)
+        +string GetConfig(this Project eProject)
+        +string GetPlatform(this Project eProject)
+        +string GetSolutionExt(this Project eProject)
+        string GetDirectoryFromFile(this string file)
+        Dictionary<string, string> GetFileProperties(this string file)
+        IDictionary<string, string> AddOrUpdate(this IDictionary<string, string> source, IDictionary<string, string> items)
+        bool Remove<T>(this IList<T> src, T elem, Func<T, T, bool> comparer)
+        bool IsLimEqual(this IXProject x, IXProject prj)
+        ```
+        
+    * CHANGED: Removed pGuid checking from `IXProjectEnv.GetOrLoadProject()`
+               Related to Issue #18.
+    
+    * CHANGED: ISlnResult changes: 
+        ```
+        +`string SolutionFile`
+            Full path to an solution file. 
+            Old versions still can address it through Properties.
+        ```
+    
+    * CHANGED: IConfPlatform changes:
+        ```
+        +`bool IsEqualByRule(string config, string platform, bool icase = false);`
+            Checking an config/platform by using {Rule} instance.
+        ```
+                    
+    * CHANGED: IXProjectEnv (IEnvironment) changes:
+        ```
+        +`IXProject XProjectByFile(...);`
+            Find project by full path to file.
+
+        +`IEnumerable<IXProject> Assign(IEnumerable<Project> projects = null);`
+            Assign an existing `Microsoft.Build.Evaluation.Project` instances for local collection.
+
+        +`IXProject AddOrGet(Project project);`
+            Adds `Microsoft.Build.Evaluation.Project` instance into IXProject collection if it does not exist.
+
+        +`ProjectItemCfg ExtractItemCfg(Project project);`
+            Prepares data from `Microsoft.Build.Evaluation.Project` instance.
+
+        +`void UnloadAll(bool throwIfErr = true);`
+            Unloads all evaluated projects at current time.
+
+        +`bool Unload(IXProject xp);`
+            Unloads specified project.
+
+        +`IEnumerable<Project> ValidProjects`
+            List of valid projects such as something except `.user`,`.metaproj` but contains FirstChild / LastChild XML node.
+        ```
+    
+    * CHANGED: Updated package's tool hMSBuild 2.2
+
+               Release notes:
+               https://github.com/3F/hMSBuild/releases/tag/v2.2
+               
+    * NOTE: The most 2.4 changes is relevant to integration with vsSolutionBuildEvent.
+    
+            https://twitter.com/GitHub3F/status/1158091930309398528    
+            https://github.com/3F/vsSolutionBuildEvent/pull/53
+            https://github.com/3F/MvsSln/pull/17
+            
+            Find any relevant use of the new features in that project.
+            
 
 [v2.3] 2019.06.17
 

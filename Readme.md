@@ -2,7 +2,7 @@
 
 [![](https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png)](https://github.com/3F/MvsSln)
 
-🧩 Customizable VisualStudio .sln parser, complex support of the projects (.vcxproj, .csproj., …), lightweight r/w handlers at runtime, and more.
+🧩 Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
 
 [![Build status](https://ci.appveyor.com/api/projects/status/if1t4rhhntpf6ut3/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln/branch/master)
 [![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
