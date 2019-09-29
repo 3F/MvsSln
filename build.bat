@@ -1,16 +1,15 @@
 @echo off
 
-set reltype=%1
-set _msbuild=tools/hMSBuild
-set cimdll=packages\vsSBE.CI.MSBuild\bin\CI.MSBuild.dll
+set cim=packages\vsSolutionBuildEvent\cim.cmd
 set _gnt=tools/gnt
 
+set reltype=%1
 if "%reltype%"=="" (
     set reltype=Release
 )
 
 call %_gnt% /p:wpath="%cd%" /p:ngconfig="packages.config;MvsSlnTest\packages.config" /nologo /v:m /m:4 || goto err
-call %_msbuild% -notamd64 "MvsSln.sln" /v:normal /l:"%cimdll%" /m:4 /t:Build /p:Configuration="%reltype%" || goto err
+call %cim% "MvsSln.sln" /v:m /m:4 /p:Configuration="%reltype%" || goto err
 
 goto exit
 
