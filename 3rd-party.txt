@@ -22,8 +22,8 @@ MvsSln  [ https://github.com/3F/MvsSln ]
     * vsSolutionBuildEvent
         https://github.com/3F/vsSolutionBuildEvent
         
-    * MSTest Framework
-        https://github.com/microsoft/testfx
+    * xUnit.net
+        https://github.com/xunit/xunit
         
     * hMSBuild
         https://github.com/3F/hMSBuild

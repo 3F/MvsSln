@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace net.r_eg.MvsSlnTest {
+namespace MvsSlnTest {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace net.r_eg.MvsSlnTest {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("net.r_eg.MvsSlnTest.SlnSamplesResource", typeof(SlnSamplesResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MvsSlnTest.SlnSamplesResource", typeof(SlnSamplesResource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

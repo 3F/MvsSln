@@ -1,17 +1,16 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using net.r_eg.MvsSln.Core;
+﻿using net.r_eg.MvsSln.Core;
+using Xunit;
 
-namespace net.r_eg.MvsSlnTest.Core
+namespace MvsSlnTest.Core
 {
-    [TestClass]
     public class ProjectItemTest
     {
-        [TestMethod]
+        [Fact]
         public void CtorTest1()
         {
             ProjectItem p = new ProjectItem("Project1", ProjectType.Cs);
 
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -28,7 +27,7 @@ namespace net.r_eg.MvsSlnTest.Core
             SolutionFolder f = new SolutionFolder("dir1");
 
             p = new ProjectItem("Project1", ProjectType.Cs, f);
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -44,7 +43,7 @@ namespace net.r_eg.MvsSlnTest.Core
             );
 
             p = new ProjectItem("Project2", ProjectType.Vc, "path 1");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -59,7 +58,7 @@ namespace net.r_eg.MvsSlnTest.Core
             );
 
             p = new ProjectItem("Project2", ProjectType.Vc, "path 1", f);
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -75,7 +74,7 @@ namespace net.r_eg.MvsSlnTest.Core
             );
 
             p = new ProjectItem("Project 3", ProjectType.Vc, "prj path", f, @"C:\path\");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -91,12 +90,12 @@ namespace net.r_eg.MvsSlnTest.Core
             );
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest2()
         {
             ProjectItem p = new ProjectItem("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "Project1", ProjectType.Cs);
 
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -113,7 +112,7 @@ namespace net.r_eg.MvsSlnTest.Core
             SolutionFolder f = new SolutionFolder("dir1");
 
             p = new ProjectItem("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "Project1", ProjectType.Cs, f);
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -129,7 +128,7 @@ namespace net.r_eg.MvsSlnTest.Core
             );
 
             p = new ProjectItem("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "Project1", ProjectType.Cs, "path 1");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -143,7 +142,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 p
             );
 
-            Assert.AreNotEqual
+            Assert.NotEqual
             (
                 new ProjectItem()
                 {
@@ -159,7 +158,7 @@ namespace net.r_eg.MvsSlnTest.Core
             );
 
             p = new ProjectItem("{47EF5301-84E5-4210-A145-6460A1C8627A}", "Project2", ProjectType.Cs, "path 1", f);
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -175,7 +174,7 @@ namespace net.r_eg.MvsSlnTest.Core
             );
 
             p = new ProjectItem("{47EF5301-84E5-4210-A145-6460A1C8627A}", "Project2", ProjectType.Cs, "path 2", f, @"D:\slndir");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem()
                 {
@@ -191,7 +190,7 @@ namespace net.r_eg.MvsSlnTest.Core
             );
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest3()
         {
             var p = new ProjectItem
@@ -203,14 +202,14 @@ namespace net.r_eg.MvsSlnTest.Core
                 new SolutionFolder("dir1")
             );
 
-            Assert.AreEqual
+            Assert.Equal
             (
                 new ProjectItem(p),
                 p
             );
         }
 
-        [TestMethod]
+        [Fact]
         public void EqTest1()
         {
             var project1 = new ProjectItem()
@@ -243,11 +242,11 @@ namespace net.r_eg.MvsSlnTest.Core
                 EpType = ProjectType.Unknown
             };
 
-            Assert.AreEqual(project1, project2SameAs1);
-            Assert.AreNotEqual(project1, project3AreNotSameAs1);
+            Assert.Equal(project1, project2SameAs1);
+            Assert.NotEqual(project1, project3AreNotSameAs1);
         }
 
-        [TestMethod]
+        [Fact]
         public void EqTest2()
         {
             SolutionFolder folder1 = new SolutionFolder
@@ -307,11 +306,11 @@ namespace net.r_eg.MvsSlnTest.Core
                 parent = new RefType<SolutionFolder?>(folder2)
             };
 
-            Assert.AreEqual(project1, project2SameAs1);
-            Assert.AreNotEqual(project1, project3AreNotSameAs1);
+            Assert.Equal(project1, project2SameAs1);
+            Assert.NotEqual(project1, project3AreNotSameAs1);
         }
 
-        [TestMethod]
+        [Fact]
         public void ParseTest1()
         {
             var slnDir = "X:\\dir1\\";
@@ -320,15 +319,15 @@ namespace net.r_eg.MvsSlnTest.Core
                 slnDir
             );
 
-            Assert.AreEqual("{27152FD4-7B94-4AF0-A7ED-BE7E7A196D57}", target.pGuid);
-            Assert.AreEqual("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", target.pType);
-            Assert.AreEqual("Conari", target.name);
-            Assert.AreEqual("Conari\\Conari.csproj", target.path);
-            Assert.AreEqual($"{slnDir}Conari\\Conari.csproj", target.fullPath);
-            Assert.AreEqual(ProjectType.Cs, target.EpType);
+            Assert.Equal("{27152FD4-7B94-4AF0-A7ED-BE7E7A196D57}", target.pGuid);
+            Assert.Equal("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", target.pType);
+            Assert.Equal("Conari", target.name);
+            Assert.Equal("Conari\\Conari.csproj", target.path);
+            Assert.Equal($"{slnDir}Conari\\Conari.csproj", target.fullPath);
+            Assert.Equal(ProjectType.Cs, target.EpType);
         }
 
-        [TestMethod]
+        [Fact]
         public void ParseTest2()
         {
             var slnDir = "X:\\dir1\\";
@@ -337,31 +336,31 @@ namespace net.r_eg.MvsSlnTest.Core
                 slnDir
             );
 
-            Assert.AreEqual(null, target.pGuid);
-            Assert.AreEqual(null, target.pType);
-            Assert.AreEqual(null, target.name);
-            Assert.AreEqual(null, target.path);
-            Assert.AreEqual(null, target.fullPath);
-            Assert.AreEqual(ProjectType.Unknown, target.EpType);
+            Assert.Null(target.pGuid);
+            Assert.Null(target.pType);
+            Assert.Null(target.name);
+            Assert.Null(target.path);
+            Assert.Null(target.fullPath);
+            Assert.Equal(ProjectType.Unknown, target.EpType);
         }
 
-        [TestMethod]
+        [Fact]
         public void ParseTest3()
         {
             var target1 = new ProjectItem(null, "X:\\dir1\\");
-            Assert.AreEqual(null, target1.pGuid);
-            Assert.AreEqual(null, target1.fullPath);
+            Assert.Null(target1.pGuid);
+            Assert.Null(target1.fullPath);
 
             var target2 = new ProjectItem(
                 "Project(\"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}\") = \"Conari\", \"Conari\\Conari.csproj\", \"{27152FD4-7B94-4AF0-A7ED-BE7E7A196D57}\"",
                 null
             );
 
-            Assert.AreEqual("{27152FD4-7B94-4AF0-A7ED-BE7E7A196D57}", target2.pGuid);
-            Assert.AreEqual("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}", target2.pType);
-            Assert.AreEqual("Conari", target2.name);
-            Assert.AreEqual("Conari\\Conari.csproj", target2.path);
-            Assert.AreEqual(ProjectType.Vc, target2.EpType);
+            Assert.Equal("{27152FD4-7B94-4AF0-A7ED-BE7E7A196D57}", target2.pGuid);
+            Assert.Equal("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}", target2.pType);
+            Assert.Equal("Conari", target2.name);
+            Assert.Equal("Conari\\Conari.csproj", target2.path);
+            Assert.Equal(ProjectType.Vc, target2.EpType);
         }
     }
 }

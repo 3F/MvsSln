@@ -207,7 +207,7 @@
   &lt;ItemGroup&gt;
     &lt;None Include="packages.config" /&gt;
   &lt;/ItemGroup&gt;
-  &lt;Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" /&gt;
+  &lt;Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" Condition="Exists('$(MSBuildToolsPath)\Microsoft.CSharp.targets')" /&gt;
   &lt;!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   &lt;Target Name="BeforeBuild"&gt;
