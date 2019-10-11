@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net40</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netstandard2.0;net472;net46;net40</TargetFrameworks>
     <RootNamespace>net.r_eg.MvsSln</RootNamespace>
     <AssemblyName>MvsSln</AssemblyName>
     <SignAssembly>true</SignAssembly>
@@ -73,6 +73,10 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="..\3rd-party.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
     <None Include="..\Readme.md">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -104,14 +108,20 @@
     </None>
   </ItemGroup>
 
+  <!-- GAC -->
   <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Build" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net40' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
-    <PackageReference Include="Microsoft.Build" Version="15.9.20" />
+
+    <!-- Microsoft.Build -->
+    <PackageReference Version="16.3.0" Condition=" 'netcoreapp2.1' == '$(TargetFramework)' " Include="Microsoft.Build" />
+    <PackageReference Version="15.9.20" Condition=" 'netstandard2.0' == '$(TargetFramework)' " Include="Microsoft.Build" />
+    <PackageReference Version="16.3.0" Condition=" 'net472' == '$(TargetFramework)' " Include="Microsoft.Build" />
+    <PackageReference Version="15.9.20" Condition=" 'net46' == '$(TargetFramework)' " Include="Microsoft.Build" />
   </ItemGroup>
 
 </Project>
