@@ -337,8 +337,7 @@ public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
 
 ## How to get MvsSln
 
+* NuGet: [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
 * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="MvsSln"` or **[gnt](https://3f.github.io/GetNuTool/releases/latest/gnt/)** /p:ngpackages="MvsSln"
-* NuGet PM: `Install-Package MvsSln`
-* NuGet Commandline: `nuget install MvsSln`
 * [GitHub Releases](https://github.com/3F/MvsSln/releases) [ [latest](https://github.com/3F/MvsSln/releases/latest) ]
-* CI builds: [`/artifacts` page](https://ci.appveyor.com/project/3Fs/mvssln/history) or find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/MvsSln/releases) page.
+* CI builds: [`CI /artifacts`](https://ci.appveyor.com/project/3Fs/mvssln/history) ( [CI for PR](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history) ) or find `🎲 CI build` on [GitHub Releases](https://github.com/3F/MvsSln/releases) page.
