@@ -48,7 +48,7 @@
     <PackageTags>sln visualstudio parser sln-parser projects sln-files csproj vcxproj visual-studio VS2019 VS2017 VS2015 VS2013 VS2012 VS2010 msbuild GetNuTool hMSBuild MvsSln</PackageTags>
     <PackageReleaseNotes> changelog: https://github.com/3F/MvsSln/blob/master/changelog.txt </PackageReleaseNotes>
     <Authors>github.com/3F/MvsSln</Authors>
-    <DocumentationFile>$(OutputPath)\$(AssemblyName).xml</DocumentationFile>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <Configurations>Debug;Release;PublicRelease</Configurations>
     <NoWarn>1701;1702;CS1591</NoWarn>

@@ -1,5 +1,8 @@
 # Specific
 
+/MvsSln/MvsSln.xml
+/MvsSlnTest/Appveyor.TestLogger.2.0.0
+
 # ...
 
 ## Ignore Visual Studio temporary files, build results, and
