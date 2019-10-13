@@ -104,8 +104,9 @@ namespace net.r_eg.MvsSln.Core
 
         protected void InitMap()
         {
-            foreach(var r in References) {
-                if(map.ContainsKey(r.Key)) {
+            foreach(var r in References)
+            {
+                if(!map.ContainsKey(r.Key)) {
                     map[r.Key] = new HashSet<string>();
                 }
                 r.Value.ForEach(i => map[r.Key].Add(FormatGuid(i.meta["Project"].evaluated)));

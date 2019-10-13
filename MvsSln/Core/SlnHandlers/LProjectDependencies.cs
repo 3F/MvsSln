@@ -51,22 +51,12 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// List of project Guids.
         /// In direct order of definitions with considering of ProjectDependencies.
         /// </summary>
-        public IList<string> GuidList
-        {
-            get {
-                return order;
-            }
-        }
+        public IList<string> GuidList => order;
 
         /// <summary>
         /// Projects and their dependencies.
         /// </summary>
-        public IDictionary<string, HashSet<string>> Dependencies
-        {
-            get {
-                return map;
-            }
-        }
+        public IDictionary<string, HashSet<string>> Dependencies => map;
 
         /// <summary>
         /// List of projects by Guid.

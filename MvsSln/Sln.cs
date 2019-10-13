@@ -37,7 +37,7 @@ namespace net.r_eg.MvsSln
     /// </summary>
     public sealed class Sln: IDisposable
     {
-        private static ISlnContainer parser = new SlnParser();
+        private ISlnContainer parser = new SlnParser();
 
         /// <summary>
         /// Parsed solution data.
