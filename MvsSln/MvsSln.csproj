@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netstandard2.0;net472;net46;net40</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netstandard2.0;net472;net40</TargetFrameworks>
     <RootNamespace>net.r_eg.MvsSln</RootNamespace>
     <AssemblyName>MvsSln</AssemblyName>
     <SignAssembly>true</SignAssembly>
@@ -53,6 +53,7 @@
     <Configurations>Debug;Release;PublicRelease</Configurations>
     <NoWarn>1701;1702;CS1591</NoWarn>
     <LangVersion>latest</LangVersion>
+    <PackageIconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</PackageIconUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -109,19 +110,23 @@
   </ItemGroup>
 
   <!-- GAC -->
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' Or '$(TargetFramework)' == 'net472' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Build" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netcoreapp2.1' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
+  </ItemGroup>
 
+  <ItemGroup>
     <!-- Microsoft.Build -->
     <PackageReference Version="16.3.0" Condition=" 'netcoreapp2.1' == '$(TargetFramework)' " Include="Microsoft.Build" />
     <PackageReference Version="15.9.20" Condition=" 'netstandard2.0' == '$(TargetFramework)' " Include="Microsoft.Build" />
-    <PackageReference Version="16.3.0" Condition=" 'net472' == '$(TargetFramework)' " Include="Microsoft.Build" />
-    <PackageReference Version="15.9.20" Condition=" 'net46' == '$(TargetFramework)' " Include="Microsoft.Build" />
+
+    <!-- https://github.com/3F/MvsSln/wiki/Advanced-Features#how-to-use-modern-versions-of-msbuild-for-netfx -->
+    <!-- <PackageReference Version="16.3.0" Condition=" 'net472' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
+    <!-- <PackageReference Version="15.9.20" Condition=" 'net46' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
   </ItemGroup>
 
 </Project>
