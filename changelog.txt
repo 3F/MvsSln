@@ -1,7 +1,43 @@
 MvsSln - https://github.com/3F/MvsSln
 _ _ _ _ 
 
+[v2.5] 2019.10.17
 
+    * FIXED: Fixed parallelism problems when using Sln wrapper.
+    
+    * FIXED: Incorrect initialization for ProjectReferences class.
+    
+    * NEW: Added .net core based target platforms: netcoreapp2.1. + netstandard2.0. Issue #11.
+    
+    * NEW: Added netfx based target platforms: net472. PR #21.
+    
+    * NEW: IXProject methods:
+        ```
+        +bool AddPackageReference(string id, string version, IEnumerable<KeyValuePair<string, string>> meta = null);
+        +Item GetFirstPackageReference(string id);
+        +bool RemovePackageReference(string id);
+        ```
+    
+    * CHANGED: EnvDTE features are obsolete now. Scheduled for removal in future major releases. Issue #22.
+    
+    * CHANGED: MathExtension.CalculateHashCode now encapsulates GetHashCode() with null checking.
+    
+    * CHANGED: Compatible signature changes for the following extension method:
+        ```
+        AddOrUpdate(this IDictionary<string, string> source, IEnumerable<KeyValuePair<string, string>> items)
+        ```
+        
+    * KNOWN: Various [ possible ] problems when using modern MSBuild assemblies.
+    
+            ! Solution and details in our wiki: 
+            https://github.com/3F/MvsSln/wiki/Advanced-Features
+            
+            Do not hesitate to contact: https://github.com/3F/MvsSln/issues
+            
+    * NOTE: Discuss the planned v3.0 and its major changes: 
+            https://github.com/3F/MvsSln/milestone/4
+    
+    
 [v2.4] 2019.08.10
 
     * FIXED: "The format ... of configuration is not supported". Issue #19.

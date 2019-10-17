@@ -8,7 +8,7 @@
 [![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
 [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
-[![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln/build/tests)
+[![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests)
 
 [![Build history](https://buildstats.info/appveyor/chart/3Fs/mvssln-fxjnf?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history)
 
