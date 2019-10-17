@@ -33,6 +33,7 @@ namespace net.r_eg.MvsSln.EnvDTE
     /// <summary>
     /// Helper for access to EnvDTE.Project without direct reference.
     /// </summary>
+    [Obsolete("Scheduled for removal in future major releases: https://github.com/3F/MvsSln/issues/22")]
     public class DynDteProject
     {
         /// <summary>

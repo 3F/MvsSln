@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Core.ObjHandlers;
 using net.r_eg.MvsSln.Core.SlnHandlers;
 using net.r_eg.MvsSln.Exceptions;
+using Xunit;
 
-namespace net.r_eg.MvsSlnTest.Core
+namespace MvsSlnTest.Core
 {
-    [TestClass]
     public class SlnWriterTest
     {
         private SlnItems defaultSlnItems = SlnItems.Projects
@@ -20,8 +19,7 @@ namespace net.r_eg.MvsSlnTest.Core
                                             | SlnItems.ProjectDependencies
                                             | SlnItems.Map;
 
-        [TestMethod]
-        [ExpectedException(typeof(CoHandlerRuleException))]
+        [Fact]
         public void ValidationTest1()
         {
             using(var sln = new Sln(defaultSlnItems, SlnSamplesResource.vsSolutionBuildEvent))
@@ -32,14 +30,15 @@ namespace net.r_eg.MvsSlnTest.Core
                     [typeof(LProjectConfigurationPlatforms)] = new HandlerValue(),
                 };
 
-                using(var stream = new StreamWriter(new MemoryStream())) {
-                    (new SlnWriter(stream, handlers)).Write(sln.Result.Map);
+                using(var stream = new StreamWriter(new MemoryStream()))
+                {
+                    var writer = new SlnWriter(stream, handlers);
+                    Assert.Throws<CoHandlerRuleException>(() => writer.Write(sln.Result.Map));
                 }
             }
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(CoHandlerRuleException))]
+        [Fact]
         public void ValidationTest2()
         {
             using(var sln = new Sln(defaultSlnItems, SlnSamplesResource.vsSolutionBuildEvent))
@@ -48,13 +47,15 @@ namespace net.r_eg.MvsSlnTest.Core
                     [typeof(LProjectDependencies)] = new HandlerValue(),
                 };
 
-                using(var stream = new StreamWriter(new MemoryStream())) {
-                    (new SlnWriter(stream, handlers)).Write(sln.Result.Map);
+                using(var stream = new StreamWriter(new MemoryStream()))
+                {
+                    var writer = new SlnWriter(stream, handlers);
+                    Assert.Throws<CoHandlerRuleException>(() => writer.Write(sln.Result.Map));
                 }
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void MapRefTest1()
         {
             using(var sln = new Sln(defaultSlnItems, SlnSamplesResource.vsSolutionBuildEvent))
@@ -71,7 +72,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 using(var stream = new StreamWriter(new MemoryStream()))
                 {
                     (new SlnWriter(stream, handlers)).Write(sln.Result.Map);
-                    Assert.AreEqual(expectedCount, sln.Result.Map.Count);
+                    Assert.Equal(expectedCount, sln.Result.Map.Count);
                 }
             }
         }

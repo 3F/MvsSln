@@ -17,7 +17,7 @@ namespace net.r_eg.MvsSln
         public const string BRANCH_NAME = "-";
         public const string BRANCH_REVC = "-";
 
-        internal const string S_INFO        = S_NUM_REV + " [ " + BRANCH_SHA1 + " ]";
-        internal const string S_INFO_FULL   = S_INFO + " /'" + BRANCH_NAME + "':" + BRANCH_REVC;
+        internal const string S_INFO        = S_NUM_REV + "+" + BRANCH_SHA1;
+        internal const string S_INFO_FULL   = S_INFO + ":" + BRANCH_NAME + "-" + BRANCH_REVC;
     }
 }

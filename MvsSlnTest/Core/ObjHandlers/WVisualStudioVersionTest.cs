@@ -1,13 +1,12 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using net.r_eg.MvsSln.Core;
+﻿using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Core.ObjHandlers;
+using Xunit;
 
-namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
+namespace MvsSlnTest.Core.ObjHandlers
 {
-    [TestClass]
     public class WVisualStudioVersionTest
     {
-        [TestMethod]
+        [Fact]
         public void ExtractTest1()
         {
             var data = new SlnHeader();
@@ -18,7 +17,7 @@ namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
 
             var target = (new WVisualStudioVersion(data)).Extract(null);
 
-            Assert.AreEqual(SlnSamplesResource.Section_Header, target);
+            Assert.Equal(SlnSamplesResource.Section_Header, target);
         }
     }
 }

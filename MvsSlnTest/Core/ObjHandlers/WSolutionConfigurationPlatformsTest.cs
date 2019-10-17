@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Core.ObjHandlers;
+using Xunit;
 
-namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
+namespace MvsSlnTest.Core.ObjHandlers
 {
-    [TestClass]
     public class WSolutionConfigurationPlatformsTest
     {
-        [TestMethod]
+        [Fact]
         public void ExtractTest1()
         {
-            var data = new List<IConfPlatform>() {
+            var data = new List<IConfPlatform>()
+            {
                 new ConfigSln("CI_Debug_net45", "Any CPU"),
                 new ConfigSln("CI_Debug", "Any CPU"),
                 new ConfigSln("CI_Release_net45", "Any CPU"),
@@ -24,7 +24,7 @@ namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
 
             var target = (new WSolutionConfigurationPlatforms(data)).Extract(null);
 
-            Assert.AreEqual(SlnSamplesResource.Section_Sln_Config, target);
+            Assert.Equal(SlnSamplesResource.Section_Sln_Config, target);
         }
     }
 }

@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using net.r_eg.MvsSln.Core.ObjHandlers;
+using Xunit;
 
-namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
+namespace MvsSlnTest.Core.ObjHandlers
 {
-    [TestClass]
     public class WExtensibilityGlobalsTest
     {
-        [TestMethod]
+        [Fact]
         public void ExtractTest1()
         {
-            var target = (new WExtensibilityGlobals(null)).Extract(null);
+            var target = new WExtensibilityGlobals(null).Extract(null);
 
-            Assert.AreEqual(String.Empty, target);
+            Assert.Equal(String.Empty, target);
         }
 
-        [TestMethod]
+        [Fact]
         public void ExtractTest2()
         {
             var actual = new Dictionary<string, string>()
@@ -28,7 +27,7 @@ namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
             };
             var target = (new WExtensibilityGlobals(actual)).Extract(null);
 
-            Assert.AreEqual(SlnSamplesResource.Section_WExtensibilityGlobals_Test, target);
+            Assert.Equal(SlnSamplesResource.Section_WExtensibilityGlobals_Test, target);
         }
     }
 }

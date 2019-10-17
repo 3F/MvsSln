@@ -8,7 +8,7 @@ if "%reltype%"=="" (
     set reltype=Release
 )
 
-call %_gnt% /p:wpath="%cd%" /p:ngconfig="packages.config;MvsSlnTest\packages.config" /nologo /v:m /m:4 || goto err
+call %_gnt% /p:wpath="%cd%" /p:ngconfig="packages.config" /nologo /v:m /m:4 || goto err
 call %cim% "MvsSln.sln" /v:m /m:4 /p:Configuration="%reltype%" || goto err
 
 goto exit

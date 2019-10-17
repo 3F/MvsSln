@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Core.ObjHandlers;
+using Xunit;
 
-namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
+namespace MvsSlnTest.Core.ObjHandlers
 {
-    [TestClass]
     public class WNestedProjectsTest
     {
         protected List<SolutionFolder> folders = new List<SolutionFolder>()
@@ -25,16 +24,16 @@ namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
             new ProjectItem("{C1A3BCC3-F120-471D-A31E-4B835A06F42D}", "Project4", ProjectType.Vc),
         };
 
-        [TestMethod]
+        [Fact]
         public void ExtractTest1()
         {
             IEnumerable<SolutionFolder> sf = null;
             var target = (new WNestedProjects(sf)).Extract(null);
 
-            Assert.AreEqual(String.Empty, target);
+            Assert.Equal(String.Empty, target);
         }
 
-        [TestMethod]
+        [Fact]
         public void ExtractTest2()
         {
             ResetData();
@@ -45,10 +44,10 @@ namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
 
             var target = (new WNestedProjects(folders)).Extract(null);
 
-            Assert.AreEqual(SlnSamplesResource.Section_WNestedProjects_Test2, target);
+            Assert.Equal(SlnSamplesResource.Section_WNestedProjects_Test2, target);
         }
 
-        [TestMethod]
+        [Fact]
         public void ExtractTest3()
         {
             ResetData();
@@ -59,10 +58,10 @@ namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
 
             var target = (new WNestedProjects(projects)).Extract(null);
 
-            Assert.AreEqual(SlnSamplesResource.Section_WNestedProjects_Test3, target);
+            Assert.Equal(SlnSamplesResource.Section_WNestedProjects_Test3, target);
         }
 
-        [TestMethod]
+        [Fact]
         public void ExtractTest4()
         {
             ResetData();
@@ -77,7 +76,7 @@ namespace net.r_eg.MvsSlnTest.Core.ObjHandlers
 
             var target = (new WNestedProjects(folders, projects)).Extract(null);
 
-            Assert.AreEqual(SlnSamplesResource.Section_WNestedProjects_Test4, target);
+            Assert.Equal(SlnSamplesResource.Section_WNestedProjects_Test4, target);
         }
 
         protected void ResetData()

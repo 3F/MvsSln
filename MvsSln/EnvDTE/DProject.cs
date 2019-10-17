@@ -23,11 +23,14 @@
  * THE SOFTWARE.
 */
 
+using System;
+
 namespace net.r_eg.MvsSln.EnvDTE
 {
     /// <summary>
     /// Wrapper of dynamic EnvDTE.Project.
     /// </summary>
+    [Obsolete("Scheduled for removal in future major releases: https://github.com/3F/MvsSln/issues/22")]
     public class DProject
     {
         /// <summary>

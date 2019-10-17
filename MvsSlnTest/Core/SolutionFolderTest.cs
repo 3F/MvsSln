@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using net.r_eg.MvsSln.Core;
-using net.r_eg.MvsSln.Extensions;
+using Xunit;
 
-namespace net.r_eg.MvsSlnTest.Core
+namespace MvsSlnTest.Core
 {
-    [TestClass]
     public class SolutionFolderTest
     {
-        [TestMethod]
+        [Fact]
         public void SubFolderTest1()
         {
             var f0  = new SolutionFolder("dir3", "hMSBuild.bat");
             var f1  = new SolutionFolder("dir2", f0);
             var f2  = new SolutionFolder("dir1", f1);
 
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -64,11 +62,11 @@ namespace net.r_eg.MvsSlnTest.Core
             );
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest1()
         {
             var f = new SolutionFolder("MyFolder1", ".gnt\\gnt.core", ".gnt\\packages.config");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -89,13 +87,13 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(2, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
-            Assert.AreEqual((RawText)".gnt\\packages.config", f.items.ElementAt(1));
+            Assert.Equal(2, f.items.Count());
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Equal((RawText)".gnt\\packages.config", f.items.ElementAt(1));
             
 
             f = new SolutionFolder("MyFolder1", ".gnt\\gnt.core");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -116,12 +114,12 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(1, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Single(f.items);
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
 
 
             f = new SolutionFolder("MyFolder1");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -138,15 +136,15 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(0, f.items.Count());
+            Assert.Empty(f.items);
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest2()
         {
             var f = new SolutionFolder("MyFolder4", (new RawText[] { ".gnt\\gnt.core" }).AsEnumerable());
 
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -168,11 +166,11 @@ namespace net.r_eg.MvsSlnTest.Core
                 f
             );
 
-            Assert.AreEqual(1, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Single(f.items);
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest3()
         {
             var f = new SolutionFolder
@@ -184,20 +182,20 @@ namespace net.r_eg.MvsSlnTest.Core
                 ".gnt\\packages.config"
             );
 
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder(f),
                 f
             );
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest4()
         {
             var f0  = new SolutionFolder("dir1");
             var f   = new SolutionFolder("MyFolder1", f0, ".gnt\\gnt.core", ".gnt\\packages.config");
 
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -219,13 +217,13 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(2, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
-            Assert.AreEqual((RawText)".gnt\\packages.config", f.items.ElementAt(1));
+            Assert.Equal(2, f.items.Count());
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Equal((RawText)".gnt\\packages.config", f.items.ElementAt(1));
 
 
             f = new SolutionFolder("MyFolder2", f0, ".gnt\\gnt.core");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -247,12 +245,12 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(1, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Single(f.items);
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
 
 
             f = new SolutionFolder("MyFolder3", f0);
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -270,11 +268,11 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(0, f.items.Count());
+            Assert.Empty(f.items);
 
 
             f = new SolutionFolder("MyFolder4", f0, (new RawText[] { ".gnt\\gnt.core" }).AsEnumerable());
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -296,18 +294,18 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(1, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Single(f.items);
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest5()
         {
             var f = new SolutionFolder(
                 "{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder1", 
                 new RawText[] { ".gnt\\gnt.core", ".gnt\\packages.config" }
             );
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -328,9 +326,9 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(2, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
-            Assert.AreEqual((RawText)".gnt\\packages.config", f.items.ElementAt(1));
+            Assert.Equal(2, f.items.Count());
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Equal((RawText)".gnt\\packages.config", f.items.ElementAt(1));
 
 
             var f0 = new SolutionFolder();
@@ -342,7 +340,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 f0, 
                 ".gnt\\gnt.core", ".gnt\\packages.config"
             );
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -364,12 +362,12 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(2, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
-            Assert.AreEqual((RawText)".gnt\\packages.config", f.items.ElementAt(1));
+            Assert.Equal(2, f.items.Count());
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Equal((RawText)".gnt\\packages.config", f.items.ElementAt(1));
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest6()
         {
             var f = new SolutionFolder
@@ -377,7 +375,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 "{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder1", 
                 new RawText[] { ".gnt\\gnt.core" }
             );
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -398,12 +396,12 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(1, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Single(f.items);
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
 
 
             f = new SolutionFolder("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder1", new RawText[] { });
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -420,7 +418,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(0, f.items.Count());
+            Assert.Empty(f.items);
 
 
             f = new SolutionFolder
@@ -428,7 +426,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 "{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder1", 
                 (new RawText[] { ".gnt\\gnt.core" }).AsEnumerable()
             );
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -449,11 +447,11 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(1, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Single(f.items);
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest7()
         {
             var f0 = new SolutionFolder("dir1");
@@ -463,7 +461,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 "{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder4", f0, 
                 (new RawText[] { ".gnt\\gnt.core" }).AsEnumerable()
             );
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -485,8 +483,8 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(1, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Single(f.items);
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
 
 
             f = new SolutionFolder
@@ -494,7 +492,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 "{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder1", f0, 
                 ".gnt\\gnt.core", ".gnt\\packages.config"
             );
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -516,13 +514,13 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(2, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
-            Assert.AreEqual((RawText)".gnt\\packages.config", f.items.ElementAt(1));
+            Assert.Equal(2, f.items.Count());
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Equal((RawText)".gnt\\packages.config", f.items.ElementAt(1));
 
 
             f = new SolutionFolder("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder2", f0, ".gnt\\gnt.core");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -544,12 +542,12 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(1, f.items.Count());
-            Assert.AreEqual((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
+            Assert.Single(f.items);
+            Assert.Equal((RawText)".gnt\\gnt.core", f.items.ElementAt(0));
 
 
             f = new SolutionFolder("{5D5C7878-22BE-4E5B-BD96-6CBBAC614AD3}", "MyFolder3", f0);
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -567,16 +565,16 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(0, f.items.Count());
+            Assert.Empty(f.items);
         }
 
-        [TestMethod]
+        [Fact]
         public void CtorTest8()
         {
             Guid guid = new Guid("{8B05CE1C-999E-460D-80FF-E44DFEC019E7}");
 
             var f = new SolutionFolder(guid, "dir1");
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -593,11 +591,11 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(0, f.items.Count());
+            Assert.Empty(f.items);
 
 
             f = new SolutionFolder("{8B05CE1C-999E-460D-80FF-E44DFEC019E7}", "dir2", null);
-            Assert.AreEqual
+            Assert.Equal
             (
                 new SolutionFolder()
                 {
@@ -614,7 +612,7 @@ namespace net.r_eg.MvsSlnTest.Core
                 },
                 f
             );
-            Assert.AreEqual(0, f.items.Count());
+            Assert.Empty(f.items);
         }
     }
 }

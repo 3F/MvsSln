@@ -1,161 +1,132 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F905DFB2-2E67-4FF7-9001-924F6F2D645D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <Version>2.4.0</Version>
+    <BuildInfoVSSBE></BuildInfoVSSBE>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.1;netstandard2.0;net472;net40</TargetFrameworks>
     <RootNamespace>net.r_eg.MvsSln</RootNamespace>
     <AssemblyName>MvsSln</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Copyright>Copyright (c) 2013-2019  Denis Kuzmin &lt; entry.reg@gmail.com &gt; GitHub/3F</Copyright>
+    <Title>[ MvsSln ] Customizable VisualStudio .sln parser, projects, r/w handlers at runtime</Title>
+    <IconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</IconUrl>
+    <Description>
+        Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
+
+        1. 🌌 We're providing most convenient work with projects, their dependencies, their lazy loading, any folders, any items, references, and lot of other important things.
+        2. 💡 We're customizable and extensible library at runtime. Make [your custom] .sln for everything!
+        3. 🚀 We were born from other popular project to be more loyal for your preferences on the fly. Hello from 2013.
+
+        Easily control all your projects data (Reference, ProjectReference, Properties, Import sections, ...).
+        Or even create your custom sln parsing of anything in a few steps.
+
+        Specially extracted and re-licensed from vsSolutionBuildEvent projects (LGPLv3 -&gt; MIT)
+        for https://github.com/3F/DllExport and others!
+
+        Enjoy with us. 🎈
+        _ _ _ _ _ _
+        Source code and all details here: https://github.com/3F/MvsSln
+
+    =======================================
+    gnt /p:ngpackages="MvsSln/$(Version)"
+    ================== https://github.com/3F/GetNuTool
+
+    Build info:
+
+    $(BuildInfoVSSBE)
+    </Description>
+    <PackageOwners>reg</PackageOwners>
+    <PackageProjectUrl>https://github.com/3F/MvsSln</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/3F/MvsSln</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>sln visualstudio parser sln-parser projects sln-files csproj vcxproj visual-studio VS2019 VS2017 VS2015 VS2013 VS2012 VS2010 msbuild GetNuTool hMSBuild MvsSln</PackageTags>
+    <PackageReleaseNotes> changelog: https://github.com/3F/MvsSln/blob/master/changelog.txt </PackageReleaseNotes>
+    <Authors>github.com/3F/MvsSln</Authors>
+    <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <Configurations>Debug;Release;PublicRelease</Configurations>
+    <NoWarn>1701;1702;CS1591</NoWarn>
+    <LangVersion>latest</LangVersion>
+    <PackageIconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</PackageIconUrl>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\MvsSln.xml</DocumentationFile>
-    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'PublicRelease' ">
+    <DefineConstants />
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\MvsSln.xml</DocumentationFile>
-    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <None Include="..\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\3rd-party.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\Readme.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\changelog.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\.version">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="obj\build-info.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\tools\hMSBuild.bat">
+      <Visible>false</Visible>
+      <Pack>True</Pack>
+      <PackagePath>tools\</PackagePath>
+    </None>
+    <None Include="..\tools\gnt.bat">
+      <Visible>false</Visible>
+      <Pack>True</Pack>
+      <PackagePath>tools\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <!-- GAC -->
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' Or '$(TargetFramework)' == 'net472' ">
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.XML" />
+    <Reference Include="Microsoft.Build" />
   </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netcoreapp2.1' ">
+    <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
+  </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="BuildType.cs" />
-    <Compile Include="Core\IXProjectEnv.cs" />
-    <Compile Include="Core\XProjectEnv.cs" />
-    <Compile Include="Core\ObjHandlers\WExtensibilityGlobals.cs" />
-    <Compile Include="Core\ObjHandlers\WNestedProjects.cs" />
-    <Compile Include="Core\ObjHandlers\WVisualStudioVersion.cs" />
-    <Compile Include="Core\RefType.cs" />
-    <Compile Include="Core\SlnHandlers\LExtensibilityGlobals.cs" />
-    <Compile Include="Core\SlnHandlers\LNestedProjects.cs" />
-    <Compile Include="Core\SlnHeader.cs" />
-    <Compile Include="Core\ObjHandlers\WProjectSolutionItems.cs" />
-    <Compile Include="Core\SlnHandlers\LVisualStudioVersion.cs" />
-    <Compile Include="Core\TransactAction.cs" />
-    <Compile Include="Core\TransactTracking.cs" />
-    <Compile Include="Core\ISlnProjectDependencies.cs" />
-    <Compile Include="Core\ISlnResultSvc.cs" />
-    <Compile Include="Core\ObjHandlers\HandlerValue.cs" />
-    <Compile Include="Core\ObjHandlers\WAbstract.cs" />
-    <Compile Include="Core\ObjHandlers\WSolutionConfigurationPlatforms.cs" />
-    <Compile Include="Core\ObjHandlers\WProjectConfigurationPlatforms.cs" />
-    <Compile Include="Core\ObjHandlers\WProject.cs" />
-    <Compile Include="Core\ObjHandlers\IObjHandler.cs" />
-    <Compile Include="Core\SolutionFolder.cs" />
-    <Compile Include="Core\Section.cs" />
-    <Compile Include="Core\ISection.cs" />
-    <Compile Include="Core\IRuleOfConfig.cs" />
-    <Compile Include="Core\IConfPlatformPrj.cs" />
-    <Compile Include="Core\IConfPlatform.cs" />
-    <Compile Include="Core\ConfigItem.cs" />
-    <Compile Include="Core\IEnvironment.cs" />
-    <Compile Include="Core\MsgResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MsgResource.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Core\RawText.cs" />
-    <Compile Include="Core\ProjectReferences.cs" />
-    <Compile Include="Core\SlnHandlers\CoHandlers.cs" />
-    <Compile Include="Core\SlnHandlers\LineAct.cs" />
-    <Compile Include="Core\SlnHandlers\ISvc.cs" />
-    <Compile Include="Core\SlnHandlers\LProjectSolutionItems.cs" />
-    <Compile Include="Core\SlnHandlers\Svc.cs" />
-    <Compile Include="Core\SlnWriter.cs" />
-    <Compile Include="EnvDTE\DProject.cs" />
-    <Compile Include="EnvDTE\DynDteProject.cs" />
-    <Compile Include="Exceptions\CoHandlerRuleException.cs" />
-    <Compile Include="Exceptions\UnloadException.cs" />
-    <Compile Include="Extensions\CollectionExtension.cs" />
-    <Compile Include="Extensions\MathExtension.cs" />
-    <Compile Include="Extensions\XProjectExtension.cs" />
-    <Compile Include="Extensions\StringExtension.cs" />
-    <Compile Include="Projects\ImportElement.cs" />
-    <Compile Include="Projects\Item.cs" />
-    <Compile Include="Projects\PropertyItem.cs" />
-    <Compile Include="Core\ProjectItemCfg.cs" />
-    <Compile Include="Core\ProjectType.cs" />
-    <Compile Include="Core\RuleOfConfig.cs" />
-    <Compile Include="Core\IXProject.cs" />
-    <Compile Include="Core\XProject.cs" />
-    <Compile Include="Core\RoProperties.cs" />
-    <Compile Include="Core\IsolatedEnv.cs" />
-    <Compile Include="Core\ISlnPDManager.cs" />
-    <Compile Include="Core\ISlnContainer.cs" />
-    <Compile Include="Core\Guids.cs" />
-    <Compile Include="Core\RPatterns.cs" />
-    <Compile Include="Core\SlnHandlers\LProjectDependencies.cs" />
-    <Compile Include="Core\ISlnResult.cs" />
-    <Compile Include="Core\SlnResult.cs" />
-    <Compile Include="Core\IHandler.cs" />
-    <Compile Include="Core\ISynchSubscribers.cs" />
-    <Compile Include="Core\SlnHandlers\ISlnHandler.cs" />
-    <Compile Include="Core\SlnHandlers\LAbstract.cs" />
-    <Compile Include="Core\SlnHandlers\LProject.cs" />
-    <Compile Include="Core\SlnHandlers\LProjectConfigurationPlatforms.cs" />
-    <Compile Include="Core\SlnHandlers\LSolutionConfigurationPlatforms.cs" />
-    <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Exceptions\CommonException.cs" />
-    <Compile Include="Extensions\ProjectExtension.cs" />
-    <Compile Include="Extensions\ObjectExtension.cs" />
-    <Compile Include="Log\ISender.cs" />
-    <Compile Include="Log\LSender.cs" />
-    <Compile Include="Log\Message.cs" />
-    <Compile Include="MvsSlnVersion.cs" />
-    <Compile Include="PropertyNames.cs" />
-    <Compile Include="SlnItems.cs" />
-    <Compile Include="Sln.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\ConfigPrj.cs" />
-    <Compile Include="Core\ConfigSln.cs" />
-    <Compile Include="Core\SlnParser.cs" />
-    <Compile Include="Core\ProjectItem.cs" />
-    <Compile Include="Core\SynchSubscribers.cs" />
-    <Compile Include="Types\FileExt.cs" />
-    <Compile Include="Types\Kinds.cs" />
+    <!-- Microsoft.Build -->
+    <PackageReference Version="16.3.0" Condition=" 'netcoreapp2.1' == '$(TargetFramework)' " Include="Microsoft.Build" />
+    <PackageReference Version="15.9.20" Condition=" 'netstandard2.0' == '$(TargetFramework)' " Include="Microsoft.Build" />
+
+    <!-- https://github.com/3F/MvsSln/wiki/Advanced-Features#how-to-use-modern-versions-of-msbuild-for-netfx -->
+    <!-- <PackageReference Version="16.3.0" Condition=" 'net472' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
+    <!-- <PackageReference Version="15.9.20" Condition=" 'net46' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
   </ItemGroup>
-  <ItemGroup>
-    <None Include="key.snk" />
-    <None Include="Resources\License.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Core\MsgResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>MsgResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Resources\MvsSln_v1_96px.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
 </Project>
