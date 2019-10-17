@@ -308,6 +308,15 @@ namespace net.r_eg.MvsSln.Core
         bool AddProjectReference(string path, string guid, string name, bool makeRelative = false);
 
         /// <summary>
+        /// Adds 'PackageReference' item.
+        /// </summary>
+        /// <param name="id">Package id: `MvsSln`; `Conari`; ...</param>
+        /// <param name="version">Package version: 2.5; 1.6.0-beta3; ...</param>
+        /// <param name="meta">Optional metadata, eg. ExcludeAssets="runtime" etc.</param>
+        /// <returns></returns>
+        bool AddPackageReference(string id, string version, IEnumerable<KeyValuePair<string, string>> meta = null);
+
+        /// <summary>
         /// Adds an item to the project.
         /// </summary>
         /// <param name="type">The item type.</param>
@@ -361,6 +370,13 @@ namespace net.r_eg.MvsSln.Core
         Item GetFirstProjectReference(string inc);
 
         /// <summary>
+        /// Get first available 'PackageReference' item.
+        /// </summary>
+        /// <param name="id">Package id: `MvsSln`; `Conari`; ...</param>
+        /// <returns></returns>
+        Item GetFirstPackageReference(string id);
+
+        /// <summary>
         /// Remove first item from project by type.
         /// </summary>
         /// <param name="type">The item type.</param>
@@ -388,5 +404,12 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="inc">The unevaluated value of the Include attribute.</param>
         /// <returns></returns>
         bool RemoveProjectReference(string inc);
+
+        /// <summary>
+        /// Remove 'PackageReference' item from project.
+        /// </summary>
+        /// <param name="id">Package id: `MvsSln`; `Conari`; ...</param>
+        /// <returns></returns>
+        bool RemovePackageReference(string id);
     }
 }

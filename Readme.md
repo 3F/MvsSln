@@ -4,13 +4,13 @@
 
 🧩 Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
 
-[![Build status](https://ci.appveyor.com/api/projects/status/if1t4rhhntpf6ut3/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master)
 [![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
 [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
 [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln/build/tests)
 
-[![Build history](https://buildstats.info/appveyor/chart/3Fs/mvssln?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/mvssln/history)
+[![Build history](https://buildstats.info/appveyor/chart/3Fs/mvssln-fxjnf?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history)
 
 
 **Download:** [/releases](https://github.com/3F/MvsSln/releases) [ **[latest](https://github.com/3F/MvsSln/releases/latest)** ]
@@ -340,4 +340,4 @@ public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
 * NuGet: [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
 * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="MvsSln"` or **[gnt](https://3f.github.io/GetNuTool/releases/latest/gnt/)** /p:ngpackages="MvsSln"
 * [GitHub Releases](https://github.com/3F/MvsSln/releases) [ [latest](https://github.com/3F/MvsSln/releases/latest) ]
-* CI builds: [`CI /artifacts`](https://ci.appveyor.com/project/3Fs/mvssln/history) ( [CI for PR](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history) ) or find `🎲 CI build` on [GitHub Releases](https://github.com/3F/MvsSln/releases) page.
+* CI builds: [`CI /artifacts`](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history) ( [old CI](https://ci.appveyor.com/project/3Fs/mvssln/history) ) or find `🎲 CI build` on [GitHub Releases](https://github.com/3F/MvsSln/releases) page.

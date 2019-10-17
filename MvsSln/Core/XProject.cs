@@ -36,9 +36,14 @@ using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.MvsSln.Core
 {
+    // TODO: review. { Items ; Groups } -> [ Condition ] => Actions
     [DebuggerDisplay("{DbgDisplay}")]
     public class XProject: IXProject
     {
+        private const string ITEM_REF   = "Reference";
+        private const string PKG_REF    = "PackageReference";
+        private const string PRJ_REF    = "ProjectReference";
+
         /// <summary>
         /// Access to project instance of Microsoft.Build.Evaluation.
         /// </summary>
@@ -78,59 +83,38 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// The Guid of this project.
         /// </summary>
-        public string ProjectGuid
-        {
-            get => GetProjectGuid(Project);
-        }
+        public string ProjectGuid => GetProjectGuid(Project);
 
         /// <summary>
         /// The ProjectName of this project.
         /// </summary>
-        public string ProjectName
-        {
-            get => GetProjectName(Project);
-        }
+        public string ProjectName => GetProjectName(Project); 
 
         /// <summary>
         /// Gets the root directory for this project.
         /// </summary>
-        public string ProjectPath
-        {
-            get => Project.DirectoryPath;
-        }
+        public string ProjectPath => Project.DirectoryPath;
 
         /// <summary>
         /// Gets the full path to the project source file.
         /// </summary>
-        public string ProjectFullPath
-        {
-            get => Project.FullPath;
-        }
+        public string ProjectFullPath => Project.FullPath;
 
         /// <summary>
         /// Access to global properties of project.
         /// </summary>
-        public IDictionary<string, string> GlobalProperties
-        {
-            get => Project.GlobalProperties;
-        }
+        public IDictionary<string, string> GlobalProperties => Project.GlobalProperties;
 
         /// <summary>
         /// The base path for MakeRelativePath() functions etc.
         /// </summary>
-        protected string RootPath
-        {
-            get => ProjectPath;
-        }
+        protected string RootPath => ProjectPath;
 
         /// <summary>
         /// Saves the project to the file system, if modified.
+        /// //TODO: ~"... has been modified outside the environment."
         /// </summary>
-        public void Save()
-        {
-            //TODO: EnvDTE because of ~"... has been modified outside the environment."
-            Project.Save();
-        }
+        public void Save() => Project.Save();
 
         /// <summary>
         /// Saves the project to the file system, if modified or if the path to the project
@@ -138,10 +122,7 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="path">Destination path of the the project source code.</param>
         /// <param name="enc"></param>
-        public void Save(string path, Encoding enc)
-        {
-            Project.Save(path, enc);
-        }
+        public void Save(string path, Encoding enc) => Project.Save(path, enc);
 
         /// <summary>
         /// To add 'Import' element.
@@ -164,7 +145,7 @@ namespace net.r_eg.MvsSln.Core
         /// <returns>true value if target has been added.</returns>
         public bool AddImport(string target, string condition, string label = null)
         {
-            if(String.IsNullOrWhiteSpace(target)) {
+            if(string.IsNullOrWhiteSpace(target)) {
                 return false;
             }
             return AddImport(Project.Xml.AddImport(target), condition, label);
@@ -221,10 +202,7 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="project">Target project.</param>
         /// <returns>true value if it has been found and removed.</returns>
-        public bool RemoveImport(string project)
-        {
-            return RemoveImport(GetImport(project));
-        }
+        public bool RemoveImport(string project) => RemoveImport(GetImport(project));
 
         /// <summary>
         /// To remove 'Import' element.
@@ -268,10 +246,7 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="project">Optional filter by the Project attribute.</param>
         /// <returns></returns>
-        public ImportElement GetImport(string project = null)
-        {
-            return GetImports(project).FirstOrDefault();
-        }
+        public ImportElement GetImport(string project = null) => GetImports(project).FirstOrDefault();
 
         /// <summary>
         /// Retrieve the first found 'Import' element if it exists.
@@ -281,9 +256,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="eq">Equals() if true or EndsWith() function for comparing Project attribute.</param>
         /// <returns></returns>
         public ImportElement GetImport(string project, string label, bool eq = false)
-        {
-            return GetImports(project, label, eq).FirstOrDefault();
-        }
+            => GetImports(project, label, eq).FirstOrDefault();
 
         /// <summary>
         /// Retrieve the all found 'Import' elements.
@@ -292,7 +265,7 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public IEnumerable<ImportElement> GetImports(string project = null)
         {
-            if(String.IsNullOrWhiteSpace(project)) {
+            if(string.IsNullOrWhiteSpace(project)) {
                 return Project.Xml.Imports.Select(i => GetImportElement(i));
             }
 
@@ -337,7 +310,7 @@ namespace net.r_eg.MvsSln.Core
         public PropertyItem GetProperty(string name, bool localScope = true)
         {
             PropertyItem defvalue = default(PropertyItem);
-            if(String.IsNullOrWhiteSpace(name)) {
+            if(string.IsNullOrWhiteSpace(name)) {
                 return defvalue;
             }
 
@@ -358,10 +331,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="name">The name of the property.</param>
         /// <param name="unevaluated">The new unevaluated value of the property.</param>
         /// <returns></returns>
-        public PropertyItem SetProperty(string name, string unevaluated)
-        {
-            return SetProperty(name, unevaluated, null);
-        }
+        public PropertyItem SetProperty(string name, string unevaluated) => SetProperty(name, unevaluated, null);
 
         /// <summary>
         /// Sets or adds a property with the given name and unevaluated value to the project.
@@ -419,10 +389,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="name">The name of the property.</param>
         /// <param name="revalue">if true, will reevaluate data of project after removing.</param>
         /// <returns></returns>
-        public bool RemoveProperty(string name, bool revalue = false)
-        {
-            return RemoveProperty(GetProperty(name), revalue);
-        }
+        public bool RemoveProperty(string name, bool revalue = false) => RemoveProperty(GetProperty(name), revalue);
 
         /// <summary>
         /// Removes an property from the project.
@@ -482,30 +449,21 @@ namespace net.r_eg.MvsSln.Core
         /// * After RemoveProperty(...) the second property still will be unavailable for GetProperty(...) 
         ///  because its node does not contain this at all. Use this to update nodes.
         /// </summary>
-        public void Reevaluate()
-        {
-            Project?.ReevaluateIfNecessary();
-        }
+        public void Reevaluate() => Project?.ReevaluateIfNecessary();
 
         /// <summary>
         /// Makes relative path from this project.
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public virtual string GetRelativePath(string path)
-        {
-            return RootPath.MakeRelativePath(path);
-        }
+        public virtual string GetRelativePath(string path) => RootPath.MakeRelativePath(path);
 
         /// <summary>
         /// Adds 'Reference' item.
         /// </summary>
         /// <param name="inc">Include attribute.</param>
         /// <returns></returns>
-        public bool AddReference(string inc)
-        {
-            return AddItem("Reference", inc);
-        }
+        public bool AddReference(string inc) => AddItem(ITEM_REF, inc);
 
         /// <summary>
         /// Adds 'Reference' item.
@@ -559,7 +517,7 @@ namespace net.r_eg.MvsSln.Core
                 meta["SpecificVersion"] = spec.ToString();
             }
 
-            return AddItem("Reference", inc, meta);
+            return AddItem(ITEM_REF, inc, meta);
         }
 
         /// <summary>
@@ -591,8 +549,26 @@ namespace net.r_eg.MvsSln.Core
             if(makeRelative) {
                 path = GetRelativePath(path);
             }
-            return AddItem("ProjectReference", path, meta);
+            return AddItem(PRJ_REF, path, meta);
         }
+
+        /// <summary>
+        /// Adds 'PackageReference' item.
+        /// </summary>
+        /// <param name="id">Package id: `MvsSln`; `Conari`; ...</param>
+        /// <param name="version">Package version: 2.5; 1.6.0-beta3; ...</param>
+        /// <param name="meta">Optional metadata, eg. ExcludeAssets="runtime" etc.</param>
+        /// <returns></returns>
+        public bool AddPackageReference(string id, string version, IEnumerable<KeyValuePair<string, string>> meta = null) => AddItem
+        (
+            PKG_REF, 
+            id, 
+            new Dictionary<string, string>()
+            {
+                { "Version", version }
+            }
+            .AddOrUpdate(meta)
+        );
 
         /// <summary>
         /// Adds an item to the project.
@@ -615,8 +591,8 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public IEnumerable<Item> GetItems(string type = null, string inc = null)
         {
-            bool hasType    = !String.IsNullOrWhiteSpace(type);
-            bool hasInc     = !String.IsNullOrWhiteSpace(inc);
+            bool hasType    = !string.IsNullOrWhiteSpace(type);
+            bool hasInc     = !string.IsNullOrWhiteSpace(inc);
 
             if(!hasType && !hasInc) {
                 return Project.Items.Select(i => GetItem(i));
@@ -640,50 +616,42 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="type">The item type.</param>
         /// <param name="inc">The unevaluated value of the Include attribute.</param>
         /// <returns></returns>
-        public Item GetItem(string type, string inc)
-        {
-            return GetItems(type, inc).FirstOrDefault();
-        }
+        public Item GetItem(string type, string inc) => GetItems(type, inc).FirstOrDefault();
 
         /// <summary>
         /// Get all available 'Reference' items.
         /// </summary>
         /// <param name="inc">The Include attribute to be found or null value to get all.</param>
         /// <returns></returns>
-        public IEnumerable<Item> GetReferences(string inc = null)
-        {
-            return GetItems("Reference", inc);
-        }
+        public IEnumerable<Item> GetReferences(string inc = null) => GetItems(ITEM_REF, inc);
 
         /// <summary>
         /// Get all available 'ProjectReference' items.
         /// </summary>
         /// <param name="inc">The Include attribute to be found or null value to get all.</param>
         /// <returns></returns>
-        public IEnumerable<Item> GetProjectReferences(string inc = null)
-        {
-            return GetItems("ProjectReference", inc);
-        }
+        public IEnumerable<Item> GetProjectReferences(string inc = null) => GetItems(PRJ_REF, inc);
 
         /// <summary>
         /// Get first available 'Reference' item.
         /// </summary>
         /// <param name="inc">The Include attribute to be found.</param>
         /// <returns></returns>
-        public Item GetFirstReference(string inc)
-        {
-            return GetReferences(inc).FirstOrDefault();
-        }
+        public Item GetFirstReference(string inc) => GetReferences(inc).FirstOrDefault();
 
         /// <summary>
         /// Get first available 'ProjectReference' item.
         /// </summary>
         /// <param name="inc">The Include attribute to be found.</param>
         /// <returns></returns>
-        public Item GetFirstProjectReference(string inc)
-        {
-            return GetProjectReferences(inc).FirstOrDefault();
-        }
+        public Item GetFirstProjectReference(string inc) => GetProjectReferences(inc).FirstOrDefault();
+
+        /// <summary>
+        /// Get first available 'PackageReference' item.
+        /// </summary>
+        /// <param name="id">Package id: `MvsSln`; `Conari`; ...</param>
+        /// <returns></returns>
+        public Item GetFirstPackageReference(string id) => GetItems(PKG_REF, id).FirstOrDefault();
 
         /// <summary>
         /// Remove first item from project by type.
@@ -691,10 +659,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="type">The item type.</param>
         /// <param name="inc">The unevaluated value of the Include attribute.</param>
         /// <returns></returns>
-        public bool RemoveItem(string type, string inc)
-        {
-            return RemoveItem(GetItem(type, inc));
-        }
+        public bool RemoveItem(string type, string inc) => RemoveItem(GetItem(type, inc));
 
         /// <summary>
         /// Remove selected item from project.
@@ -714,20 +679,21 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         /// <param name="inc">The unevaluated value of the Include attribute.</param>
         /// <returns></returns>
-        public bool RemoveReference(string inc)
-        {
-            return RemoveItem(GetFirstReference(inc));
-        }
+        public bool RemoveReference(string inc) => RemoveItem(GetFirstReference(inc));
 
         /// <summary>
         /// Remove 'ProjectReference' item from project.
         /// </summary>
         /// <param name="inc">The unevaluated value of the Include attribute.</param>
         /// <returns></returns>
-        public bool RemoveProjectReference(string inc)
-        {
-            return RemoveItem(GetFirstProjectReference(inc));
-        }
+        public bool RemoveProjectReference(string inc) => RemoveItem(GetFirstProjectReference(inc));
+
+        /// <summary>
+        /// Remove 'PackageReference' item from project.
+        /// </summary>
+        /// <param name="id">Package id: `MvsSln`; `Conari`; ...</param>
+        /// <returns></returns>
+        public bool RemovePackageReference(string id) => RemoveItem(GetFirstPackageReference(id));
 
         public XProject()
             : this(new Project())
@@ -794,17 +760,17 @@ namespace net.r_eg.MvsSln.Core
 
         protected PropertyItem GetProperty(ProjectProperty eProperty)
         {
-            return (eProperty == null) ? default(PropertyItem) : new PropertyItem(eProperty) { parentProject = this };
+            return (eProperty == null) ? default : new PropertyItem(eProperty) { parentProject = this };
         }
 
         protected Item GetItem(Microsoft.Build.Evaluation.ProjectItem eItem)
         {
-            return (eItem == null) ? default(Item) : new Item(eItem) { parentProject = this };
+            return (eItem == null) ? default : new Item(eItem) { parentProject = this };
         }
 
         protected ImportElement GetImportElement(ProjectImportElement element)
         {
-            return (element == null) ? default(ImportElement) : new ImportElement(element) { parentProject = this };
+            return (element == null) ? default : new ImportElement(element) { parentProject = this };
         }
 
         protected bool AddImport(ProjectImportElement element, string condition, string label)
@@ -824,17 +790,11 @@ namespace net.r_eg.MvsSln.Core
             return true;
         }
 
-        private string FindGuid(Project eProject)
-        {
-            return eProject?.GetProjectGuid() ?? ProjectItem.project.pGuid;
-        }
+        private string FindGuid(Project eProject) => eProject?.GetProjectGuid() ?? ProjectItem.project.pGuid;
 
         #region DebuggerDisplay
 
-        private string DbgDisplay
-        {
-            get => $"{ProjectName}: [{ProjectItem.projectConfig}] {ProjectGuid}";
-        }
+        private string DbgDisplay => $"{ProjectName}: [{ProjectItem.projectConfig}] {ProjectGuid}";
 
         #endregion
     }
