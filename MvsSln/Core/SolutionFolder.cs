@@ -44,16 +44,9 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public IEnumerable<RawText> items;
 
-        public static bool operator ==(SolutionFolder a, SolutionFolder b)
-        {
-            return Object.ReferenceEquals(a, null) ?
-                    Object.ReferenceEquals(b, null) : a.Equals(b);
-        }
+        public static bool operator ==(SolutionFolder a, SolutionFolder b) => a.Equals(b);
 
-        public static bool operator !=(SolutionFolder a, SolutionFolder b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(SolutionFolder a, SolutionFolder b) => !(a == b);
 
         /// <summary>
         /// Elements will not compared.
@@ -62,7 +55,7 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            if(Object.ReferenceEquals(obj, null) || !(obj is SolutionFolder)) {
+            if(obj is null || !(obj is SolutionFolder)) {
                 return false;
             }
 

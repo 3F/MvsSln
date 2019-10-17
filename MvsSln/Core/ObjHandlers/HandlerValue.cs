@@ -39,20 +39,13 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         private Guid id;
 
-        public static bool operator ==(HandlerValue a, HandlerValue b)
-        {
-            return Object.ReferenceEquals(a, null) ? 
-                Object.ReferenceEquals(b, null) : a.Equals(b);
-        }
+        public static bool operator ==(HandlerValue a, HandlerValue b) => a.Equals(b);
 
-        public static bool operator !=(HandlerValue a, HandlerValue b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(HandlerValue a, HandlerValue b) => !(a == b);
 
         public override bool Equals(object obj)
         {
-            if(Object.ReferenceEquals(obj, null) || !(obj is HandlerValue)) {
+            if(obj is null || !(obj is HandlerValue)) {
                 return false;
             }
 
@@ -67,9 +60,9 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         {
             return 0.CalculateHashCode
             (
-                handler.GetHashCode(),
-                value.GetHashCode(),
-                id.GetHashCode()
+                handler,
+                value,
+                id
             );
         }
 

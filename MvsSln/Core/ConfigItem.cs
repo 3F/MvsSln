@@ -112,18 +112,14 @@ namespace net.r_eg.MvsSln.Core
 
         public static bool operator ==(ConfigItem a, ConfigItem b)
         {
-            return Object.ReferenceEquals(a, null) ? 
-                    Object.ReferenceEquals(b, null) : a.Equals(b);
+            return a is null ? b is null : a.Equals(b);
         }
 
-        public static bool operator !=(ConfigItem a, ConfigItem b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(ConfigItem a, ConfigItem b) => !(a == b);
 
         public override bool Equals(object obj)
         {
-            if(Object.ReferenceEquals(obj, null) || !(obj is ConfigItem)) {
+            if(obj is null || !(obj is ConfigItem)) {
                 return false;
             }
 
@@ -139,8 +135,8 @@ namespace net.r_eg.MvsSln.Core
         {
             return 0.CalculateHashCode
             (
-                Configuration.GetHashCode(),
-                Platform.GetHashCode()
+                Configuration,
+                Platform
             );
         }
 

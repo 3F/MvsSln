@@ -46,11 +46,11 @@ namespace net.r_eg.MvsSln.Extensions
         /// <param name="r">initial vector</param>
         /// <param name="values">List of individual Hash Code values.</param>
         /// <returns></returns>
-        public static int CalculateHashCode(this int r, params int[] values)
+        public static int CalculateHashCode(this int r, params object[] values)
         {
             int h = r;
             foreach(var v in values) {
-                h.HashPolynom(v);
+                h.HashPolynom(v?.GetHashCode() ?? 0);
             }
             return h;
         }

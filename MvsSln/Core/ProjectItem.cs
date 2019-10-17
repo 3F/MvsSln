@@ -84,20 +84,13 @@ namespace net.r_eg.MvsSln.Core
             return Guids.ProjectTypeBy(guid);
         }
 
-        public static bool operator ==(ProjectItem a, ProjectItem b)
-        {
-            return Object.ReferenceEquals(a, null) ?
-                    Object.ReferenceEquals(b, null) : a.Equals(b);
-        }
+        public static bool operator ==(ProjectItem a, ProjectItem b) => a.Equals(b);
 
-        public static bool operator !=(ProjectItem a, ProjectItem b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(ProjectItem a, ProjectItem b) => !(a == b);
 
         public override bool Equals(object obj)
         {
-            if(Object.ReferenceEquals(obj, null) || !(obj is ProjectItem)) {
+            if(obj is null || !(obj is ProjectItem)) {
                 return false;
             }
 
@@ -116,13 +109,13 @@ namespace net.r_eg.MvsSln.Core
         {
             return 0.CalculateHashCode
             (
-                pGuid.GetHashCode(),
-                pType.GetHashCode(),
-                name.GetHashCode(),
-                path.GetHashCode(),
-                fullPath.GetHashCode(),
-                EpType.GetHashCode(),
-                parent.GetHashCode()
+                pGuid,
+                pType,
+                name,
+                path,
+                fullPath,
+                EpType,
+                parent
             );
         }
 

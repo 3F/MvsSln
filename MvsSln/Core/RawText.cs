@@ -23,7 +23,6 @@
  * THE SOFTWARE.
 */
 
-using System;
 using System.Diagnostics;
 using System.Text;
 using net.r_eg.MvsSln.Extensions;
@@ -42,30 +41,17 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public string trimmed;
 
-        public static implicit operator string(RawText raw)
-        {
-            return raw.ToString();
-        }
+        public static implicit operator string(RawText raw) => raw.ToString();
 
-        public static implicit operator RawText(string str)
-        {
-            return new RawText(str);
-        }
+        public static implicit operator RawText(string str) => new RawText(str);
 
-        public static bool operator ==(RawText a, RawText b)
-        {
-            return Object.ReferenceEquals(a, null) ?
-                    Object.ReferenceEquals(b, null) : a.Equals(b);
-        }
+        public static bool operator ==(RawText a, RawText b) => a.Equals(b);
 
-        public static bool operator !=(RawText a, RawText b)
-        {
-            return !(a == b);
-        }
+        public static bool operator !=(RawText a, RawText b) => !(a == b);
 
         public override bool Equals(object obj)
         {
-            if(Object.ReferenceEquals(obj, null) || !(obj is RawText)) {
+            if(obj is null || !(obj is RawText)) {
                 return false;
             }
 
@@ -80,9 +66,9 @@ namespace net.r_eg.MvsSln.Core
         {
             return 0.CalculateHashCode
             (
-                data.GetHashCode(),
-                trimmed.GetHashCode(),
-                encoding.GetHashCode()
+                data,
+                trimmed,
+                encoding
             );
         }
 

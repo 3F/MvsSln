@@ -62,7 +62,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             {
                 return 0.CalculateHashCode
                 (
-                    x.pGuid.GetHashCode(), x.csln.GetHashCode(), x.cprj.GetHashCode()
+                    x.pGuid, x.csln, x.cprj
                 );
             }
         }
