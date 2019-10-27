@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netstandard2.0;net472;net40</TargetFrameworks>
+    <TargetFrameworks>net40;net472;netstandard2.0;netcoreapp2.1</TargetFrameworks>
     <RootNamespace>net.r_eg.MvsSln</RootNamespace>
     <AssemblyName>MvsSln</AssemblyName>
     <SignAssembly>true</SignAssembly>
@@ -90,7 +90,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-    <None Include="obj\build-info.txt">
+    <None Include="obj\build-info.txt" Condition="Exists('obj\build-info.txt')">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
