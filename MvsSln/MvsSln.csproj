@@ -15,6 +15,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Copyright (c) 2013-2019  Denis Kuzmin &lt; entry.reg@gmail.com &gt; GitHub/3F</Copyright>
     <Title>[ MvsSln ] Customizable VisualStudio .sln parser, projects, r/w handlers at runtime</Title>
+    <PackageIcon>MvsSln_v1_96px.png</PackageIcon>
     <IconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</IconUrl>
     <Description>
         Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
@@ -70,30 +71,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\License.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\3rd-party.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\Readme.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\changelog.txt">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\.version">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="obj\build-info.txt" Condition="Exists('obj\build-info.txt')">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <None Include="..\License.txt" Pack="true" PackagePath="" />
+    <None Include="..\3rd-party.txt" Pack="true" PackagePath="" />
+    <None Include="..\Readme.md" Pack="true" PackagePath="" />
+    <None Include="..\changelog.txt" Pack="true" PackagePath="" />
+    <None Include="..\.version" Pack="true" PackagePath="" />
+    <None Include="obj\build-info.txt" Condition="Exists('obj\build-info.txt')" Pack="true" PackagePath="" />
+    <None Include="Resources/MvsSln_v1_96px.png" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <ItemGroup>
