@@ -76,7 +76,8 @@
     <None Include="..\Readme.md" Pack="true" PackagePath="" />
     <None Include="..\changelog.txt" Pack="true" PackagePath="" />
     <None Include="..\.version" Pack="true" PackagePath="" />
-    <None Include="obj\build-info.txt" Condition="Exists('obj\build-info.txt')" Pack="true" PackagePath="" />
+    <!-- NuGet bug when naming with 'build' keyword: https://github.com/NuGet/Home/issues/8810 -->
+    <None Include="obj\release-info.txt" Condition="Exists('obj\release-info.txt')" Pack="true" PackagePath="" />
     <None Include="Resources/MvsSln_v1_96px.png" Pack="true" PackagePath="" />
   </ItemGroup>
 

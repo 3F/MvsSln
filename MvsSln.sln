@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSln", "MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSln", "MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSlnTest", "MvsSlnTest\MvsSlnTest.csproj", "{EC0CA220-39EC-41E5-B9D6-88D8F860F979}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSlnTest", "MvsSlnTest\MvsSlnTest.csproj", "{EC0CA220-39EC-41E5-B9D6-88D8F860F979}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D} = {F905DFB2-2E67-4FF7-9001-924F6F2D645D}
 	EndProjectSection
@@ -50,5 +50,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {AA37C49F-55EC-4C01-84F3-2ADC60F5C966}
 	EndGlobalSection
 EndGlobal

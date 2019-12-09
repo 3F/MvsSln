@@ -29,16 +29,49 @@ namespace net.r_eg.MvsSln.Core
     public enum ProjectType
     {
         Unknown,
+
+        /// <summary>
+        /// Legacy Visual Basic.
+        /// </summary>
         Vb,
+
+        /// <summary>
+        /// Legacy C#.
+        /// </summary>
         Cs,
+
         Vj,
         Vc,
+
+        /// <summary>
+        /// Legacy F#.
+        /// </summary>
         Fs,
+
         Db,
         Wd,
         Web,
         SlnFolder,
         Deploy,
-        Sf
+
+        /// <summary>
+        /// Service Fabric project.
+        /// </summary>
+        Sf,
+
+        /// <summary>
+        /// SDK based Visual Basic.
+        /// </summary>
+        VbSdk,
+
+        /// <summary>
+        /// SDK based F#.
+        /// </summary>
+        FsSdk,
+
+        /// <summary>
+        /// SDK based C#.
+        /// </summary>
+        CsSdk,
     }
 }

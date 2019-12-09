@@ -87,7 +87,25 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public const string PROJECT_SF = "{A07B5EB6-E848-4116-A8D0-A826331D98C6}";
 
-        private static Dictionary<ProjectType, string> projectTypeGuids = new Dictionary<ProjectType, string>()
+        /// <summary>
+        /// .fsproj SDK based type.
+        /// https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
+        /// </summary>
+        public const string PROJECT_FS_SDK = "{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}";
+
+        /// <summary>
+        /// .vbproj SDK based type.
+        /// https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
+        /// </summary>
+        public const string PROJECT_VB_SDK = "{778DAE3C-4631-46EA-AA77-85C1314464D9}";
+
+        /// <summary>
+        /// .csproj SDK based type.
+        /// https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
+        /// </summary>
+        public const string PROJECT_CS_SDK = "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}";
+
+        private readonly static Dictionary<ProjectType, string> projectTypeGuids = new Dictionary<ProjectType, string>()
         {
             { ProjectType.Cs, PROJECT_CS },
             { ProjectType.Db, PROJECT_DB },
@@ -97,9 +115,12 @@ namespace net.r_eg.MvsSln.Core
             { ProjectType.Vj, PROJECT_VJ },
             { ProjectType.Wd, PROJECT_WD },
             { ProjectType.Web, PROJECT_WEB },
-            { ProjectType.SlnFolder, Guids.SLN_FOLDER },
+            { ProjectType.SlnFolder, SLN_FOLDER },
             { ProjectType.Deploy, PROJECT_DEPLOY },
             { ProjectType.Sf, PROJECT_SF },
+            { ProjectType.FsSdk, PROJECT_FS_SDK },
+            { ProjectType.VbSdk, PROJECT_VB_SDK },
+            { ProjectType.CsSdk, PROJECT_CS_SDK },
             { ProjectType.Unknown, null }
         };
 
