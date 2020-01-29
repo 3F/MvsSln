@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
+ * Copyright (c) 2013-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
  * THE SOFTWARE.
 */
 /*
- * origin: net.r_eg.Conari.Log :: Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
+ * origin: net.r_eg.Conari.Log :: Copyright (c) 2016-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
 */
 
 using System;

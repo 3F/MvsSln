@@ -13,7 +13,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Copyright>Copyright (c) 2013-2019  Denis Kuzmin &lt; entry.reg@gmail.com &gt; GitHub/3F</Copyright>
+    <Copyright>Copyright (c) 2013-2020  Denis Kuzmin &lt; x-3F@outlook.com &gt; GitHub/3F</Copyright>
     <Title>[ MvsSln ] Customizable VisualStudio .sln parser, projects, r/w handlers at runtime</Title>
     <PackageIcon>MvsSln_v1_96px.png</PackageIcon>
     <IconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</IconUrl>

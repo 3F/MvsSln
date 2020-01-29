@@ -22,7 +22,7 @@
 The [MIT License (MIT)](https://github.com/3F/MvsSln/blob/master/License.txt)
 
 ```
-Copyright (c) 2013-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
+Copyright (c) 2013-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
 ```
 
 [ [ ☕ Donate ](https://3F.github.com/Donation/) ]
