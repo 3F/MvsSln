@@ -111,7 +111,7 @@ namespace net.r_eg.MvsSln.Projects
 
             name                    = eProperty.Name;
             unevaluatedValue        = eProperty.UnevaluatedValue;
-            condition               = eProperty.Xml.Condition;
+            condition               = eProperty.Xml?.Condition;
             isEnvironmentProperty   = eProperty.IsEnvironmentProperty;
             isGlobalProperty        = eProperty.IsGlobalProperty;
             isReservedProperty      = eProperty.IsReservedProperty;

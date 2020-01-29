@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
@@ -26,6 +27,73 @@ namespace MvsSlnTest.Core
                 Assert.False(project.RemoveProperty("NOT_REAL_PROPERTY_2"));
                 Assert.True(project.RemoveProperty("MyProperty1"));
                 Assert.Null(project.GetProperty("MyProperty1").name);
+            }
+        }
+
+        [Fact]
+        public void PropertiesTest2()
+        {
+            var projects = new Dictionary<string, RawText>() {
+                ["{12B25935-229F-4128-B66B-7561A77ABC54}"] = new RawText(PrjSamplesResource.snet)
+            };
+
+            using(var sln = new Sln(SlnItems.EnvWithProjects, new RawText(SlnSamplesResource.regXwild), projects))
+            {
+                IXProject project = sln.Result.Env.Projects.FirstOrDefault();
+
+                // 'Platform' is global and not XML property
+                var prop = project.GetProperty("Platform", false);
+
+                Assert.Equal("Platform", prop.name);
+                Assert.Equal("x86", prop.unevaluatedValue);
+                Assert.Equal("x86", prop.evaluatedValue);
+                Assert.NotNull(prop.parentProperty);
+                Assert.Null(prop.parentProperty.Xml);
+                Assert.NotNull(prop.parentProject);
+            }
+        }
+
+        [Fact]
+        public void PropertiesTest3()
+        {
+            var projects = new Dictionary<string, RawText>() {
+                ["{12B25935-229F-4128-B66B-7561A77ABC54}"] = new RawText(PrjSamplesResource.snet)
+            };
+
+            using(var sln = new Sln(SlnItems.EnvWithProjects, new RawText(SlnSamplesResource.regXwild), projects))
+            {
+                IXProject project = sln.Result.Env.Projects.FirstOrDefault();
+
+                var prop = project.GetProperty("Platform", true);
+
+                Assert.Null(prop.name);
+                Assert.Null(prop.unevaluatedValue);
+                Assert.Null(prop.evaluatedValue);
+                Assert.Null(prop.parentProperty);
+                Assert.NotNull(prop.parentProject);
+            }
+        }
+
+        [Fact]
+        public void PropertiesTest4()
+        {
+            var projects = new Dictionary<string, RawText>() {
+                ["{12B25935-229F-4128-B66B-7561A77ABC54}"] = new RawText(PrjSamplesResource.snet)
+            };
+
+            using(var sln = new Sln(SlnItems.EnvWithProjects, new RawText(SlnSamplesResource.regXwild), projects))
+            {
+                IXProject project = sln.Result.Env.Projects.FirstOrDefault();
+
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    project.SetProperty("Platform", "x64");
+                });
+
+                Assert.Throws<InvalidOperationException>(() =>
+                {
+                    project.SetProperty("Configuration", "Release");
+                });
             }
         }
 

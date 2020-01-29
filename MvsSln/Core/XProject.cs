@@ -309,7 +309,7 @@ namespace net.r_eg.MvsSln.Core
         /// <returns>null if no property of that name and scope exists.</returns>
         public PropertyItem GetProperty(string name, bool localScope = true)
         {
-            PropertyItem defvalue = default(PropertyItem);
+            PropertyItem defvalue = default;
             if(string.IsNullOrWhiteSpace(name)) {
                 return defvalue;
             }
@@ -319,7 +319,9 @@ namespace net.r_eg.MvsSln.Core
                 return ret;
             }
 
-            if(ret.isImported || ret.isEnvironmentProperty || ret.isReservedProperty || ret.isGlobalProperty) {
+            if(ret.isImported || ret.isEnvironmentProperty || ret.isReservedProperty || ret.isGlobalProperty) 
+            {
+                defvalue.parentProject = ret.parentProject;
                 return defvalue;
             }
             return ret;
@@ -343,7 +345,14 @@ namespace net.r_eg.MvsSln.Core
         public PropertyItem SetProperty(string name, string unevaluated, string condition)
         {
             var eProperty = Project.SetProperty(name, unevaluated);
-            if(condition != null) {
+
+            if(condition != null
+
+                // Some cases such global property etc may produce empty xml nodes. 
+                // This usually accompanied by throwing InvalidOperationException when using related SetProperty() like for 'Platform' global property,
+                // but just to be sure when other unknown case.
+                && eProperty?.Xml != null) 
+            {
                 eProperty.Xml.Condition = condition;
             }
 
