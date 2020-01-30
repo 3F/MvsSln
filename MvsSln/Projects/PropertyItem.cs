@@ -27,6 +27,7 @@ using System;
 using System.Diagnostics;
 using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Projects
 {
@@ -39,7 +40,7 @@ namespace net.r_eg.MvsSln.Projects
         public string name;
 
         /// <summary>
-        /// The evaluated property value, which is never null.
+        /// The evaluated property value.
         /// </summary>
         public string evaluatedValue;
 
@@ -89,6 +90,49 @@ namespace net.r_eg.MvsSln.Projects
         /// </summary>
         public IXProject parentProject;
 
+        public static bool operator ==(PropertyItem a, PropertyItem b) => a.Equals(b);
+
+        public static bool operator !=(PropertyItem a, PropertyItem b) => !(a == b);
+
+        public override bool Equals(object obj)
+        {
+            if(obj is null || !(obj is PropertyItem)) {
+                return false;
+            }
+
+            var b = (PropertyItem)obj;
+
+            return name == b.name
+                && evaluatedValue == b.evaluatedValue
+                && unevaluatedValue == b.unevaluatedValue
+                && condition == b.condition
+                && isEnvironmentProperty == b.isEnvironmentProperty
+                && isGlobalProperty == b.isGlobalProperty
+                && isReservedProperty == b.isReservedProperty
+                && isImported == b.isImported
+                && isUserDef == b.isUserDef
+                && parentProperty == b.parentProperty
+                && parentProject == b.parentProject;
+        }
+
+        public override int GetHashCode()
+        {
+            return 0.CalculateHashCode
+            (
+                name,
+                evaluatedValue,
+                unevaluatedValue,
+                condition,
+                isEnvironmentProperty,
+                isGlobalProperty,
+                isReservedProperty,
+                isImported,
+                isUserDef,
+                parentProperty,
+                parentProject
+            );
+        }
+
         /// <param name="name">The name of property.</param>
         /// <param name="value">Unevaluated value.</param>
         /// <param name="condition">Optional 'Condition' attr.</param>
@@ -99,6 +143,10 @@ namespace net.r_eg.MvsSln.Projects
             this.condition      = condition;
             unevaluatedValue    = value;
             isUserDef           = true;
+
+            // TODO: `evaluatedValue`. Actually we need expose some optional evaluator, 
+            // like in Varhead project: https://github.com/3F/Varhead/blob/master/Varhead/EvaluatorBlank.cs
+            // evaluatedValue = unevaluatedValue;
         }
 
         /// <param name="eProperty"></param>
@@ -120,7 +168,7 @@ namespace net.r_eg.MvsSln.Projects
 
             //NOTE: MS describes this as 'the evaluated property value, which is never null'
             //      But, this is not true ! >(  .NETFramework\v4.0\Microsoft.Build.dll - Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a
-            evaluatedValue = eProperty.EvaluatedValue ?? String.Empty;
+            evaluatedValue = eProperty.EvaluatedValue ?? string.Empty;
         }
 
         #region DebuggerDisplay
