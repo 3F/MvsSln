@@ -8,7 +8,7 @@ namespace net.r_eg.MvsSln
     {
         public static readonly Version number = new Version(S_NUM_REV);
 
-        public const string S_NUM = "2.5.0";
+        public const string S_NUM = "2.5.1";
         public const string S_REV = "0";
 
         public const string S_NUM_REV = S_NUM + "." + S_REV;

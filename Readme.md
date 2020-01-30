@@ -274,6 +274,18 @@ XProject.AddReference("DllExport", lib, false);
 
 You can also specify it via `System.Reflection.Assembly` etc.
 
+## High quality Project Icons. Visual Studio
+
+Since Microsoft officially distributes free 5,000 high quality free icons and bitmaps from products like Visual Studio:
+
+[https://twitter.com/GitHub3F/status/1219348325729816578](https://twitter.com/GitHub3F/status/1219348325729816578)
+
+You can easily use related project icons together with MvsSln like it was already for .NET DllExport project:
+
+![](./resources/DllExport_1.7.png)
+
+Follow License Terms for icons and Find implementation in original repo: [https://github.com/3F/DllExport](https://github.com/3F/DllExport)
+
 ## Example of extending (your custom handlers)
 
 Example of `LProject` handler (**reader**):

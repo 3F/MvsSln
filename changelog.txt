@@ -1,5 +1,37 @@
+- - - - - - - - - - - - - - - - - - - 
 MvsSln - https://github.com/3F/MvsSln
-_ _ _ _ 
+- - - - - - - - - - - - - - - - - - - 
+
+[v2.5.1] 2020.01.30
+
+    * FIXED: Fixed NullReferenceException when empty xml nodes in PropertyItem through ProjectProperty.
+             This is possible for global or environment properties, for example:
+             ```
+             GetProperty("Platform")
+             GetProperty("Configuration")
+             ```
+             
+    * NEW: Added SDK based project types: .fsproj; .vbproj; .csproj
+           https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
+           
+    * NEW: PropertyItem can now be safely compared between each other:
+           ```
+           new PropertyItem(...) == new PropertyItem(...)
+           ```
+           
+    * CHANGED: Updated package's tool hMSBuild 2.3
+
+               Release notes:
+               https://github.com/3F/hMSBuild/releases/tag/v2.3
+               
+    * CHANGED: Updated package's tool GetNuTool 1.8
+
+               Release notes:
+               https://github.com/3F/GetNuTool/releases/tag/1.8
+               
+    * NOTE: You can also use high quality Visual Studio Project Icons together with MvsSln:
+            https://twitter.com/GitHub3F/status/1219348325729816578
+
 
 [v2.5] 2019.10.17
 
