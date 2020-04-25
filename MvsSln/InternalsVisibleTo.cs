@@ -3,11 +3,11 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo
 (
-    "MvsSlnTest, PublicKey=0024000004800000940000000602000000240000525341310004000001000100ef124fee5b93f3" +
-                            "a44ac41e0385ed58b1b21e26f2eb6e3940c8f7189343846ceb0c709d0aac81baebf689bbe68c85" +
-                            "1913dbd6a1dc92cec5c8a3b9b3b51615e5c397ab917152cf010d71f0cebe69f9d0e7c4cdc4eb4a" +
-                            "06a1d6481db058ab03f450550e7b8b6f861bcc5788242c65236633a3382487904551dbac8ac3d8" +
-                            "b20188c4"
+    "MvsSlnTest, PublicKey=002400000480000094000000060200000024000052534131000400000100010081bf72d485a2a1" +
+                            "07153efd0724ea8240336c7f11843c450ae576fbff8baa869ead9cdcc67bb47bce971888f7f0c7" +
+                            "9dcd5a24c8f5bdea4cc60d038a006ab909d09f173e6f12977a3cfa68a59f59549b6982c75d48eb" +
+                            "8a8c0a34272938454826a3d724b18f9c123012a435e3a1c92ff3ff61e2b7f99e00cc5425005ee6" +
+                            "ae1b25ad"
 )]
 
 [assembly: Guid("f905dfb2-2e67-4ff7-9001-924f6f2d645d")]
