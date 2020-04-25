@@ -36,9 +36,9 @@ namespace net.r_eg.MvsSln.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
         /// <param name="act">The action that should be executed for each item.</param>
-        public static void ForEach<T>(this IEnumerable<T> items, Action<T> act)
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> items, Action<T> act)
         {
-            items?.ForEach((x, i) => act(x));
+            return items?.ForEach((x, i) => act(x));
         }
 
         /// <summary>
@@ -47,16 +47,17 @@ namespace net.r_eg.MvsSln.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
         /// <param name="act">The action that should be executed for each item.</param>
-        public static void ForEach<T>(this IEnumerable<T> items, Action<T, long> act)
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> items, Action<T, long> act)
         {
             if(items == null) {
-                return;
+                return null;
             }
 
             long n = 0;
             foreach(var item in items) {
                 act(item, n++);
             }
+            return items;
         }
 
         /// <summary>
