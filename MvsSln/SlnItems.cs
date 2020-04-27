@@ -27,6 +27,7 @@ using System;
 
 namespace net.r_eg.MvsSln
 {
+    [Flags]
     public enum SlnItems: UInt32
     {
         None,
@@ -43,7 +44,8 @@ namespace net.r_eg.MvsSln
                 | ExtItems
                 | Env
                 | LoadDefaultData
-                | Map,
+                | Map
+                | ProjectDependenciesXml,
 
         /// <summary>
         /// All found projects from solution.
@@ -112,5 +114,14 @@ namespace net.r_eg.MvsSln
         /// Includes ExtensibilityGlobals
         /// </summary>
         ExtItems = 0x0400,
+
+        /// <summary>
+        /// Covers ProjectDependencies (SLN) logic using data from project files (XML).
+        /// Helps eliminate miscellaneous units between VS and msbuild world:
+        /// https://github.com/3F/MvsSln/issues/25#issuecomment-617956253
+        /// 
+        /// Requires Env with loaded projects (LoadMinimalDefaultData or LoadDefaultData).
+        /// </summary>
+        ProjectDependenciesXml = 0x0800 | ProjectDependencies | Env,
     }
 }

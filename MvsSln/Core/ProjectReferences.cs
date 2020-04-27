@@ -80,8 +80,8 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="xprojects">List of evaluated projects to consider of dependencies.</param>
         public ProjectReferences(ISlnPDManager slndep, IEnumerable<IXProject> xprojects)
         {
-            Parent      = slndep;
-            XProjects   = xprojects;
+            Parent      = slndep ?? throw new ArgumentNullException(nameof(slndep));
+            XProjects   = xprojects ?? throw new ArgumentNullException(nameof(xprojects));
 
             map         = Parent.Dependencies;
             Projects    = Parent.Projects;
@@ -95,10 +95,12 @@ namespace net.r_eg.MvsSln.Core
             References = new Dictionary<string, List<Item>>();
             foreach(var project in XProjects)
             {
-                if(!References.ContainsKey(project.ProjectGuid)) {
-                    References[project.ProjectGuid] = new List<Item>();
+                var pguid = FormatGuid(project.ProjectGuid);
+
+                if(!References.ContainsKey(pguid)) {
+                    References[pguid] = new List<Item>();
                 }
-                project.GetProjectReferences().ForEach(i => References[project.ProjectGuid].Add(i));
+                project.GetProjectReferences().ForEach(i => References[pguid].Add(i));
             }
         }
 

@@ -6,6 +6,18 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\com.github.3F.test.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Content Include="resources\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Appveyor.TestLogger.2.0.0\**" />
+    <EmbeddedResource Remove="Appveyor.TestLogger.2.0.0\**" />
+    <None Remove="Appveyor.TestLogger.2.0.0\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.6.1" />
@@ -18,30 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MvsSln\MvsSln.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="PrjSamplesResource.Designer.cs">
-      <DependentUpon>PrjSamplesResource.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-    <Compile Update="SlnSamplesResource.Designer.cs">
-      <DependentUpon>SlnSamplesResource.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="PrjSamplesResource.resx">
-      <LastGenOutput>PrjSamplesResource.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="SlnSamplesResource.resx">
-      <LastGenOutput>SlnSamplesResource.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

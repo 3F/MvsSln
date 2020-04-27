@@ -98,13 +98,12 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public ISlnResult Parse(string sln, SlnItems type)
         {
-            if(String.IsNullOrWhiteSpace(sln)) {
+            if(string.IsNullOrWhiteSpace(sln)) {
                 throw new ArgumentNullException(nameof(sln), MsgResource.ValueNoEmptyOrNull);
             }
 
-            using(var reader = new StreamReader(sln, encoding)) {
-                return Parse(reader, type);
-            }
+            using var reader = new StreamReader(sln, encoding);
+            return Parse(reader, type);
         }
 
         /// <summary>
@@ -154,6 +153,18 @@ namespace net.r_eg.MvsSln.Core
                     data.Env.LoadProjects();
                 }
             }
+
+            if((type & SlnItems.ProjectDependenciesXml) == SlnItems.ProjectDependenciesXml)
+            {
+                if(data.Env?.Projects != null)
+                {
+                    // The following class provides additional features for project references in ISlnPDManager manner, 
+                    // But we'll just activate references for existing ProjectDependencies (shallow copy)
+                    // just to eliminate miscellaneous units between VS and msbuild world: https://github.com/3F/MvsSln/issues/25
+                    new ProjectReferences(data.ProjectDependencies, data.Env.Projects);
+                }
+            }
+
             return data;
         }
 
@@ -245,7 +256,7 @@ namespace net.r_eg.MvsSln.Core
                     ProjectItem pItem;
 
                     if(data.ProjectItems == null) {
-                        pItem = default(ProjectItem);
+                        pItem = default;
                     }
                     else {
                         pItem = data.ProjectItems

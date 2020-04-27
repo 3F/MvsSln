@@ -261,9 +261,6 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             }
         }
 
-        protected string FormatGuid(string guid)
-        {
-            return guid.Trim().ToUpperInvariant();
-        }
+        protected string FormatGuid(string guid) => guid.ReformatSlnGuid();
     }
 }
