@@ -76,6 +76,11 @@ namespace net.r_eg.MvsSln.Extensions
         }
 
         /// <summary>
+        /// Return null when string is empty.
+        /// </summary>
+        public static string NullIfEmpty(this string str) => string.IsNullOrEmpty(str) ? null : str;
+
+        /// <summary>
         /// Gets part of string before specific symbols.
         /// </summary>
         /// <param name="str"></param>

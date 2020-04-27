@@ -764,7 +764,7 @@ namespace net.r_eg.MvsSln.Core
 
         protected virtual string GetProjectName(Project eProject)
         {
-            return eProject.GetProjectName() ?? ProjectItem.project.name;
+            return eProject.GetProjectName().NullIfEmpty() ?? ProjectItem.project.name;
         }
 
         protected PropertyItem GetProperty(ProjectProperty eProperty)
@@ -799,7 +799,7 @@ namespace net.r_eg.MvsSln.Core
             return true;
         }
 
-        private string FindGuid(Project eProject) => eProject?.GetProjectGuid() ?? ProjectItem.project.pGuid;
+        private string FindGuid(Project eProject) => eProject?.GetProjectGuid().NullIfEmpty() ?? ProjectItem.project.pGuid;
 
         #region DebuggerDisplay
 

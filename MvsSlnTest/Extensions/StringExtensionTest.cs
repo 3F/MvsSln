@@ -163,5 +163,13 @@ namespace MvsSlnTest.Extensions
             Assert.Equal(-1, String.Empty.FirstNonWhiteSpace(1, true));
             Assert.Equal(-1, ((string)null).FirstNonWhiteSpace(1, true));
         }
+
+        [Fact]
+        public void NullIfEmptyTest4()
+        {
+            Assert.Null(string.Empty.NullIfEmpty());
+            Assert.NotNull(" ".NullIfEmpty());
+            Assert.Null(((string)null).NullIfEmpty());
+        }
     }
 }

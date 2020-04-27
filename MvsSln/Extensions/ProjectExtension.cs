@@ -72,13 +72,15 @@ namespace net.r_eg.MvsSln.Extensions
 
         public static string GetProjectGuid(this Project eProject)
         {
-            return eProject?.GetPropertyValue(PropertyNames.PRJ_GUID);
+            //TODO: return null if empty (not defined) to 3.0
+            return eProject?.GetPropertyValue(PropertyNames.PRJ_GUID)/*.NullIfEmpty()*/;
         }
 
         public static string GetProjectName(this Project eProject)
         {
+            //TODO: return null if empty (not defined) to 3.0
             //NOTE: this property can also define an unified project name between various .sln files (_2010.sln, _2017.sln)
-            return eProject?.GetPropertyValue(PropertyNames.PRJ_NAME);
+            return eProject?.GetPropertyValue(PropertyNames.PRJ_NAME)/*.NullIfEmpty()*/;
         }
     }
 }
