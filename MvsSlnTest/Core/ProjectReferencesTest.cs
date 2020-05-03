@@ -4,6 +4,7 @@ using Xunit;
 
 namespace MvsSlnTest.Core
 {
+    [Collection("Sequential")] //TODO: msbuild GlobalProjectCollection
     public class ProjectReferencesTest
     {
         [Theory]
@@ -40,6 +41,10 @@ namespace MvsSlnTest.Core
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\projectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\noprojectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData)]
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\noprojectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
+
+        // Part of Item.Metadata
+        [InlineData(TestData.ROOT + @"ProjectDependenciesXml\metatag\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData)]
+        [InlineData(TestData.ROOT + @"ProjectDependenciesXml\metatag\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
         public void ActivationTheory2(string file, SlnItems items)
         {
             const string _P1 = "{64AD76CA-2C85-4039-B0B3-734CF02B2999}";

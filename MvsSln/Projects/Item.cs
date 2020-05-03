@@ -151,17 +151,16 @@ namespace net.r_eg.MvsSln.Projects
             isImported          = eItem.IsImported;
             parentItem          = eItem;
 
-            meta = eItem.DirectMetadata
-                        .Select(m => 
-                            new KeyValuePair<string, Metadata>(
-                                m.Name,
-                                new Metadata() {
-                                    name = m.Name,
-                                    unevaluated = m.UnevaluatedValue,
-                                    evaluated = m.EvaluatedValue
-                                }
-                            )
-                            ).ToDictionary(m => m.Key, m => m.Value);
+            meta = eItem.DirectMetadata.Select(m => new KeyValuePair<string, Metadata>
+            (
+                m.Name,
+                new Metadata() 
+                {
+                    name = m.Name,
+                    unevaluated = m.UnevaluatedValue,
+                    evaluated = m.EvaluatedValue
+                }
+            )).ToDictionary(m => m.Key, m => m.Value, StringComparer.OrdinalIgnoreCase);
         }
 
         #region DebuggerDisplay
