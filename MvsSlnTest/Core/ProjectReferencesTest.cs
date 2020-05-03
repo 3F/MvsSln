@@ -34,6 +34,12 @@ namespace MvsSlnTest.Core
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\projectguid\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\noprojectguid\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData)]
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\noprojectguid\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
+
+        // Part of SlnParser.SetProjectItemsConfigs, see also tests in ProjectConfigurationPlatformsTest
+        [InlineData(TestData.ROOT + @"ProjectDependenciesXml\projectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData)]
+        [InlineData(TestData.ROOT + @"ProjectDependenciesXml\projectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
+        [InlineData(TestData.ROOT + @"ProjectDependenciesXml\noprojectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData)]
+        [InlineData(TestData.ROOT + @"ProjectDependenciesXml\noprojectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
         public void ActivationTheory2(string file, SlnItems items)
         {
             const string _P1 = "{64AD76CA-2C85-4039-B0B3-734CF02B2999}";

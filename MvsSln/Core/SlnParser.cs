@@ -259,9 +259,7 @@ namespace net.r_eg.MvsSln.Core
                         pItem = default;
                     }
                     else {
-                        pItem = data.ProjectItems
-                                    .Where(p => p.pGuid == prjConf.PGuid)
-                                    .FirstOrDefault();
+                        pItem = data.ProjectItems.FirstOrDefault(p => p.pGuid.Guid() == prjConf.PGuid.Guid());
                     }
 
                     ret.Add(new ProjectItemCfg(pItem, slnConf.Key, prjConf));
