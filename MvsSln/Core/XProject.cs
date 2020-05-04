@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -466,6 +467,13 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="path"></param>
         /// <returns></returns>
         public virtual string GetRelativePath(string path) => RootPath.MakeRelativePath(path);
+
+        /// <summary>
+        /// Makes full path using path to this project as the base.
+        /// </summary>
+        /// <param name="relative">any not null path relative to the current project.</param>
+        /// <returns></returns>
+        public string GetFullPath(string relative) => Path.GetFullPath(Path.Combine(RootPath, relative));
 
         /// <summary>
         /// Adds 'Reference' item.

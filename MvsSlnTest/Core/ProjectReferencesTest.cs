@@ -36,6 +36,9 @@ namespace MvsSlnTest.Core
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\noprojectguid\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData)]
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\noprojectguid\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
 
+        [InlineData(TestData.ROOT + @"ProjectDependenciesXml\onlypath\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData)]
+        [InlineData(TestData.ROOT + @"ProjectDependenciesXml\onlypath\test.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]
+
         // Part of SlnParser.SetProjectItemsConfigs, see also tests in ProjectConfigurationPlatformsTest
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\projectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData)]
         [InlineData(TestData.ROOT + @"ProjectDependenciesXml\projectguid\test2.sln", SlnItems.ProjectDependenciesXml | SlnItems.LoadDefaultData)]

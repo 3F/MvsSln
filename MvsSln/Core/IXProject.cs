@@ -253,6 +253,13 @@ namespace net.r_eg.MvsSln.Core
         string GetRelativePath(string path);
 
         /// <summary>
+        /// Makes full path using path to this project as the base.
+        /// </summary>
+        /// <param name="relative">any path relative to the current project.</param>
+        /// <returns></returns>
+        string GetFullPath(string relative);
+
+        /// <summary>
         /// Adds 'Reference' item.
         /// </summary>
         /// <param name="inc">Include attribute.</param>

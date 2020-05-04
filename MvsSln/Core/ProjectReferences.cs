@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using net.r_eg.MvsSln.Core.SlnHandlers;
 using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Projects;
@@ -111,9 +112,20 @@ namespace net.r_eg.MvsSln.Core
                 if(!map.ContainsKey(r.Key)) {
                     map[r.Key] = new HashSet<string>();
                 }
-                r.Value.ForEach(i => map[r.Key].Add(FormatGuid(i.meta["Project"].evaluated)));
+                r.Value.ForEach(i => ExtarctProjectGuid(i)?.E(g => map[r.Key].Add(FormatGuid(g))));
             }
             BuildOrder();
+        }
+
+        private string ExtarctProjectGuid(Item item)
+        {
+            const string _PK = "Project";
+            if(item.meta.ContainsKey(_PK)) return item.meta[_PK].evaluated;
+
+            return XProjects.FirstOrDefault( 
+               p => p.ProjectItem.project.fullPath == p.GetFullPath(item.evaluatedInclude)
+            )?
+            .ProjectGuid;
         }
     }
 }
