@@ -5,7 +5,7 @@
 🧩 Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
 
 [![Build status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master)
-[![release-src](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
+[![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
 [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
 [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests)
@@ -147,6 +147,10 @@ DllExport project finally changed distribution of the packages starting with v1.
 
 ![](https://raw.githubusercontent.com/3F/MvsSln/master/resources/MvsSln_DllExport_example.png)
 
+MvsSln is also **a core logic** in *Post-Processing* feature [[?]](https://github.com/3F/DllExport/pull/148)
+
+![](resources/MvsSln_and_DllExport_PostProc.png)
+
 ### vsSolutionBuildEvent
 
 vsSolutionBuildEvent now is completely integrated with MvsSln [[?](https://github.com/3F/vsSolutionBuildEvent/pull/53)]
@@ -276,7 +280,7 @@ You can also specify it via `System.Reflection.Assembly` etc.
 
 ## High quality Project Icons. Visual Studio
 
-Since Microsoft officially distributes free 5,000 high quality free icons and bitmaps from products like Visual Studio:
+Since Microsoft officially distributes 5,000 high quality free icons and bitmaps from products like Visual Studio:
 
 [https://twitter.com/GitHub3F/status/1219348325729816578](https://twitter.com/GitHub3F/status/1219348325729816578)
 
