@@ -561,19 +561,11 @@ namespace net.r_eg.MvsSln.Core
                 return found;
             }
 
-            var prj = GetOrLoadProject
+            return AddOrGet(GetOrLoadProject
             (
-                new ProjectItem()
-                {
-                    fullPath    = file,
-                    path        = Sln?.SolutionDir.MakeRelativePath(file),
-                    pGuid       = props.GetOrDefault(PropertyNames.PRJ_GUID),
-                    EpType      = FileExt.GetProjectTypeByFile(file),
-                }, 
-                DefProperties(cfg, slnProperties.AddOrUpdate(props))
-            );
-
-            return AddOrGet(prj);
+                GetProjectItem(file, props),
+                DefProperties(cfg, slnProperties.ToDictionary(k => k.Key, v => v.Value).AddOrUpdate(props))
+            ));
         }
 
         /// <summary>
@@ -606,6 +598,32 @@ namespace net.r_eg.MvsSln.Core
         protected bool Eq(IConfPlatformPrj a, IConfPlatform b)
         {
             return (ConfigItem)a == (ConfigItem)b;
+        }
+
+        private ProjectItem GetProjectItem(string file, IDictionary<string, string> props)
+        {
+            var ret = new ProjectItem()
+            {
+                fullPath    = file,
+                pGuid       = props.GetOrDefault(PropertyNames.PRJ_GUID) ?? Guid.Empty.ToString(),
+                EpType      = FileExt.GetProjectTypeByFile(file),
+                name        = Path.GetFileNameWithoutExtension(file),
+            };
+            ret.pType = Guids.GuidBy(ret.EpType);
+
+            if(Sln == null)
+            {
+                return ret;
+            }
+
+            var found = Sln.ProjectItems.FirstOrDefault(p => p.fullPath == file);
+            if(found.path != null)
+            {
+                return found;
+            }
+
+            ret.path = Sln.SolutionDir.MakeRelativePath(file);
+            return ret;
         }
     }
 }

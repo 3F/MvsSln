@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App", "App.vcxproj", "{DB88328E-4614-40E3-894C-A8F25FC51433}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		DBGsln|x64 = DBGsln|x64
+		DBGsln|x86 = DBGsln|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DB88328E-4614-40E3-894C-A8F25FC51433}.DBGsln|x64.ActiveCfg = DBGprj|x64
+		{DB88328E-4614-40E3-894C-A8F25FC51433}.DBGsln|x64.Build.0 = DBGprj|x64
+		{DB88328E-4614-40E3-894C-A8F25FC51433}.DBGsln|x86.ActiveCfg = DBGprj|Win32
+		{DB88328E-4614-40E3-894C-A8F25FC51433}.DBGsln|x86.Build.0 = DBGprj|Win32
+		{DB88328E-4614-40E3-894C-A8F25FC51433}.Release|x64.ActiveCfg = Release|x64
+		{DB88328E-4614-40E3-894C-A8F25FC51433}.Release|x64.Build.0 = Release|x64
+		{DB88328E-4614-40E3-894C-A8F25FC51433}.Release|x86.ActiveCfg = Release|Win32
+		{DB88328E-4614-40E3-894C-A8F25FC51433}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3478A3A-E67A-43FF-896B-3714382161EF}
+	EndGlobalSection
+EndGlobal
