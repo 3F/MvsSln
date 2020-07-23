@@ -2,6 +2,26 @@
 MvsSln - https://github.com/3F/MvsSln
 - - - - - - - - - - - - - - - - - - - 
 
+[v2.5.3] 2020.07.23
+
+    * FIXED: Fixed XProjectEnv. Issue #29
+             XProjectByFile() can destroy original properties that was prepared for solution.
+             Related WARN:
+             `Project configuration is not found <- sln [Debug|Win32]`
+             
+    * CHANGED: Improved init of blank ProjectItem for GetOrLoadProject() in XProjectEnv.
+               Related issue #29.
+               
+    * NEW: Added the following extensions for ProjectItem:
+    
+        * IsCs() - Checking both legacy `ProjectType.Cs` and modern `ProjectType.CsSdk` types.
+        * IsFs() - Checking both legacy `ProjectType.Fs` and modern `ProjectType.FsSdk` types.
+        * IsVb() - Checking both legacy `ProjectType.Vb` and modern `ProjectType.VbSdk` types.
+        * IsSdk() - While ProjectType cannot inform the actual use of the modern Sdk style in projects,
+                    current method will try to detect this by using the extended logic:
+                    https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
+
+
 [v2.5.2] 2020.05.05
 
     * NEW: Activating ProjectReferences for existing ProjectDependencies (shallow copy) through new flag.

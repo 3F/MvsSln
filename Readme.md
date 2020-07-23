@@ -27,7 +27,7 @@ Copyright (c) 2013-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
 
 [ [ ☕ Donate ](https://3F.github.com/Donation/) ]
 
-MvsSln contributors: https://github.com/3F/MvsSln/graphs/contributors
+MvsSln contributors https://github.com/3F/MvsSln/graphs/contributors
 
 We're waiting for your awesome contributions!
 
