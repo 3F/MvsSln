@@ -28,29 +28,76 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.MvsSln.Extensions
 {
     public static class StringExtension
     {
         /// <summary>
-        /// Gets Guid from hash by any string.
+        /// UUID using SHA-1 or MD5 hashing for string.
         /// </summary>
-        /// <param name="str">String for calculating.</param>
-        /// <returns></returns>
+        /// <param name="str">Any string data for calculation.</param>
         public static Guid Guid(this string str)
         {
             if(System.Guid.TryParse(str, out Guid res)) {
                 return res;
             }
 
-            if(str == null) {
-                str = String.Empty;
-            }
+            const int _FMT = 16; // The UUID format is 16 octets
 
-            using(MD5 md5 = MD5.Create()) {
-                return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
-            }
+            // FIPS https://github.com/3F/DllExport/issues/171#issuecomment-752043556
+            const int _V // UUID version
+#if DXP_EDITION
+                = 5; // 5 points to SHA-1 hashing
+#else
+                = 3; // 3 points to MD5 hashing
+#endif
+            /* rfc4122
+
+                0     0     1     1        3     The name-based version
+                                                 specified in this document
+                                                 that uses MD5 hashing.
+
+                0     1     0     0        4     The randomly or pseudo-
+                                                 randomly generated version
+                                                 specified in this document.
+
+                0     1     0     1        5     The name-based version
+                                                 specified in this document
+                                                 that uses SHA-1 hashing.
+             */
+
+            var bytes = Encoding.UTF8.GetBytes(str ?? string.Empty);
+
+            using HashAlgorithm alg
+#if DXP_EDITION
+                = SHA1.Create();
+#else
+                = MD5.Create();
+#endif
+
+#if DXP_EDITION
+            alg.TransformBlock(Guids.mvssln.ToByteArray(), 0, _FMT, null, 0);
+#endif
+            alg.TransformFinalBlock(bytes, 0, bytes.Length);
+
+            var ret = new byte[_FMT];
+            Array.Copy(alg.Hash, 0, ret, 0, _FMT);
+
+#if DXP_EDITION
+            // 6-7 octets, the high field of the timestamp multiplexed with the version number;
+            // *local byte order
+            ret[7] &= 0x0F;
+            ret[7] |= _V << 4;
+
+            // 8 octet, the high field of the clock sequence multiplexed with the variant;
+            // *reserved
+            ret[8] &= 0x3F;
+            ret[8] |= 0x80;
+#endif
+
+            return new Guid(ret);
         }
 
         /// <summary>

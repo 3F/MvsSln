@@ -1,10 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <MvsSlnEdition>DXP_EDITION</MvsSlnEdition>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <IsPackable>false</IsPackable>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\com.github.3F.test.snk</AssemblyOriginatorKeyFile>
+    <DefineConstants>$(MvsSlnEdition)</DefineConstants>
   </PropertyGroup>
   
   <ItemGroup>

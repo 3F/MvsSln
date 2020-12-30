@@ -23,6 +23,7 @@
  * THE SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using net.r_eg.MvsSln.Extensions;
@@ -104,6 +105,18 @@ namespace net.r_eg.MvsSln.Core
         /// https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
         /// </summary>
         public const string PROJECT_CS_SDK = "{9A19103F-16F7-4668-BE54-9A1E7A4F7556}";
+
+        /// <summary>
+        /// Reserved domain for MvsSln purposes.
+        /// </summary>
+        internal static readonly Guid mvssln = new Guid
+        (
+            0xE0B7C8AE, 
+            0x3333,
+            0x4623, 
+            0xAE, 0xB8, 
+            0x7D, 0xEC, 0xF9, 0x9D, 0xD4, 0x00
+        );
 
         private readonly static Dictionary<ProjectType, string> projectTypeGuids = new Dictionary<ProjectType, string>()
         {
