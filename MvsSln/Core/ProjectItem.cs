@@ -73,17 +73,6 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public ProjectType EpType;
 
-        /// <summary>
-        /// Evaluate project type via GUID.
-        /// </summary>
-        /// <param name="guid">Project type GUID.</param>
-        /// <returns></returns>
-        [Obsolete("Use `Guids.ProjectTypeBy(string guid)` instead.", false)]
-        public static ProjectType ProjectTypeBy(string guid)
-        {
-            return Guids.ProjectTypeBy(guid);
-        }
-
         public static bool operator ==(ProjectItem a, ProjectItem b) => a.Equals(b);
 
         public static bool operator !=(ProjectItem a, ProjectItem b) => !(a == b);

@@ -43,9 +43,6 @@ namespace net.r_eg.MvsSln.Core
     /// </summary>
     public class XProjectEnv: IXProjectEnv
     {
-        [Obsolete("Use " + nameof(PropertyNames), false)]
-        public const string PROP_VALUE_DEFAULT = PropertyNames.UNDEFINED;
-
         /// <summary>
         /// Solution properties.
         /// </summary>
