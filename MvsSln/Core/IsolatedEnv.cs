@@ -52,22 +52,21 @@ namespace net.r_eg.MvsSln.Core
 
         #region IDisposable
 
-        private bool disposed = false;
+        private bool disposed;
 
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(bool _)
         {
-            if(disposed) {
-                return;
-            }
-            disposed = true;
+            if(!disposed)
+            {
+                if(Projects != null) UnloadAll(false);
 
-            if(Projects != null) {
-                UnloadAll(false);
+                disposed = true;
             }
         }
 

@@ -188,30 +188,24 @@ namespace net.r_eg.MvsSln.Core
             stream.WriteLine(raw);
         }
 
-        private void Free()
-        {
-            stream?.Dispose();
-        }
-
         #region IDisposable
 
-        // To detect redundant calls
-        private bool disposed = false;
+        private bool disposed;
 
-        // To correctly implement the disposable pattern.
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(bool _)
         {
-            if(disposed) {
-                return;
-            }
-            disposed = true;
+            if(!disposed)
+            {
+                stream?.Dispose();
 
-            Free();
+                disposed = true;
+            }
         }
 
         #endregion

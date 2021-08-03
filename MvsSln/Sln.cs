@@ -37,7 +37,7 @@ namespace net.r_eg.MvsSln
     /// </summary>
     public sealed class Sln: IDisposable
     {
-        private ISlnContainer parser = new SlnParser();
+        private readonly ISlnContainer parser = new SlnParser();
 
         /// <summary>
         /// Parsed solution data.
@@ -90,30 +90,24 @@ namespace net.r_eg.MvsSln
             }
         }
 
-        private void Free()
-        {
-            Result?.Env?.Dispose();
-        }
-
         #region IDisposable
 
-        // To detect redundant calls
-        private bool disposed = false;
+        private bool disposed;
 
-        // To correctly implement the disposable pattern.
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        private void Dispose(bool disposing)
+        private void Dispose(bool _)
         {
-            if(disposed) {
-                return;
-            }
-            disposed = true;
+            if(!disposed)
+            {
+                Result?.Env?.Dispose();
 
-            Free();
+                disposed = true;
+            }
         }
 
         #endregion

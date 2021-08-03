@@ -33,12 +33,7 @@ namespace net.r_eg.MvsSln.Extensions
         /// <param name="r">initial vector</param>
         /// <param name="x">new value</param>
         /// <returns></returns>
-        public static int HashPolynom(this int r, int x)
-        {
-            unchecked {
-                return (r << 5) + r ^ x;
-            }
-        }
+        public static int HashPolynom(this int r, int x) => unchecked((r << 5) + r ^ x);
 
         /// <summary>
         /// Calculate final Hash Code from specified vector and pushed values.
@@ -50,7 +45,7 @@ namespace net.r_eg.MvsSln.Extensions
         {
             int h = r;
             foreach(var v in values) {
-                h.HashPolynom(v?.GetHashCode() ?? 0);
+                h = h.HashPolynom(v?.GetHashCode() ?? 0);
             }
             return h;
         }
