@@ -425,6 +425,16 @@ namespace MvsSlnTest
         }
 
         [Fact]
+        public void SlnItemsTest3()
+        {
+            //report https://github.com/3F/MvsSln/issues/25#issuecomment-743840401
+            using(var sln = new Sln(SlnItems.All, string.Empty))
+            {
+                Assert.Null(sln.Result.ProjectDependencies);
+            }
+        }
+
+        [Fact]
         public void MapTest1()
         {
             using(var sln = new Sln(SlnItems.All &~ SlnItems.LoadDefaultData, SlnSamplesResource.vsSolutionBuildEvent_map))

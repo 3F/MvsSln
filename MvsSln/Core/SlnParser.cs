@@ -156,7 +156,7 @@ namespace net.r_eg.MvsSln.Core
 
             if((type & SlnItems.ProjectDependenciesXml) == SlnItems.ProjectDependenciesXml)
             {
-                if(data.Env?.Projects != null)
+                if(data.ProjectDependencies != null && data.Env?.Projects != null)
                 {
                     // The following class provides additional features for project references in ISlnPDManager manner, 
                     // But we'll just activate references for existing ProjectDependencies (shallow copy)
