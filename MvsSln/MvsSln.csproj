@@ -13,32 +13,29 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\com.github.3F.snk</AssemblyOriginatorKeyFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Copyright>Copyright (c) 2013-2020  Denis Kuzmin &lt; x-3F@outlook.com &gt; GitHub/3F</Copyright>
+    <Copyright>Copyright (c) 2013-2021  Denis Kuzmin &lt;x-3F@outlook.com&gt; github/3F</Copyright>
     <Title>[ MvsSln ] Customizable VisualStudio .sln parser, projects, r/w handlers at runtime</Title>
     <PackageIcon>MvsSln_v1_96px.png</PackageIcon>
     <IconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</IconUrl>
-    <Description>
-        Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
+    <Description>Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
 
-        1. 🌌 We're providing most convenient work with projects, their dependencies, their lazy loading, any folders, any items, references, and lot of other important things.
-        2. 💡 We're customizable and extensible library at runtime. Make [your custom] .sln for everything!
-        3. 🚀 We were born from other popular project to be more loyal for your preferences on the fly. Hello from 2013.
+        🌌 The most convenient work with projects, dependencies, their lazy loading, any folders, any items, references and much more in these different worlds;
 
-        Easily control all your projects data (Reference, ProjectReference, Properties, Import sections, ...).
-        Or even create your custom sln parsing of anything in a few steps.
+        💡 We are customizable and extensible library at runtime! Make your custom .sln and its parsing for everything you like at the moment you need just in a few steps;
 
-        Specially extracted and re-licensed from vsSolutionBuildEvent projects (LGPLv3 -&gt; MIT)
+        🚀 We were born from other popular project to be more loyal for your preferences on the fly. Hello from 2013;
+
+        Even if you just need the basic access to information or more complex work through our readers and writers.
+
+        Specially extracted and re-licensed from vsSolutionBuildEvent projects (GPL -&gt; MIT)
         for https://github.com/3F/DllExport and others!
 
-        Enjoy with us. 🎈
-        _ _ _ _ _ _
-        Source code and all details here: https://github.com/3F/MvsSln
+        🎈
+        Source code and details: https://github.com/3F/MvsSln
 
     =======================================
     gnt /p:ngpackages="MvsSln/$(Version)"
     ================== https://github.com/3F/GetNuTool
-
-    Build info:
 
     $(BuildInfoVSSBE)
     </Description>

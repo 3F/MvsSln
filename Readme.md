@@ -1,61 +1,128 @@
-# [MvsSln](https://github.com/3F/MvsSln)
+[![](https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png)](https://github.com/3F/MvsSln) [**MvsSln**](https://github.com/3F/MvsSln)
 
-[![](https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png)](https://github.com/3F/MvsSln)
+Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more … 🧩
 
-🧩 Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
-
-[![Build status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master)
-[![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
-[![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
-[![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
-[![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests)
-
-[![Build history](https://buildstats.info/appveyor/chart/3Fs/mvssln-fxjnf?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history)
-
-
-**Download:** [/releases](https://github.com/3F/MvsSln/releases) [ **[latest](https://github.com/3F/MvsSln/releases/latest)** ]
-
-[`gnt`](https://3f.github.io/GetNuTool/releases/latest/gnt/)` /p:ngpackages="MvsSln"` [[?](https://github.com/3F/GetNuTool)]
-
-## License
-
-The [MIT License (MIT)](https://github.com/3F/MvsSln/blob/master/License.txt)
-
-```
-Copyright (c) 2013-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
+```r
+Copyright (c) 2013-2021  Denis Kuzmin <x-3F@outlook.com> github/3F
 ```
 
-[ [ ☕ Donate ](https://3F.github.com/Donation/) ]
+[ [ <sub>@</sub> ☕ ] ](https://3F.github.io/Donation/)
 
 MvsSln contributors https://github.com/3F/MvsSln/graphs/contributors
 
 We're waiting for your awesome contributions!
 
+[![Build status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master)
+[![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
+[![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
+[![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests)
+[![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
+
+[![Build history](https://buildstats.info/appveyor/chart/3Fs/mvssln-fxjnf?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history)
+
 ## Why MvsSln ?
 
-Because today it still is the most easy way for complex work with Visual Studio .sln files and their projects (.vcxproj, .csproj., ...). Because it's free, because it's open.
+MvsSln provides the easiest way to complex work with Visual Studio .sln files and referenced projects (.vcxproj, .csproj., ...). Merge, Manage, Attach custom handlers and more. Because it's free, because it's open.
 
-1. 🌌 We're providing most convenient work with projects, their dependencies, their lazy loading, any folders, any items, references, and lot of other important things.
-2. 💡 We're customizable and extensible library at runtime. Make **your custom** .sln for everything!
-3. 🚀 We were born from other popular project to be more loyal for your preferences on the fly. Hello from 2013.
+🌌 The most convenient work with projects, dependencies, their lazy loading, any folders, any items, references and much more in these different worlds;
 
-Even if you just need the basic access to information or more complex work through our readers and writers. 
+💡 We are customizable and extensible library at runtime! Make **your custom** .sln and its parsing for everything you like at the moment you need just in a few steps;
 
-Easily control all your projects data (Reference, ProjectReference, Properties, Import sections, ...). Or even create your **custom sln parsing** of anything in a few steps.
+🚀 We were born from other popular project to be more loyal for your preferences on the fly. Hello from 2013;
 
-Specially extracted and re-licensed from vsSolutionBuildEvent projects (LGPLv3 -> MIT) for https://github.com/3F/DllExport and others!
+Even if you just need the basic access to information or more complex work through our readers and writers.
 
-Enjoy with us. 🎈
+Create/modify/or just use parsed folders, projects, and other. 
+
+Safely compare anything, 
 
 ```csharp
-using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All &~ SlnItems.ProjectDependencies))
+if(new ProjectItem(...) == new ProjectItem(...)) { ... }
+if(new SolutionFolder(...) == new SolutionFolder(...)) { ... }
+if(new RawText(...) == new RawText(...)) { ... }
+if(new ConfigItem(...) == new ConfigItem(...)) { ... }
+if((RawText)"data" == (RawText)"data") { ... }
+````
+
+
+Use 📂 Subdirectories,
+
+```csharp
+new SolutionFolder("dir1", 
+    new SolutionFolder("dir2", 
+        new SolutionFolder("dir3", "hMSBuild.bat", "DllExport.bat")
+    )
+);
+...
+new SolutionFolder("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder2", dir1, ".gnt\\gnt.core");
+...
+```
+
+Projects and Folders,
+
+```csharp
+new ProjectItem("Project1", ProjectType.Cs);
+new ProjectItem("Project1", ProjectType.Cs, new SolutionFolder("dir1"));
+new ProjectItem("Project2", ProjectType.Vc, "path 1");
+new ProjectItem("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "Project1", ProjectType.Cs, dir2);
+...
+```
+
+Detect the real\* project types,
+
+```csharp
+* IsCs() - Checking both legacy `ProjectType.Cs` and modern `ProjectType.CsSdk` types.
+. . .
+* IsSdk() - While ProjectType cannot inform the actual use of the modern Sdk style in projects,
+            current method will try to detect this by using the extended logic:
+            https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
+```
+
+Load only what is needed at the moment,
+
+```csharp
+// https://github.com/3F/MvsSln/discussions/49
+
+using var sln = new Sln("Input.sln", SlnItems.Env);
+
+sln.Result.Env
+    .LoadProjects(sln.Result.ProjectItemsConfigs.Where(p => p.project.IsCs()))
+    .ForEach(xp =>
+    {
+        xp.AddItem("Compile", @"financial\Invoice.cs");
+    });
+```
+
+Modify .sln at runtime,
+
+https://github.com/3F/MvsSln/discussions/43#discussioncomment-371185
+
+```csharp
+// new collection from available projects but without project 'UnLib'
+var projects = sln.Result.ProjectItems.Where(p => p.name != "UnLib");
+
+// prepare write-handlers
+var whandlers = new Dictionary<Type, HandlerValue>() {
+    [typeof(LProject)] = new HandlerValue(new WProject(projects, sln.Result.ProjectDependencies)),
+};
+
+// save result
+using(var w = new SlnWriter(@"modified.sln", whandlers)) {
+    w.Write(sln.Result.Map);
+}
+```
+
+Everything at hand,
+
+```csharp
+using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All & ~SlnItems.ProjectDependencies))
 {
     //sln.Result.Env.XProjectByGuid(
     //    sln.Result.ProjectDependencies.FirstBy(BuildType.Rebuild).pGuid,
     //    new ConfigItem("Debug", "Any CPU")
     //);
 
-    var p = slnEnv.GetOrLoadProject(
+    var p = sln.Result.Env.GetOrLoadProject(
         sln.ProjectItems.FirstOrDefault(p => p.name == name)
     );
 
@@ -77,13 +144,15 @@ using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All &~ SlnIte
         xp.AddImport("../packages/DllExport.1.5.1/tools/net.r_eg.DllExport.targets", true);
 
         xp.SetProperty("JsonConverter", "30ad4fe6b2a6aeed", "'$(Configuration)' == 'Debug'");
-        xp.SetProperties(new[] {
-                            new PropertyItem("IsCrossTargetingBuild", "true"),
-                            new PropertyItem("CSharpTargetsPath", "$(MSBToolsLocal)\\CrossTargeting.targets")
-                        },
-                        "!Exists('$(MSBuildToolsPath)\\Microsoft.CSharp.targets')"
+        xp.SetProperties
+        (
+            new[]
+            {
+                new PropertyItem("IsCrossTargetingBuild", "true"),
+                new PropertyItem("CSharpTargetsPath", "$(MSBToolsLocal)\\CrossTargeting.targets")
+            },
+            "!Exists('$(MSBuildToolsPath)\\Microsoft.CSharp.targets')"
         );
-
         // ...
     }
 
@@ -93,47 +162,38 @@ using(var sln = new Sln(@"D:\projects\Conari\Conari.sln", SlnItems.All &~ SlnIte
 } // release all loaded projects
 ```
 
-Easy to create/modify/or just use parsed folders, projects, and other. 
-
-Safely compare anything: 
+And something more,
 
 ```csharp
-if(new ProjectItem(...) == new ProjectItem(...)) { ... }
-if(new SolutionFolder(...) == new SolutionFolder(...)) { ... }
-if(new RawText(...) == new RawText(...)) { ... }
-if(new ConfigItem(...) == new ConfigItem(...)) { ... }
-if((RawText)"data" == (RawText)"data") { ... }
-````
+// https://github.com/3F/MvsSln/discussions/42
 
-
-Use 📂 Subdirectories:
-
-```csharp
-new SolutionFolder("dir1", 
-    new SolutionFolder("dir2", 
-        new SolutionFolder("dir3", "hMSBuild.bat", "DllExport.bat")
-    )
+using var sln = new Sln("TestStruct.sln", SlnItems.Env);
+//...
+sln.Result.Env.Projects.ForEach(xp => 
+    xp.Project.Xml.PropertyGroups.Where(p => p.Condition.Contains("'$(Configuration)|$(Platform)'"))
+    .Where(p =>
+        sln.Result.ProjectItemsConfigs.All(s => 
+            !p.Condition.Contains($"'{s.projectConfig.ConfigurationByRule}|{s.projectConfig.PlatformByRule}'")
+        )
+    ).ForEach(p => p.Parent?.RemoveChild(p))
 );
-...
-new SolutionFolder("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "MyFolder2", dir1, ".gnt\\gnt.core");
-...
 ```
 
-Projects and Folders:
-
-```csharp
-new ProjectItem("Project1", ProjectType.Cs);
-new ProjectItem("Project1", ProjectType.Cs, new SolutionFolder("dir1"));
-new ProjectItem("Project2", ProjectType.Vc, "path 1");
-new ProjectItem("{EE7DD6B7-56F4-478D-8745-3D204D915473}", "Project1", ProjectType.Cs, dir2);
-...
-```
-
-See related unit tests.
-
-By the way, the any new solution handler (reader or writer) can be easily added by our flexible architecture. *See below.*
+The any new solution handler (reader or writer) can be easily added because of our flexible architecture.
 
 Control anything and have fun !
+
+> MvsSln was specially extracted and re-licensed from *vsSolutionBuildEvent* projects (GPL -> MIT) for https://github.com/3F/DllExport and others! Join us 🎈
+
+## High quality Project Icons. Visual Studio
+
+Since Microsoft officially distributes [5,000 high quality free icons and bitmaps](https://twitter.com/GitHub3F/status/1219348325729816578) from products like Visual Studio,
+
+You can also use related project icons together with MvsSln like it was already for .NET DllExport project:
+
+![](./resources/DllExport_1.7.png)
+
+Follow License Terms for icons and Find implementation in original repo: [https://github.com/3F/DllExport](https://github.com/3F/DllExport)
 
 ## How or Where is used
 
@@ -147,7 +207,7 @@ DllExport project finally changed distribution of the packages starting with v1.
 
 ![](https://raw.githubusercontent.com/3F/MvsSln/master/resources/MvsSln_DllExport_example.png)
 
-MvsSln is also **a core logic** in *Post-Processing* feature [[?]](https://github.com/3F/DllExport/pull/148)
+MvsSln also is **a core logic** in *Post-Processing* feature [[?]](https://github.com/3F/DllExport/pull/148)
 
 ![](resources/MvsSln_and_DllExport_PostProc.png)
 
@@ -191,26 +251,6 @@ var whandlers = new Dictionary<Type, HandlerValue>() {
 using(var w = new SlnWriter("<path_to>.sln", whandlers)) {
     w.Write(map);
 }
-```
-
-### How to modify .sln file
-
-https://github.com/3F/MvsSln/issues/3
-
-```csharp
-// new collection from available projects but without project 'UnLib'
-var projects = sln.Result.ProjectItems.Where(p => p.name != "UnLib");
-
-// prepare write-handlers
-var whandlers = new Dictionary<Type, HandlerValue>() {
-    [typeof(LProject)] = new HandlerValue(new WProject(projects, sln.Result.ProjectDependencies)),
-};
-
-// save result
-using(var w = new SlnWriter(@"modified.sln", whandlers)) {
-    w.Write(sln.Result.Map);
-}
-// That's all. You should get 'modified.sln' without `UnLib` project.
 ```
 
 ## Did you know 
@@ -277,18 +317,6 @@ XProject.AddReference("DllExport", lib, false);
 ```
 
 You can also specify it via `System.Reflection.Assembly` etc.
-
-## High quality Project Icons. Visual Studio
-
-Since Microsoft officially distributes 5,000 high quality free icons and bitmaps from products like Visual Studio:
-
-[https://twitter.com/GitHub3F/status/1219348325729816578](https://twitter.com/GitHub3F/status/1219348325729816578)
-
-You can easily use related project icons together with MvsSln like it was already for .NET DllExport project:
-
-![](./resources/DllExport_1.7.png)
-
-Follow License Terms for icons and Find implementation in original repo: [https://github.com/3F/DllExport](https://github.com/3F/DllExport)
 
 ## Example of extending (your custom handlers)
 
