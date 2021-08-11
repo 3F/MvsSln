@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<packages>
+  <package id="EnvDTE" version="8.0.2" targetFramework="net45" />
+  <package id="EnvDTE80" version="8.0.3" />
+  <package id="stdole" version="7.0.3303" targetFramework="net10" />
+</packages>

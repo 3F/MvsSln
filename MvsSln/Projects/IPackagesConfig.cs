@@ -23,10 +23,7 @@
  * THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Security;
 
 namespace net.r_eg.MvsSln.Projects
 {
@@ -51,8 +48,9 @@ namespace net.r_eg.MvsSln.Projects
         /// Get specific package by its id.
         /// </summary>
         /// <param name="id">Package id. Eg. "Conari"; "7z.Libs"; "regXwild"; "MvsSln"; "vsSolutionBuildEvent"; ...</param>
-        /// <returns></returns>
-        IPackageInfo GetPackage(string id);
+        /// <param name="icase">Ignore case for id if true.</param>
+        /// <returns>null if not found.</returns>
+        IPackageInfo GetPackage(string id, bool icase = false);
 
         /// <summary>
         /// Commit changes made by adding/updating/removing.
@@ -60,31 +58,9 @@ namespace net.r_eg.MvsSln.Projects
         void Commit();
 
         /// <summary>
-        /// Roll back changes made by adding/updating/removing.
+        /// Roll back changes made by adding/updating/removing if not yet committed.
         /// </summary>
         void Rollback();
-
-        /// <summary>
-        /// Load existing storage or create a new one for any failure.
-        /// Use <see cref="Load"/> for other behavior.
-        /// Use <see cref="IsNew"/> to check the actual state.
-        /// </summary>
-        /// <param name="path">Path to storage.</param>
-        /// <returns>Chain on itself.</returns>
-        IPackagesConfig LoadOrNew(string path);
-
-        /// <summary>
-        /// Load existing storage. Will throw related exceptions for any failure.
-        /// Use <see cref="LoadOrNew"/> for other behavior.
-        /// </summary>
-        /// <param name="path">Path to storage.</param>
-        /// <returns>Chain on itself.</returns>
-        /// <exception cref="SecurityException"/>
-        /// <exception cref="ArgumentException"/>
-        /// <exception cref="FileNotFoundException"/>
-        /// <exception cref="ArgumentNullException"/>
-        /// <exception cref="UriFormatException"/>
-        IPackagesConfig Load(string path);
 
         /// <summary>
         /// Add package by using <see cref="IPackageInfo"/> instance.
@@ -111,63 +87,53 @@ namespace net.r_eg.MvsSln.Projects
         /// </summary>
         /// <param name="id"><see cref="IPackageInfo.Id"/></param>
         /// <param name="version"><see cref="IPackageInfo.Version"/></param>
-        /// <param name="targetFramework"><see cref="IPackageInfo.Meta"/> information for `targetFramework`</param>
+        /// <param name="targetFramework"><see cref="IPackageInfo.Meta"/> information for `targetFramework`. Use null to set the default value.</param>
         /// <returns>True, if the package has been successfully added.</returns>
-        bool AddPackage(string id, string version, string targetFramework);
+        bool AddPackage(string id, string version, string targetFramework = null);
 
         /// <summary>
         /// Add package or Update an existing.
         /// </summary>
-        /// <param name="id"><see cref="IPackageInfo.Id"/></param>
-        /// <param name="version"><see cref="IPackageInfo.Version"/></param>
-        /// <param name="targetFramework"><see cref="IPackageInfo.Meta"/> information for `targetFramework`</param>
         /// <returns>True, if the package has been added. False, if the package has been updated.</returns>
-        bool AddOrUpdatePackage(string id, string version, string targetFramework);
+        /// <inheritdoc cref="AddPackage(string, string, string)"/>
+        bool AddOrUpdatePackage(string id, string version, string targetFramework = null);
 
         /// <summary>
         /// Update an existing package.
         /// </summary>
-        /// <param name="id"><see cref="IPackageInfo.Id"/></param>
-        /// <param name="version"><see cref="IPackageInfo.Version"/></param>
-        /// <param name="targetFramework"><see cref="IPackageInfo.Meta"/> information for `targetFramework`</param>
         /// <returns>True, if the package has been successfully updated. False, if the package does not exist.</returns>
-        bool UpdatePackage(string id, string version, string targetFramework);
+        /// <inheritdoc cref="AddPackage(string, string, string)"/>
+        bool UpdatePackage(string id, string version, string targetFramework = null);
 
         /// <summary>
         /// Add GetNuTool compatible package.
-        /// https://github.com/3F/GetNuTool
         /// </summary>
         /// <param name="id"><see cref="IPackageInfo.Id"/></param>
         /// <param name="version"><see cref="IPackageInfo.Version"/></param>
-        /// <param name="output"><see cref="IPackageInfo.Meta"/> information for `output` https://github.com/3F/GetNuTool#format-of-packages-list</param>
+        /// <param name="output"><see cref="IPackageInfo.Meta"/> information for `output` https://github.com/3F/GetNuTool#format-of-packages-list </param>
         /// <returns>True, if the package has been successfully added.</returns>
-        bool AddGetNuToolPackage(string id, string version, string output = null);
+        /// <remarks>https://github.com/3F/GetNuTool</remarks>
+        bool AddGntPackage(string id, string version, string output = null);
 
         /// <summary>
         /// Add GetNuTool compatible package or Update an existing.
-        /// https://github.com/3F/GetNuTool
         /// </summary>
-        /// <param name="id"><see cref="IPackageInfo.Id"/></param>
-        /// <param name="version"><see cref="IPackageInfo.Version"/></param>
-        /// <param name="output"><see cref="IPackageInfo.Meta"/> information for `output` https://github.com/3F/GetNuTool#format-of-packages-list</param>
         /// <returns>True, if the package has been added. False, if the package has been updated.</returns>
-        bool AddOrUpdateGetNuToolPackage(string id, string version, string output = null);
+        /// <inheritdoc cref="AddGntPackage(string, string, string)"/>
+        bool AddOrUpdateGntPackage(string id, string version, string output = null);
 
         /// <summary>
         /// Update an existing GetNuTool compatible package.
-        /// https://github.com/3F/GetNuTool
         /// </summary>
-        /// <param name="id"><see cref="IPackageInfo.Id"/></param>
-        /// <param name="version"><see cref="IPackageInfo.Version"/></param>
-        /// <param name="output"><see cref="IPackageInfo.Meta"/> information for `output` https://github.com/3F/GetNuTool#format-of-packages-list</param>
         /// <returns>True, if the package has been successfully updated. False, if the package does not exist.</returns>
-        bool UpdateGetNuToolPackage(string id, string version, string output = null);
+        /// <inheritdoc cref="AddGntPackage(string, string, string)"/>
+        bool UpdateGntPackage(string id, string version, string output = null);
 
         /// <summary>
         /// Remove package by using <see cref="IPackageInfo"/> instance.
         /// </summary>
         /// <returns>True, if it was successfully deleted. False, if it does not exist.</returns>
-        bool RemovePackage(IPackageInfo pkg);
+        bool RemovePackage(IPackageInfo package);
 
         /// <summary>
         /// Remove package.

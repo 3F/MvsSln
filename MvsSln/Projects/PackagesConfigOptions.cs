@@ -24,39 +24,38 @@
 */
 
 using System;
-using System.Collections.Generic;
 
 namespace net.r_eg.MvsSln.Projects
 {
-    public interface IPackageInfo
+    [Flags]
+    public enum PackagesConfigOptions
     {
-        /// <summary>
-        /// Package id.
-        /// </summary>
-        string Id { get; }
+        None,
 
         /// <summary>
-        /// Package version.
+        /// Use default behavior.
         /// </summary>
-        string Version { get; }
+        Default = LoadOrNew | SilentLoading,
 
         /// <summary>
-        /// One-time parsed <see cref="Version"/> on the first access.
+        /// Load existing storage. Will throw related exceptions for any failure.
         /// </summary>
-        Version VersionParsed { get; }
+        Load = 0x01,
 
         /// <summary>
-        /// Some related package meta information.
-        /// Eg.:
-        /// * targetFramework="net472"
-        /// * output="vsSolutionBuildEvent"
-        /// ...
+        /// Load existing storage or create a new one for any failure.
         /// </summary>
-        IDictionary<string, string> Meta { get; }
+        LoadOrNew = 0x02,
 
         /// <summary>
-        /// Remove current package from storage.
+        /// Hide some errors when trying to parse the data at the loading stage, such as an empty file, etc.
         /// </summary>
-        IPackagesConfig Remove();
+        /// <remarks>Use <see cref="PackagesConfig.FailedLoading"/> for any related issues.</remarks>
+        SilentLoading = 0x04,
+
+        /// <summary>
+        /// Treat the directory path as the path to storage data.
+        /// </summary>
+        PathToStorage = 0x08,
     }
 }
