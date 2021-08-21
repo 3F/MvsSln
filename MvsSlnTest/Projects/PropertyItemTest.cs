@@ -96,5 +96,46 @@ namespace MvsSlnTest.Projects
                 new PropertyItem("name1", "value1") { evaluatedValue = "value3" }
             );
         }
+
+        [Fact]
+        public void EqTest3()
+        {
+            var p1 = new PropertyItem();
+            Assert.Equal(p1, PropertyItem.None);
+
+            Assert.True(p1.HasNothing);
+            Assert.False(p1.HasValue);
+
+            var p2 = new PropertyItem() { name = " " };
+            Assert.NotEqual(p2, PropertyItem.None);
+
+            Assert.True(p2.HasNothing);
+            Assert.False(p2.HasValue);
+        }
+
+        [Fact]
+        public void EqTest4()
+        {
+            var p = new PropertyItem("name", "value");
+            Assert.NotEqual(p, PropertyItem.None);
+
+            Assert.False(p.HasNothing);
+            Assert.True(p.HasValue);
+
+            p.unevaluatedValue = string.Empty;
+
+            Assert.True(p.HasNothing);
+            Assert.True(p.HasValue);
+
+            p.unevaluatedValue = " ";
+
+            Assert.True(p.HasNothing);
+            Assert.True(p.HasValue);
+
+            p.unevaluatedValue = null;
+
+            Assert.True(p.HasNothing);
+            Assert.False(p.HasValue);
+        }
     }
 }

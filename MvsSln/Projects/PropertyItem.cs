@@ -34,6 +34,8 @@ namespace net.r_eg.MvsSln.Projects
     [DebuggerDisplay("{DbgDisplay}")]
     public struct PropertyItem
     {
+        public static readonly PropertyItem None;
+
         /// <summary>
         /// The name of the property.
         /// </summary>
@@ -89,6 +91,16 @@ namespace net.r_eg.MvsSln.Projects
         /// Link to parent container.
         /// </summary>
         public IXProject parentProject;
+
+        /// <summary>
+        /// Check an <see cref="unevaluatedValue"/> for not null.
+        /// </summary>
+        public bool HasValue => unevaluatedValue != null;
+
+        /// <summary>
+        /// Check an <see cref="unevaluatedValue"/> for null or empty or whitespace.
+        /// </summary>
+        public bool HasNothing => string.IsNullOrWhiteSpace(unevaluatedValue);
 
         public static bool operator ==(PropertyItem a, PropertyItem b) => a.Equals(b);
 

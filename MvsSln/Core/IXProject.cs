@@ -175,11 +175,11 @@ namespace net.r_eg.MvsSln.Core
         IEnumerable<ImportElement> GetImports(string project, string label, bool eq = false);
 
         /// <summary>
-        /// The property in this project that has the specified name.
+        /// Get a property in this project with the specified name.
         /// </summary>
         /// <param name="name">The name of the property.</param>
         /// <param name="localScope">If true, will return default value for any special and imported properties type.</param>
-        /// <returns>null if no property of that name and scope exists.</returns>
+        /// <returns>Found property or <see cref="PropertyItem.None"/> if does not exist.</returns>
         PropertyItem GetProperty(string name, bool localScope = true);
 
         /// <summary>
