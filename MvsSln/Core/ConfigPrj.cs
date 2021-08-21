@@ -105,9 +105,10 @@ namespace net.r_eg.MvsSln.Core
 
         #region DebuggerDisplay
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DbgDisplay
         {
-            get => $"{Format()} -> {Sln} : [{PGuid}]";
+            get => $"{ToString()} -> {Sln} : [{PGuid}]";
         }
 
         #endregion

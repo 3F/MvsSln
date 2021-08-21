@@ -40,7 +40,10 @@ namespace MvsSlnTest.Core
 
             var target3 = new ConfigItem("Config1", "Platform1");
             Assert.Equal("Config1|Platform1", target3.ToString());
+
+#pragma warning disable CS0618 // Type or member is obsolete
             Assert.Equal("Config1|Platform1", target3.Format());
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         [Fact]
@@ -104,7 +107,7 @@ namespace MvsSlnTest.Core
         [Fact]
         public void CtorTest1()
         {
-            var target = new ConfigItem("");
+            var target = new ConfigItem(string.Empty);
 
             Assert.Equal(string.Empty, target.Configuration);
             Assert.Equal(string.Empty, target.Platform);
@@ -118,6 +121,45 @@ namespace MvsSlnTest.Core
 
             Assert.Null(target.Configuration);
             Assert.Null(target.Platform);
+        }
+
+        [Fact]
+        public void FormatTest1()
+        {
+            string input   = "Debug|Any CPU";
+            string rulemod = "Debug|AnyCPU";
+
+            Assert.Equal(input, new ConfigItem(input).ToString());
+            Assert.Equal(input, new ConfigItem((IRuleOfConfig)null, input).ToString());
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            Assert.Equal(input, new ConfigItem(input).Format());
+            Assert.Equal(input, new ConfigItem((IRuleOfConfig)null, input).Format());
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            Assert.Equal(rulemod, new ConfigItem(input).Formatted);
+            Assert.Equal(input, new ConfigItem((IRuleOfConfig)null, input).Formatted);
+        }
+
+        [Fact]
+        public void FormatTest2()
+        {
+            string name     = "Debug";
+            string platform = "Any CPU";
+
+            string res1 = "Debug|Any CPU";
+            string res2 = "Debug|AnyCPU";
+
+            Assert.Equal(res1, new ConfigItem(name, platform).ToString());
+            Assert.Equal(res1, new ConfigItem(null, name, platform).ToString());
+
+#pragma warning disable CS0618 // Type or member is obsolete
+            Assert.Equal(res1, new ConfigItem(name, platform).Format());
+            Assert.Equal(res1, new ConfigItem(null, name, platform).Format());
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            Assert.Equal(res2, new ConfigItem(name, platform).Formatted);
+            Assert.Equal(res1, new ConfigItem(null, name, platform).Formatted);
         }
     }
 }

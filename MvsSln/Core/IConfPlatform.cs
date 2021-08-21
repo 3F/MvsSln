@@ -28,38 +28,56 @@ namespace net.r_eg.MvsSln.Core
     public interface IConfPlatform
     {
         /// <summary>
-        /// The custom rule of the Configuration and Platform names.
+        /// Configured rule of the <see cref="Configuration"/> and <see cref="Platform"/> representations.
         /// </summary>
         IRuleOfConfig Rule { get; }
 
         /// <summary>
-        /// To use an `Sensitivity` logic when comparing {IConfPlatform}
+        /// Use "sensitivity" logic when comparing <see cref="IConfPlatform"/>
         /// together with `==` , `!=`.
         /// </summary>
         bool SensitivityComparing { get; set; }
 
+        /// <summary>
+        /// Configuration name.
+        /// </summary>
         string Configuration { get; }
 
+        /// <summary>
+        /// Configuration name using <see cref="Rule"/>.
+        /// </summary>
         string ConfigurationByRule { get; }
 
         /// <summary>
-        /// {ConfigurationByRule} with optional case insensitive logic.
-        /// Uses {SensitivityComparing} flag.
+        /// <see cref="ConfigurationByRule"/> with optional case insensitive logic.
         /// </summary>
+        /// <remarks>Uses <see cref="SensitivityComparing"/> flag.</remarks>
         string ConfigurationByRuleICase { get; }
 
+        /// <summary>
+        /// Platform name.
+        /// </summary>
         string Platform { get; }
 
+        /// <summary>
+        /// Platform name using <see cref="Rule"/>.
+        /// </summary>
         string PlatformByRule { get; }
 
         /// <summary>
-        /// {PlatformByRule} with optional case insensitive logic.
-        /// Uses {SensitivityComparing} flag.
+        /// <see cref="PlatformByRule"/> with optional case insensitive logic.
+        /// Uses <see cref="SensitivityComparing"/> flag.
         /// </summary>
         string PlatformByRuleICase { get; }
 
         /// <summary>
-        /// Checking an config/platform by using {Rule} instance.
+        /// Formatted final configuration.
+        /// </summary>
+        /// <remarks>Using <see cref="Rule"/>.</remarks>
+        string Formatted { get; }
+
+        /// <summary>
+        /// Checking an config/platform by using <see cref="Rule"/> instance.
         /// </summary>
         /// <param name="config">Configuration name.</param>
         /// <param name="platform">Platform name.</param>

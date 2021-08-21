@@ -24,83 +24,40 @@
 */
 
 using System;
-using System.Diagnostics;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core
 {
     /// <summary>
-    /// Basic item of configuration and platform.
+    /// Basic item of the configuration and its platform.
     /// </summary>
-    [DebuggerDisplay("{DbgDisplay}")]
     public class ConfigItem: IConfPlatform
     {
-        /// <summary>
-        /// The custom rule of the Configuration and Platform names.
-        /// </summary>
-        public IRuleOfConfig Rule
-        {
-            get;
-            set;
-        } = new RuleOfConfig();
+        protected const char DELIM = '|';
 
-        /// <summary>
-        /// To use an `Sensitivity` logic when comparing {IConfPlatform}
-        /// together with `==` , `!=`.
-        /// </summary>
-        public bool SensitivityComparing
-        {
-            get;
-            set;
-        } = true;
+        private string _fmt;
 
-        public string Configuration
-        {
-            get;
-            protected set;
-        }
+        public IRuleOfConfig Rule { get; protected set; }
+
+        public bool SensitivityComparing { get; set; } = true;
+
+        public string Configuration { get; protected set; }
 
         public string ConfigurationByRule
         {
-            get => Rule?.Configuration(Configuration);
+            get => Rule?.Configuration(Configuration) ?? Configuration;
         }
 
-        /// <summary>
-        /// {ConfigurationByRule} with optional case insensitive logic.
-        /// Uses {SensitivityComparing} flag.
-        /// </summary>
-        public string ConfigurationByRuleICase
-        {
-            get => Sensitivity(ConfigurationByRule);
-        }
+        public string ConfigurationByRuleICase => Sensitivity(ConfigurationByRule);
 
-        public string Platform
-        {
-            get;
-            protected set;
-        }
+        public string Platform { get; protected set; }
 
-        public string PlatformByRule
-        {
-            get => Rule?.Platform(Platform);
-        }
+        public string PlatformByRule => Rule?.Platform(Platform) ?? Platform;
 
-        /// <summary>
-        /// {PlatformByRule} with optional case insensitive logic.
-        /// Uses {SensitivityComparing} flag.
-        /// </summary>
-        public string PlatformByRuleICase
-        {
-            get => Sensitivity(PlatformByRule);
-        }
+        public string PlatformByRuleICase => Sensitivity(PlatformByRule);
 
-        /// <summary>
-        /// Checking an config/platform by using {Rule} instance.
-        /// </summary>
-        /// <param name="config">Configuration name.</param>
-        /// <param name="platform">Platform name.</param>
-        /// <param name="icase">Case insensitive flag.</param>
-        /// <returns></returns>
+        public string Formatted => _fmt ??= Format(ConfigurationByRule, PlatformByRule);
+
         public bool IsEqualByRule(string config, string platform, bool icase = false)
         {
             var cmp = icase ? StringComparison.InvariantCultureIgnoreCase 
@@ -136,14 +93,13 @@ namespace net.r_eg.MvsSln.Core
             return 0.CalculateHashCode
             (
                 Configuration,
-                Platform
+                Platform,
+                Rule,
+                SensitivityComparing
             );
         }
 
-        public override string ToString()
-        {
-            return Format();
-        }
+        public override string ToString() => Format(Configuration, Platform);
 
         /// <summary>
         /// Compatible format: 'configname'|'platformname'
@@ -151,32 +107,59 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public static string Format(string configuration, string platform)
         {
-            return $"{configuration}|{platform}";
+            return $"{configuration}{DELIM}{platform}";
         }
 
-        public string Format()
-        {
-            return Format(Configuration, Platform);
-        }
+        [Obsolete("Use `ToString()` and `Formatted` instead.")]
+        public string Format() => ToString();
 
-        public ConfigItem(string configuration, string platform)
+        /// <summary>
+        /// Initialize using custom rule.
+        /// </summary>
+        /// <param name="rule">Custom rule. Use null to disable it.</param>
+        /// <param name="configuration">Configuration name.</param>
+        /// <param name="platform">Platform name.</param>
+        public ConfigItem(IRuleOfConfig rule, string configuration, string platform)
         {
+            Rule            = rule;
             Configuration   = configuration;
             Platform        = platform;
         }
 
-        public ConfigItem(string formatted)
+        /// <summary>
+        /// Initialize using rule <see cref="RuleOfConfig"/> by default.
+        /// </summary>
+        /// <inheritdoc cref="ConfigItem(IRuleOfConfig, string, string)"/>
+        public ConfigItem(string configuration, string platform)
+            : this(new RuleOfConfig(), configuration, platform)
         {
-            if(formatted == null) {
-                return;
-            }
 
-            string[] cfg = formatted.Split('|');
+        }
 
-            Configuration = cfg[0];
+        /// <summary>
+        /// Initialize using rule <see cref="RuleOfConfig"/> by default.
+        /// </summary>
+        /// <inheritdoc cref="ConfigItem(IRuleOfConfig, string)"/>
+        public ConfigItem(string formatted)
+            : this(new RuleOfConfig(), formatted)
+        {
 
-            // < 2 https://github.com/3F/MvsSln/issues/19
-            Platform = cfg.Length < 2 ? string.Empty : cfg[1];
+        }
+
+        /// <summary>
+        /// Initialize using custom rule.
+        /// </summary>
+        /// <param name="rule">Custom rule. Use null to disable it.</param>
+        /// <param name="formatted">Raw formatted string.</param>
+        public ConfigItem(IRuleOfConfig rule, string formatted)
+            : this
+            (
+                rule, 
+                ExtractName(formatted, out int delimiter), 
+                ExtractPlatform(formatted, delimiter)
+            )
+        {
+
         }
 
         protected virtual string Sensitivity(string name)
@@ -184,16 +167,29 @@ namespace net.r_eg.MvsSln.Core
             if(!SensitivityComparing) {
                 return name;
             }
-            return name.ToLowerInvariant();
+            return name?.ToLowerInvariant();
         }
 
-        #region DebuggerDisplay
-
-        private string DbgDisplay
+        private static string ExtractName(string raw, out int delimiter)
         {
-            get => Format();
+            if(raw == null)
+            {
+                delimiter = -1;
+                return null;
+            }
+
+            delimiter = raw.IndexOf(DELIM);
+            if(delimiter == -1) return raw;
+
+            return raw.Substring(0, delimiter);
         }
 
-        #endregion
+        private static string ExtractPlatform(string raw, int delimiter)
+        {
+            if(raw == null) return null;
+            if(delimiter == -1) return string.Empty;
+
+            return raw.Substring(delimiter + 1);
+        }
     }
 }
