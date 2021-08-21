@@ -33,9 +33,20 @@ namespace net.r_eg.MvsSln
         None,
 
         /// <summary>
-        /// All supported data.
+        /// All supported sln items with loading only minimal default data for prepared environment.
         /// </summary>
-        All = Projects 
+        AllMinimal = AllNoLoad | LoadMinimalDefaultData,
+
+        /// <summary>
+        /// All supported sln items with loading all possible default data for prepared environment.
+        /// </summary>
+        All = AllNoLoad | LoadDefaultData,
+
+        /// <summary>
+        /// All supported sln items.
+        /// It does not include loading projects for prepared environment (<see cref="Env"/>).
+        /// </summary>
+        AllNoLoad = Projects 
                 | Header 
                 | SolutionConfPlatforms 
                 | ProjectConfPlatforms 
@@ -43,7 +54,6 @@ namespace net.r_eg.MvsSln
                 | SolutionItems
                 | ExtItems
                 | Env
-                | LoadDefaultData
                 | Map
                 | ProjectDependenciesXml,
 

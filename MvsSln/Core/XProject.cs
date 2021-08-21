@@ -649,6 +649,8 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public IEnumerable<Item> GetProjectReferences(string inc = null) => GetItems(PRJ_REF, inc);
 
+        public IEnumerable<Item> GetPackageReferences() => GetItems(PKG_REF);
+
         /// <summary>
         /// Get first available 'Reference' item.
         /// </summary>

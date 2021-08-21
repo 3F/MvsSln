@@ -363,6 +363,11 @@ namespace net.r_eg.MvsSln.Core
         IEnumerable<Item> GetProjectReferences(string inc = null);
 
         /// <summary>
+        /// Get all available 'PackageReference' items.
+        /// </summary>
+        IEnumerable<Item> GetPackageReferences();
+
+        /// <summary>
         /// Get first available 'Reference' item.
         /// </summary>
         /// <param name="inc">The Include attribute to be found.</param>

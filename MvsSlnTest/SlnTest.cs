@@ -424,11 +424,13 @@ namespace MvsSlnTest
             }
         }
 
-        [Fact]
-        public void SlnItemsTest3()
+        [Theory]
+        [InlineData(SlnItems.All)]
+        [InlineData(SlnItems.ProjectDependenciesXml)]
+        public void SlnItemsTest3(SlnItems items)
         {
             //report https://github.com/3F/MvsSln/issues/25#issuecomment-743840401
-            using(var sln = new Sln(SlnItems.All, string.Empty))
+            using(var sln = new Sln(items, string.Empty))
             {
                 Assert.Null(sln.Result.ProjectDependencies);
             }
