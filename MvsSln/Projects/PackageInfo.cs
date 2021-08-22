@@ -26,6 +26,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Projects
 {
@@ -46,6 +47,10 @@ namespace net.r_eg.MvsSln.Projects
         public Version VersionParsed => _lversion.Value;
 
         public IDictionary<string, string> Meta { get; }
+
+        public string MetaTFM => Meta.GetOrDefault(ATTR_TFM);
+
+        public string MetaOutput => Meta.GetOrDefault(ATTR_OUT);
 
         public IPackagesConfig Remove()
         {

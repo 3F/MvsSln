@@ -194,7 +194,6 @@ namespace MvsSlnTest.Projects
             if(File.Exists(_FILE)) File.Delete(_FILE);
 
             using TempPackagesConfig pkg = new(_FILE, customNew);
-
             Assert.Empty(pkg.GetPackages());
 
             const string _P1 = "LX4Cnh";
@@ -225,31 +224,211 @@ namespace MvsSlnTest.Projects
 
             // rollback
 
+            Assert.Equal(2, pkg.GetPackages().Count());
+
             Assert.True(pkg.AddPackage(_P3, "1.0.0"));
             Assert.Equal("1.0.0", pkg.GetPackage(_P3).Version);
+
+            Assert.Equal(3, pkg.GetPackages().Count());
             pkg.Rollback();
+            Assert.Equal(2, pkg.GetPackages().Count());
+
             Assert.True(pkg.AddPackage(_P3, "2.0.0"));
             Assert.Equal("2.0.0", pkg.GetPackage(_P3).Version);
+
+            Assert.Equal(3, pkg.GetPackages().Count());
 
             // re-load
 
             PackagesConfig pkg2 = new(_FILE, customNew);
+
+            Assert.Equal(2, pkg2.GetPackages().Count());
+
             Assert.Null(pkg2.GetPackage(_P3));
             Assert.NotNull(pkg.GetPackage(_P1));
 
             Assert.Equal("1.1.0", pkg.GetPackage(_P1).Version);
         }
 
-        //TODO:
+        [Fact]
+        public void ModifyItemsTest2()
+        {
+            const string _FILE = TestData.ROOT + @"PackagesConfig\test.2.tmp";
+            if(File.Exists(_FILE)) File.Delete(_FILE);
 
-        //[Fact]
-        //public void ModifyItemsTest2()
-        //{
-        //    // update
+            using TempPackagesConfig pkg = new(_FILE, customNew);
+            Assert.Empty(pkg.GetPackages());
 
-        //    // remove
+            const string _P1 = "LX4Cnh";
 
-        //    // add or update
-        //}
+            Assert.True(pkg.AddOrUpdatePackage(_P1, "1.0.0"));
+            Assert.Equal("1.0.0", pkg.GetPackage(_P1).Version);
+            Assert.Equal(pkg.DefaultTfm, pkg.GetPackage(_P1).Meta[PackageInfo.ATTR_TFM]);
+
+            Assert.Single(pkg.GetPackages());
+
+            Assert.False(pkg.AddOrUpdatePackage(_P1, "1.1.0", "net472"));
+            Assert.Equal("1.1.0", pkg.GetPackage(_P1).Version);
+            Assert.Equal("net472", pkg.GetPackage(_P1).Meta[PackageInfo.ATTR_TFM]);
+
+            Assert.Single(pkg.GetPackages());
+
+            Assert.True(pkg.UpdatePackage(_P1, "1.2.0", "net450"));
+            Assert.Equal("1.2.0", pkg.GetPackage(_P1).Version);
+            Assert.Equal("net450", pkg.GetPackage(_P1).Meta[PackageInfo.ATTR_TFM]);
+
+            Assert.False(pkg.UpdatePackage("NotReal", "1.0.0", "net450"));
+            Assert.Single(pkg.GetPackages());
+
+            Assert.False(pkg.RemovePackage("NotReal"));
+            Assert.Single(pkg.GetPackages());
+
+            Assert.True(pkg.RemovePackage(_P1));
+            Assert.Empty(pkg.GetPackages());
+        }
+
+        [Fact]
+        public void ModifyItemsTest3()
+        {
+            const string _FILE = TestData.ROOT + @"PackagesConfig\test.3.tmp";
+            if(File.Exists(_FILE)) File.Delete(_FILE);
+
+            using TempPackagesConfig pkg = new(_FILE, customNew);
+            Assert.Empty(pkg.GetPackages());
+
+            const string _P1 = "LX4Cnh";
+            const string _P2 = "Fnv1a128";
+            const string _P3 = "Huid";
+
+            pkg.AutoCommit = true;
+
+            Assert.True(pkg.AddPackage(_P1, "1.1.0"));
+            pkg.Rollback();
+
+            Assert.Single(pkg.GetPackages());
+            Assert.Equal("1.1.0", pkg.GetPackage(_P1).Version);
+
+            Assert.True(pkg.AddPackage(_P2, "2.0.0"));
+            Assert.Equal(2, pkg.GetPackages().Count());
+
+            pkg.AutoCommit = false;
+
+            Assert.True(pkg.AddPackage(_P3, "1.2.3"));
+            Assert.Equal(3, pkg.GetPackages().Count());
+
+            // re-load
+
+            PackagesConfig pkg2 = new(_FILE, customNew);
+
+            Assert.Equal(2, pkg2.GetPackages().Count());
+
+            Assert.NotNull(pkg2.GetPackage(_P2));
+            Assert.NotNull(pkg.GetPackage(_P1));
+
+            Assert.Equal("1.1.0", pkg.GetPackage(_P1).Version);
+            Assert.Equal("2.0.0", pkg.GetPackage(_P2).Version);
+        }
+
+        [Fact]
+        public void ModifyItemsTest4()
+        {
+            const string _FILE = TestData.ROOT + @"PackagesConfig\test.4.tmp";
+            if(File.Exists(_FILE)) File.Delete(_FILE);
+
+            using TempPackagesConfig pkg = new(_FILE, customNew);
+            Assert.Empty(pkg.GetPackages());
+
+            const string _P1 = "vsSolutionBuildEvent";
+            const string _P2 = "7z.Libs";
+
+            Assert.True(pkg.AddOrUpdateGntPackage(_P1, "1.14.1", "vsSBE"));
+            Assert.Equal("1.14.1", pkg.GetPackage(_P1).Version);
+            Assert.Equal("vsSBE", pkg.GetPackage(_P1).MetaOutput);
+
+            Assert.False(pkg.AddOrUpdateGntPackage(_P1, "1.14.2"));
+            Assert.Equal("1.14.2", pkg.GetPackage(_P1).Version);
+
+            Assert.True(pkg.AddGntPackage(_P2, "19.0.2"));
+            Assert.Equal("19.0.2", pkg.GetPackage(_P2).Version);
+            Assert.False(pkg.GetPackage(_P2).Meta.ContainsKey(PackageInfo.ATTR_OUT));
+            Assert.Null(pkg.GetPackage(_P2).MetaOutput);
+
+            Assert.False(pkg.AddGntPackage(_P2, "16.0"));
+            Assert.Equal("19.0.2", pkg.GetPackage(_P2).Version);
+
+            Assert.True(pkg.UpdateGntPackage(_P2, "14", "7z"));
+            Assert.Equal("14", pkg.GetPackage(_P2).Version);
+            Assert.Equal("7z", pkg.GetPackage(_P2).Meta[PackageInfo.ATTR_OUT]);
+
+            Assert.False(pkg.UpdateGntPackage("NotReal", "1.0"));
+
+            Assert.Equal(2, pkg.GetPackages().Count());
+
+            Assert.NotNull(pkg.GetPackage(_P2));
+            Assert.NotNull(pkg.GetPackage(_P1));
+
+            Assert.Single(pkg.GetPackage(_P2).Remove().GetPackages());
+            Assert.Null(pkg.GetPackage(_P2));
+            Assert.NotNull(pkg.GetPackage(_P1));
+        }
+
+        [Fact]
+        public void ModifyItemsTest5()
+        {
+            const string _FILE = TestData.ROOT + @"PackagesConfig\test.5.tmp";
+            if(File.Exists(_FILE)) File.Delete(_FILE);
+
+            using TempPackagesConfig pkg = new(_FILE, customNew);
+            Assert.Empty(pkg.GetPackages());
+
+            PackageInfo p0 = new("NotReal", "0.1");
+            PackageInfo p1 = new("LX4Cnh", "1.0");
+            PackageInfo p2 = new("LX4Cnh", "1.1", new Dictionary<string, string>() { { PackageInfo.ATTR_TFM, "net472" } });
+            PackageInfo p3 = new("Fnv1a128", "3.0");
+            PackageInfo p4 = new("Fnv1a128", "3.4", new Dictionary<string, string>() { { PackageInfo.ATTR_TFM, "net472" } });
+
+            Assert.True(pkg.AddPackage(p1));
+            Assert.Equal("1.0", pkg.GetPackage(p1.Id).Version);
+            Assert.Empty(pkg.GetPackage(p1.Id).Meta);
+
+            Assert.Single(pkg.GetPackages());
+
+            Assert.False(pkg.AddPackage(p2));
+            Assert.Equal("1.0", pkg.GetPackage(p1.Id).Version);
+            Assert.Null(pkg.GetPackage(p1.Id).MetaTFM);
+
+            Assert.Single(pkg.GetPackages());
+
+            Assert.False(pkg.AddOrUpdatePackage(p2));
+            Assert.Equal("1.1", pkg.GetPackage(p1.Id).Version);
+            Assert.Equal("net472", pkg.GetPackage(p1.Id).MetaTFM);
+
+            Assert.Single(pkg.GetPackages());
+
+            Assert.True(pkg.AddOrUpdatePackage(p3));
+            Assert.Equal("3.0", pkg.GetPackage(p3.Id).Version);
+            Assert.Empty(pkg.GetPackage(p3.Id).Meta);
+
+            Assert.Equal(2, pkg.GetPackages().Count());
+
+            Assert.True(pkg.UpdatePackage(p4));
+            Assert.Equal("3.4", pkg.GetPackage(p3.Id).Version);
+            Assert.Equal("net472", pkg.GetPackage(p3.Id).Meta[PackageInfo.ATTR_TFM]);
+
+            Assert.Equal(2, pkg.GetPackages().Count());
+
+            Assert.False(pkg.UpdatePackage(p0));
+            Assert.Equal(2, pkg.GetPackages().Count());
+
+            Assert.False(pkg.RemovePackage(p0));
+            Assert.Equal(2, pkg.GetPackages().Count());
+
+            Assert.True(pkg.RemovePackage(p4));
+            Assert.Single(pkg.GetPackages());
+
+            Assert.Null(pkg.GetPackage(p4.Id));
+            Assert.NotNull(pkg.GetPackage(p1.Id));
+            Assert.Equal("1.1", pkg.GetPackage(p1.Id).Version);
+        }
     }
 }

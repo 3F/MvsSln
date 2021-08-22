@@ -55,6 +55,20 @@ namespace net.r_eg.MvsSln.Projects
         IDictionary<string, string> Meta { get; }
 
         /// <summary>
+        /// Try get "targetFramework" value from <see cref="Meta"/> information.
+        /// It must return <see langword="null"/> if attribute is not defined.
+        /// </summary>
+        /// <remarks>Alias to <see cref="Meta"/> accessing.</remarks>
+        string MetaTFM { get; }
+
+        /// <summary>
+        /// Try get "output" value from <see cref="Meta"/> information.
+        /// It must return <see langword="null"/> if attribute is not defined.
+        /// </summary>
+        /// <remarks>Alias to <see cref="Meta"/> accessing.</remarks>
+        string MetaOutput { get; }
+
+        /// <summary>
         /// Remove current package from storage.
         /// </summary>
         IPackagesConfig Remove();
