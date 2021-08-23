@@ -1,0 +1,62 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <RootOutDir>bin\prj\</RootOutDir>
+    <RootObjDir>bin\obj\</RootObjDir>
+
+    <OsUnixLike>false</OsUnixLike>
+    <OsUnixLike Condition="$([MSBuild]::IsOsUnixLike())">true</OsUnixLike>
+
+    <NetStdTFM>netstandard2.0</NetStdTFM>
+    <NetStdTFM Condition="$(SuppressNetStdTFM) == 'true'"></NetStdTFM>
+
+    <NetCoreTFM>netcoreapp2.1;net5</NetCoreTFM>
+
+    <MvsSlnTFM>net40;net472;$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
+    <MvsSlnTFM Condition="$(OsUnixLike) == 'true'">$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
+
+    <MvsSlnTestTFM>net472;$(NetCoreTFM)</MvsSlnTestTFM>
+    <MvsSlnTestTFM Condition="$(OsUnixLike)=='true'">$(NetCoreTFM)</MvsSlnTestTFM>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutPrjDir>$(RootOutDir)$(MSBuildProjectName)\$(Configuration)\$(TargetFramework)\</OutPrjDir>
+    <IntermediateOutputPath>..\$(RootObjDir)$(MSBuildProjectName)\$(Configuration)\</IntermediateOutputPath>
+
+    <OutputPath>..\$(OutPrjDir)\</OutputPath>
+    <OutDir>$([MSBuild]::Escape($([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(SolutionDir)`, `$(OutPrjDir)`))`))))</OutDir>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsNetCoreFamilyTarget>true</IsNetCoreFamilyTarget>
+    <IsNetCoreFamilyTarget Condition="$(TargetFramework.StartsWith('net4')) == 'true'">false</IsNetCoreFamilyTarget>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants Condition="'$(IsNetCoreFamilyTarget)' == 'true'">NETCORE;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'netstandard2.0'">NETSTD20;NETSTD;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net40'">NET40;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>  
+
+  <ItemGroup Condition="'$(IsNetCoreFamilyTarget)' != 'true'">
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Build" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsNetCoreFamilyTarget)' == 'true'">
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Microsoft.Build -->
+    <PackageReference Version="16.11.0" Condition=" 'net5' == '$(TargetFramework)' " Include="Microsoft.Build" />
+    <PackageReference Version="16.5.0" Condition=" 'netcoreapp2.1' == '$(TargetFramework)' " Include="Microsoft.Build" />
+    <PackageReference Version="15.9.20" Condition=" 'netstandard2.0' == '$(TargetFramework)' " Include="Microsoft.Build" />
+
+    <!-- https://github.com/3F/MvsSln/wiki/Advanced-Features#how-to-use-modern-versions-of-msbuild-for-netfx -->
+    <!-- <PackageReference Version="16.3.0" Condition=" 'net472' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
+    <!-- <PackageReference Version="15.9.20" Condition=" 'net46' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
+  </ItemGroup>
+
+</Project>

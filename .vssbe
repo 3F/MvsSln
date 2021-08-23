@@ -237,7 +237,7 @@
           "            \"$(SolutionDir)tools/*.*\", ",
           "            \"$(odir)/tools/\", ",
           "            true, ",
-          "            {\"*.nuspec\"})]",
+          "            {\"*.nuspec\", \"*.config\"})]",
           "",
           "##[IO copy.file(\"tools/MvsSln.nuspec\", \"$(odir)/MvsSln.nuspec\", true)]",
           "##[IO copy.file(\"$(pDir)/$(OutputPath:$(pDir))/*.*\", ",

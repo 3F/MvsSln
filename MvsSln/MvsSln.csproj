@@ -1,5 +1,6 @@
 ﻿
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\common.props" />
 
   <PropertyGroup>
     <Version>2.5.3</Version>
@@ -7,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFrameworks>net40;net472;netstandard2.0;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>$(MvsSlnTFM)</TargetFrameworks>
     <RootNamespace>net.r_eg.MvsSln</RootNamespace>
     <AssemblyName>MvsSln</AssemblyName>
     <SignAssembly>true</SignAssembly>
@@ -55,14 +56,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'PublicRelease' ">
-    <DefineConstants />
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
@@ -83,36 +83,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\tools\hMSBuild.bat">
-      <Visible>false</Visible>
-      <Pack>True</Pack>
-      <PackagePath>tools\</PackagePath>
-    </None>
-    <None Include="..\tools\gnt.bat">
-      <Visible>false</Visible>
-      <Pack>True</Pack>
-      <PackagePath>tools\</PackagePath>
-    </None>
-  </ItemGroup>
-
-  <!-- GAC -->
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net40' Or '$(TargetFramework)' == 'net472' ">
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Build" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netcoreapp2.1' ">
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Microsoft.Build -->
-    <PackageReference Version="16.5.0" Condition=" 'netcoreapp2.1' == '$(TargetFramework)' " Include="Microsoft.Build" />
-    <PackageReference Version="15.9.20" Condition=" 'netstandard2.0' == '$(TargetFramework)' " Include="Microsoft.Build" />
-
-    <!-- https://github.com/3F/MvsSln/wiki/Advanced-Features#how-to-use-modern-versions-of-msbuild-for-netfx -->
-    <!-- <PackageReference Version="16.3.0" Condition=" 'net472' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
-    <!-- <PackageReference Version="15.9.20" Condition=" 'net46' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
+    <None Include="..\tools\hMSBuild.bat" Pack="true" PackagePath="tools\" Visible="false" />
+    <None Include="..\tools\gnt.bat" Pack="true" PackagePath="tools\" Visible="false" />
   </ItemGroup>
 
 </Project>
