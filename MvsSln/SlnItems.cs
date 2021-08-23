@@ -35,12 +35,12 @@ namespace net.r_eg.MvsSln
         /// <summary>
         /// All supported sln items with loading only minimal default data for prepared environment.
         /// </summary>
-        AllMinimal = AllNoLoad | LoadMinimalDefaultData,
+        AllMinimal = AllNoLoad | LoadMinimalDefaultData | PackagesConfigSolution,
 
         /// <summary>
         /// All supported sln items with loading all possible default data for prepared environment.
         /// </summary>
-        All = AllNoLoad | LoadDefaultData,
+        All = AllNoLoad | LoadDefaultData | PackagesConfig,
 
         /// <summary>
         /// All supported sln items.
@@ -60,38 +60,38 @@ namespace net.r_eg.MvsSln
         /// <summary>
         /// All found projects from solution.
         /// </summary>
-        Projects = 0x0001,
+        Projects = 0x00001,
 
         /// <summary>
         /// Solution configurations with platforms.
         /// </summary>
-        SolutionConfPlatforms = 0x0002,
+        SolutionConfPlatforms = 0x00002,
 
         /// <summary>
         /// Project configurations with platforms.
         /// </summary>
-        ProjectConfPlatforms = 0x0004,
+        ProjectConfPlatforms = 0x00004,
 
         /// <summary>
         /// Project Build Order from .sln file.
         /// </summary>
-        ProjectDependencies = 0x0008,
+        ProjectDependencies = 0x00008,
 
         /// <summary>
         /// To prepare environment without loading projects.
         /// </summary>
-        Env = 0x0010 | Projects | SolutionConfPlatforms | ProjectConfPlatforms,
+        Env = 0x00010 | Projects | SolutionConfPlatforms | ProjectConfPlatforms,
 
         /// <summary>
         /// To load all possible default data.
         /// </summary>
-        LoadDefaultData = 0x0020,
+        LoadDefaultData = 0x00020,
 
         /// <summary>
         /// To load only minimal default data.
         /// For example, the only one configuration for each project.
         /// </summary>
-        LoadMinimalDefaultData = 0x0040,
+        LoadMinimalDefaultData = 0x00040,
 
         /// <summary>
         /// To prepare environment with loaded projects by default.
@@ -107,23 +107,23 @@ namespace net.r_eg.MvsSln
         /// <summary>
         /// Creates map when processing sln data.
         /// </summary>
-        Map = 0x0080,
+        Map = 0x00080,
 
         /// <summary>
         /// ProjectSection - SolutionItems
         /// +NestedProjects dependencies
         /// </summary>
-        SolutionItems = 0x0100,
+        SolutionItems = 0x00100,
 
         /// <summary>
         /// Header information.
         /// </summary>
-        Header = 0x0200,
+        Header = 0x00200,
 
         /// <summary>
         /// Includes ExtensibilityGlobals
         /// </summary>
-        ExtItems = 0x0400,
+        ExtItems = 0x00400,
 
         /// <summary>
         /// Covers ProjectDependencies (SLN) logic using data from project files (XML).
@@ -132,6 +132,22 @@ namespace net.r_eg.MvsSln
         /// 
         /// Requires Env with loaded projects (LoadMinimalDefaultData or LoadDefaultData).
         /// </summary>
-        ProjectDependenciesXml = 0x0800 | ProjectDependencies | Env,
+        ProjectDependenciesXml = 0x00800 | ProjectDependencies | Env,
+
+        /// <summary>
+        /// Find and Load packages.config files using paths defined in .sln (if defined <see cref="SolutionItems"/>) and solution directory.
+        /// </summary>
+        PackagesConfigSolution = 0x01000,
+
+        /// <summary>
+        /// Find and Load legacy packages.config files from all specified projects directories (activates <see cref="Projects"/>), 
+        /// and root `packages` folder if exists.
+        /// </summary>
+        PackagesConfigLegacy = 0x02000 | Projects,
+
+        /// <summary>
+        /// Find and Load packages.config using <see cref="PackagesConfigSolution"/> and <see cref="PackagesConfigLegacy"/> flags.
+        /// </summary>
+        PackagesConfig = PackagesConfigSolution | PackagesConfigLegacy,
     }
 }

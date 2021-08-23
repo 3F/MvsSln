@@ -41,7 +41,7 @@ if(new ProjectItem(...) == new ProjectItem(...)) { ... }
 if(new SolutionFolder(...) == new SolutionFolder(...)) { ... }
 if(new RawText(...) == new RawText(...)) { ... }
 if(new ConfigItem(...) == new ConfigItem(...)) { ... }
-if((RawText)"data" == (RawText)"data") { ... }
+if(new PackageInfo(...) == new PackageInfo(...)) { ... }
 ````
 
 
@@ -93,7 +93,7 @@ sln.Result.Env
     });
 ```
 
-Modify .sln at runtime,
+Modify *.sln* at runtime,
 
 https://github.com/3F/MvsSln/discussions/43#discussioncomment-371185
 
@@ -110,6 +110,20 @@ var whandlers = new Dictionary<Type, HandlerValue>() {
 using(var w = new SlnWriter(@"modified.sln", whandlers)) {
     w.Write(sln.Result.Map);
 }
+```
+
+Manage [packages.config](https://github.com/3F/MvsSln/pull/30),
+
+```csharp
+// 2.6+
+using Sln l = new("Input.sln", SlnItems.AllNoLoad | SlnItems.PackagesConfig);
+
+IPackageInfo found = l.Result.PackagesConfigs
+                                .SelectMany(s => s.Packages)
+                                .FirstOrDefault(p => p.Id.StartsWith("Microsoft."));
+// found.MetaTFM ...
+
+Version v = l.Result.PackagesConfigs.First().GetPackage("LX4Cnh")?.VersionParsed;
 ```
 
 Everything at hand,

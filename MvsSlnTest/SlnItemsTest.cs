@@ -10,8 +10,14 @@ namespace MvsSlnTest
         public static IEnumerable<object[]> GetAnSlnItemsAll()
         {
             yield return new object[] { SlnItems.All, SlnItems.LoadMinimalDefaultData };
-            yield return new object[] { SlnItems.AllMinimal, SlnItems.LoadDefaultData };
-            yield return new object[] { SlnItems.AllNoLoad, SlnItems.LoadDefaultData, SlnItems.LoadMinimalDefaultData };
+
+            yield return new object[] { SlnItems.AllMinimal, SlnItems.LoadDefaultData, 
+                                                             SlnItems.PackagesConfigLegacy };
+
+            yield return new object[] { SlnItems.AllNoLoad, SlnItems.LoadDefaultData, 
+                                                            SlnItems.LoadMinimalDefaultData, 
+                                                            SlnItems.PackagesConfigLegacy, 
+                                                            SlnItems.PackagesConfigSolution };
         }
 
         [Theory]
@@ -26,7 +32,11 @@ namespace MvsSlnTest
                     bool failed = true;
                     foreach(var ignore in ignoring)
                     {
-                        if(v.HasFlag(ignore)) failed = false;
+                        if(v.HasFlag(ignore))
+                        {
+                            failed = false;
+                            break;
+                        }
                     }
 
                     if(failed)

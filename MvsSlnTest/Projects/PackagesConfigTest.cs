@@ -22,9 +22,9 @@ namespace MvsSlnTest.Projects
 
             PackagesConfig s2 = new(TestData.ROOT + @"PackagesConfig\packages.1.txt", customLoad);
 
-            yield return new object[] { s2.GetPackages().ElementAt(0), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" };
+            yield return new object[] { s2.Packages.ElementAt(0), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" };
             yield return new object[] { s2.GetPackage("vssolutionbuildevent", true), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" };
-            yield return new object[] { s2.GetPackages().ElementAt(1), "Conari", "1.5", "net472" };
+            yield return new object[] { s2.Packages.ElementAt(1), "Conari", "1.5", "net472" };
 
             PackagesConfig s3 = new(TestData.ROOT + @"PackagesConfig\packages.2.txt", customLoad);
 
@@ -81,7 +81,7 @@ namespace MvsSlnTest.Projects
             Assert.False(pkg.IsNew);
             Assert.False(string.IsNullOrEmpty(pkg.DefaultTfm));
 
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
         }
 
         public static IEnumerable<object[]> GetFailedContent()
@@ -103,7 +103,7 @@ namespace MvsSlnTest.Projects
             Assert.NotNull(pkg.FailedLoading);
             Assert.True(pkg.IsNew);
 
-            Assert.Empty(pkg.GetPackages());
+            Assert.Empty(pkg.Packages);
         }
 
         [Theory]
@@ -129,7 +129,7 @@ namespace MvsSlnTest.Projects
             Assert.Null(pkg.FailedLoading);
             Assert.False(pkg.IsNew);
 
-            Assert.Empty(pkg.GetPackages());
+            Assert.Empty(pkg.Packages);
         }
 
         [Fact]
@@ -194,7 +194,8 @@ namespace MvsSlnTest.Projects
             if(File.Exists(_FILE)) File.Delete(_FILE);
 
             using TempPackagesConfig pkg = new(_FILE, customNew);
-            Assert.Empty(pkg.GetPackages());
+            Assert.Equal(pkg.File, _FILE);
+            Assert.Empty(pkg.Packages);
 
             const string _P1 = "LX4Cnh";
             const string _P2 = "Fnv1a128";
@@ -224,25 +225,25 @@ namespace MvsSlnTest.Projects
 
             // rollback
 
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
 
             Assert.True(pkg.AddPackage(_P3, "1.0.0"));
             Assert.Equal("1.0.0", pkg.GetPackage(_P3).Version);
 
-            Assert.Equal(3, pkg.GetPackages().Count());
+            Assert.Equal(3, pkg.Packages.Count());
             pkg.Rollback();
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
 
             Assert.True(pkg.AddPackage(_P3, "2.0.0"));
             Assert.Equal("2.0.0", pkg.GetPackage(_P3).Version);
 
-            Assert.Equal(3, pkg.GetPackages().Count());
+            Assert.Equal(3, pkg.Packages.Count());
 
             // re-load
 
             PackagesConfig pkg2 = new(_FILE, customNew);
-
-            Assert.Equal(2, pkg2.GetPackages().Count());
+            Assert.Equal(pkg2.File, _FILE);
+            Assert.Equal(2, pkg2.Packages.Count());
 
             Assert.Null(pkg2.GetPackage(_P3));
             Assert.NotNull(pkg.GetPackage(_P1));
@@ -257,7 +258,8 @@ namespace MvsSlnTest.Projects
             if(File.Exists(_FILE)) File.Delete(_FILE);
 
             using TempPackagesConfig pkg = new(_FILE, customNew);
-            Assert.Empty(pkg.GetPackages());
+            Assert.Equal(pkg.File, _FILE);
+            Assert.Empty(pkg.Packages);
 
             const string _P1 = "LX4Cnh";
 
@@ -265,26 +267,26 @@ namespace MvsSlnTest.Projects
             Assert.Equal("1.0.0", pkg.GetPackage(_P1).Version);
             Assert.Equal(pkg.DefaultTfm, pkg.GetPackage(_P1).Meta[PackageInfo.ATTR_TFM]);
 
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
 
             Assert.False(pkg.AddOrUpdatePackage(_P1, "1.1.0", "net472"));
             Assert.Equal("1.1.0", pkg.GetPackage(_P1).Version);
             Assert.Equal("net472", pkg.GetPackage(_P1).Meta[PackageInfo.ATTR_TFM]);
 
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
 
             Assert.True(pkg.UpdatePackage(_P1, "1.2.0", "net450"));
             Assert.Equal("1.2.0", pkg.GetPackage(_P1).Version);
             Assert.Equal("net450", pkg.GetPackage(_P1).Meta[PackageInfo.ATTR_TFM]);
 
             Assert.False(pkg.UpdatePackage("NotReal", "1.0.0", "net450"));
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
 
             Assert.False(pkg.RemovePackage("NotReal"));
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
 
             Assert.True(pkg.RemovePackage(_P1));
-            Assert.Empty(pkg.GetPackages());
+            Assert.Empty(pkg.Packages);
         }
 
         [Fact]
@@ -294,7 +296,8 @@ namespace MvsSlnTest.Projects
             if(File.Exists(_FILE)) File.Delete(_FILE);
 
             using TempPackagesConfig pkg = new(_FILE, customNew);
-            Assert.Empty(pkg.GetPackages());
+            Assert.Equal(pkg.File, _FILE);
+            Assert.Empty(pkg.Packages);
 
             const string _P1 = "LX4Cnh";
             const string _P2 = "Fnv1a128";
@@ -305,22 +308,22 @@ namespace MvsSlnTest.Projects
             Assert.True(pkg.AddPackage(_P1, "1.1.0"));
             pkg.Rollback();
 
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
             Assert.Equal("1.1.0", pkg.GetPackage(_P1).Version);
 
             Assert.True(pkg.AddPackage(_P2, "2.0.0"));
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
 
             pkg.AutoCommit = false;
 
             Assert.True(pkg.AddPackage(_P3, "1.2.3"));
-            Assert.Equal(3, pkg.GetPackages().Count());
+            Assert.Equal(3, pkg.Packages.Count());
 
             // re-load
 
             PackagesConfig pkg2 = new(_FILE, customNew);
-
-            Assert.Equal(2, pkg2.GetPackages().Count());
+            Assert.Equal(pkg2.File, _FILE);
+            Assert.Equal(2, pkg2.Packages.Count());
 
             Assert.NotNull(pkg2.GetPackage(_P2));
             Assert.NotNull(pkg.GetPackage(_P1));
@@ -336,7 +339,7 @@ namespace MvsSlnTest.Projects
             if(File.Exists(_FILE)) File.Delete(_FILE);
 
             using TempPackagesConfig pkg = new(_FILE, customNew);
-            Assert.Empty(pkg.GetPackages());
+            Assert.Empty(pkg.Packages);
 
             const string _P1 = "vsSolutionBuildEvent";
             const string _P2 = "7z.Libs";
@@ -362,12 +365,12 @@ namespace MvsSlnTest.Projects
 
             Assert.False(pkg.UpdateGntPackage("NotReal", "1.0"));
 
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
 
             Assert.NotNull(pkg.GetPackage(_P2));
             Assert.NotNull(pkg.GetPackage(_P1));
 
-            Assert.Single(pkg.GetPackage(_P2).Remove().GetPackages());
+            Assert.Single(pkg.GetPackage(_P2).Remove().Packages);
             Assert.Null(pkg.GetPackage(_P2));
             Assert.NotNull(pkg.GetPackage(_P1));
         }
@@ -379,7 +382,7 @@ namespace MvsSlnTest.Projects
             if(File.Exists(_FILE)) File.Delete(_FILE);
 
             using TempPackagesConfig pkg = new(_FILE, customNew);
-            Assert.Empty(pkg.GetPackages());
+            Assert.Empty(pkg.Packages);
 
             PackageInfo p0 = new("NotReal", "0.1");
             PackageInfo p1 = new("LX4Cnh", "1.0");
@@ -391,40 +394,40 @@ namespace MvsSlnTest.Projects
             Assert.Equal("1.0", pkg.GetPackage(p1.Id).Version);
             Assert.Empty(pkg.GetPackage(p1.Id).Meta);
 
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
 
             Assert.False(pkg.AddPackage(p2));
             Assert.Equal("1.0", pkg.GetPackage(p1.Id).Version);
             Assert.Null(pkg.GetPackage(p1.Id).MetaTFM);
 
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
 
             Assert.False(pkg.AddOrUpdatePackage(p2));
             Assert.Equal("1.1", pkg.GetPackage(p1.Id).Version);
             Assert.Equal("net472", pkg.GetPackage(p1.Id).MetaTFM);
 
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
 
             Assert.True(pkg.AddOrUpdatePackage(p3));
             Assert.Equal("3.0", pkg.GetPackage(p3.Id).Version);
             Assert.Empty(pkg.GetPackage(p3.Id).Meta);
 
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
 
             Assert.True(pkg.UpdatePackage(p4));
             Assert.Equal("3.4", pkg.GetPackage(p3.Id).Version);
             Assert.Equal("net472", pkg.GetPackage(p3.Id).Meta[PackageInfo.ATTR_TFM]);
 
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
 
             Assert.False(pkg.UpdatePackage(p0));
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
 
             Assert.False(pkg.RemovePackage(p0));
-            Assert.Equal(2, pkg.GetPackages().Count());
+            Assert.Equal(2, pkg.Packages.Count());
 
             Assert.True(pkg.RemovePackage(p4));
-            Assert.Single(pkg.GetPackages());
+            Assert.Single(pkg.Packages);
 
             Assert.Null(pkg.GetPackage(p4.Id));
             Assert.NotNull(pkg.GetPackage(p1.Id));

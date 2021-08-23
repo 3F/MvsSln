@@ -24,6 +24,7 @@
 */
 
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -113,5 +114,11 @@ namespace net.r_eg.MvsSln.Core
         /// This value is never null.
         /// </summary>
         IList<ISection> Map { get; }
+
+        /// <summary>
+        /// According to <see cref="SlnItems.PackagesConfig"/> related flags, 
+        /// all found and loaded packages.config.
+        /// </summary>
+        IEnumerable<PackagesConfig> PackagesConfigs { get; }
     }
 }

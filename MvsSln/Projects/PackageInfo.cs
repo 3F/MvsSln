@@ -25,11 +25,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Xml.Linq;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Projects
 {
+    [DebuggerDisplay("{DbgDisplay()}")]
     public sealed class PackageInfo: IPackageInfo
     {
         internal const string ATTR_ID    = "id";
@@ -59,6 +62,34 @@ namespace net.r_eg.MvsSln.Projects
             packagesConfig.RemovePackage(this);
             return packagesConfig;
         }
+
+        public static bool operator ==(PackageInfo a, PackageInfo b) => a.Equals(b);
+
+        public static bool operator !=(PackageInfo a, PackageInfo b) => !(a == b);
+
+        public override bool Equals(object obj)
+        {
+            if(obj is null || obj is not PackageInfo b) return false;
+
+            if(Id != b.Id || Version != b.Version) return false;
+
+            if((Meta is null || Meta.Count < 1) 
+                && (b.Meta is null || b.Meta.Count < 1)) return true;
+
+            if(Meta?.Count != b.Meta?.Count) return false;
+
+            return !Meta.Except(b.Meta).Any();
+        }
+
+        public override int GetHashCode() => 0.CalculateHashCode
+        (
+            Id,
+            Version,
+            packagesConfig,
+            Meta,
+            MetaTFM,
+            MetaOutput
+        );
 
         public PackageInfo(string id, string version, IDictionary<string, string> meta = null)
         {
@@ -96,5 +127,11 @@ namespace net.r_eg.MvsSln.Projects
             Meta[name] = a.Value;
             return true;
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay() => $"{Id} {Version}";
+
+        #endregion
     }
 }

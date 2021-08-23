@@ -26,7 +26,7 @@ namespace MvsSlnTest._svc
         {
             if(!disposed)
             {
-                if(IsNew) File.Delete(file);
+                if(IsNew) System.IO.File.Delete(file);
 
                 disposed = true;
             }

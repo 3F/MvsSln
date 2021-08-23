@@ -40,9 +40,14 @@ namespace net.r_eg.MvsSln.Projects
         bool IsNew { get; }
 
         /// <summary>
-        /// Get all packages from storage.
+        /// Selected file.
         /// </summary>
-        IEnumerable<IPackageInfo> GetPackages();
+        string File { get; }
+
+        /// <summary>
+        /// List all packages from storage.
+        /// </summary>
+        IEnumerable<IPackageInfo> Packages { get; }
 
         /// <summary>
         /// Get specific package by its id.

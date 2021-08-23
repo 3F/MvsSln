@@ -28,9 +28,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using System.Diagnostics;
 
 namespace net.r_eg.MvsSln.Projects
 {
+    [DebuggerDisplay("{DbgDisplay()}")]
     public class PackagesConfig: IPackagesConfig
     {
         internal const string FNAME = "packages.config";
@@ -44,6 +46,11 @@ namespace net.r_eg.MvsSln.Projects
         public bool AutoCommit { get; set; }
 
         public bool IsNew { get; protected set; }
+
+        public string File => file;
+
+        public IEnumerable<IPackageInfo> Packages
+            => root.Elements().Select(l => new PackageInfo(this, l));
 
         public string DefaultTfm { get; set; } = "net40";
 
@@ -115,9 +122,6 @@ namespace net.r_eg.MvsSln.Projects
             return new PackageInfo(this, xe);
         }
 
-        public IEnumerable<IPackageInfo> GetPackages() 
-            => root.Elements().Select(l => new PackageInfo(this, l));
-
         public bool RemovePackage(IPackageInfo package) => RemovePackage(package?.Id);
 
         public bool RemovePackage(string id)
@@ -177,7 +181,7 @@ namespace net.r_eg.MvsSln.Projects
 
         protected XDocument LoadFile(PackagesConfigOptions options)
         {
-            if(!File.Exists(file))
+            if(!System.IO.File.Exists(file))
             {
                 if(!options.HasFlag(PackagesConfigOptions.LoadOrNew))
                 {
@@ -303,5 +307,11 @@ namespace net.r_eg.MvsSln.Projects
             IsNew = true;
             return new(new XElement(ROOT));
         }
+
+        #region DebuggerDisplay
+
+        private string DbgDisplay() => $"{file}  ({nameof(IsNew)}={IsNew}; {nameof(AutoCommit)}={AutoCommit})";
+
+        #endregion
     }
 }

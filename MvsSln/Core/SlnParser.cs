@@ -30,6 +30,7 @@ using System.Linq;
 using System.Text;
 using net.r_eg.MvsSln.Core.SlnHandlers;
 using net.r_eg.MvsSln.Extensions;
+using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -118,7 +119,7 @@ namespace net.r_eg.MvsSln.Core
                 throw new ArgumentNullException(nameof(reader), MsgResource.ValueNoEmptyOrNull);
             }
 
-            string sln = (reader.BaseStream is FileStream) ? ((FileStream)reader.BaseStream).Name : MEM_FILE;
+            string sln = (reader.BaseStream is FileStream stream) ? stream.Name : MEM_FILE;
 
             var data = new SlnResult() {
                 SolutionDir = sln.GetDirectoryFromFile(),
@@ -164,6 +165,8 @@ namespace net.r_eg.MvsSln.Core
                     new ProjectReferences(data.ProjectDependencies, data.Env.Projects);
                 }
             }
+
+            data.PackagesConfigs = PackagesConfigLocator.FindAndLoadConfigs(data, type);
 
             return data;
         }

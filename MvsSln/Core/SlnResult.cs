@@ -25,6 +25,7 @@
 
 using System.Collections.Generic;
 using net.r_eg.MvsSln.Extensions;
+using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -169,11 +170,9 @@ namespace net.r_eg.MvsSln.Core
         /// Contains map of all found (known/unknown) solution data.
         /// This value is never null.
         /// </summary>
-        public IList<ISection> Map
-        {
-            get;
-            private set;
-        } = new List<ISection>();
+        public IList<ISection> Map { get; private set; } = new List<ISection>();
+
+        public IEnumerable<PackagesConfig> PackagesConfigs { get; set; }
 
         /// <summary>
         /// Solution configurations with platforms.

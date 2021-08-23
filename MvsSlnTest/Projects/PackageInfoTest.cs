@@ -47,5 +47,34 @@ namespace MvsSlnTest.Projects
 
             Assert.Throws<InvalidOperationException>(() => pkg.Remove());
         }
+
+        [Fact]
+        public void EqTest1()
+        {
+            PackageInfo pkg = new("LX4Cnh", "1.1.0");
+            
+            Assert.NotEqual(new PackageInfo("LX4Cnh", "1.0.0"), pkg);
+            Assert.NotEqual(new PackageInfo("lx4cnh", "1.1.0"), pkg);
+            Assert.Equal(new PackageInfo("LX4Cnh", "1.1.0"), pkg);
+        }
+
+        [Fact]
+        public void EqTest2()
+        {
+            string id = "LX4Cnh";
+            string version = "1.1.0";
+            PackageInfo pkg = new(id, version, new Dictionary<string, string>(){ { "m1", "v1" }, { "m2", "v2" } });
+
+            Assert.NotEqual(new PackageInfo(id, "1.0.0"), pkg);
+            Assert.NotEqual(new PackageInfo(id, version), pkg);
+
+            Assert.NotEqual(new PackageInfo(id, version, new Dictionary<string, string>() { { "m1", "v1" } }), pkg);
+
+            Assert.Equal(new PackageInfo(id, version, new Dictionary<string, string>() { { "m1", "v1" }, { "m2", "v2" } }), pkg);
+            Assert.Equal(new PackageInfo(id, version, new Dictionary<string, string>() { { "m2", "v2" }, { "m1", "v1" } }), pkg);
+
+            Assert.NotEqual(new PackageInfo(id, version, new Dictionary<string, string>() { { "m1", "v2" }, { "m2", "v1" } }), pkg);
+            Assert.NotEqual(new PackageInfo(id, version, new Dictionary<string, string>() { { "m1", "v1" }, { "m2", "v2" }, { "m3", "v3" } }), pkg);
+        }
     }
 }
