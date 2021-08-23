@@ -6,19 +6,25 @@ Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj
 Copyright (c) 2013-2021  Denis Kuzmin <x-3F@outlook.com> github/3F
 ```
 
-[ [ <sub>@</sub> ☕ ] ](https://3F.github.io/Donation/)
+[ [ <sub>@</sub> ☕ ] ](https://3F.github.io/Donation/) [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
 
 MvsSln contributors https://github.com/3F/MvsSln/graphs/contributors
 
 We're waiting for your awesome contributions!
 
-[![Build status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master)
-[![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest)
-[![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
-[![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests)
-[![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
+<table><tr><td>
+
+| GitHub Releases | Windows | Linux
+|-----------------|---------|--------
+| [![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest) | [![status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master) | [![status](https://ci.appveyor.com/api/projects/status/vdt3taxswrxo37tt/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/branch/master) 
+|    | [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
+|    | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests) 
+
+</td><td>
 
 [![Build history](https://buildstats.info/appveyor/chart/3Fs/mvssln-fxjnf?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history)
+
+</td></tr></table>
 
 ## Why MvsSln ?
 
@@ -287,7 +293,7 @@ DBG_SDK10; DBG_SDK15; DCI_SDK10; DCI_SDK15; REL_SDK10; REL_SDK15; RCI_SDK10; RCI
 
 Maximum **possible** configurations for each projects above should be calculated as 10 * 8 = 80, ie. 80 instances that *can be* loaded as each different project. `EnvWithProjects` will try load all available, but in fact, mostly 2 or more project-configuration can be related to the same 1 solution-configuration, therefore it can be just 30 or even 20 in reality, and so on.
 
-However, **if you need** to work only with common data of specified project:
+However, if you need to work only with common data of specified project:
 * Just use any available configuration. That is, to load projects only with specific configuration, use for example `IEnvironment.LoadProjects`.
 
 ```csharp

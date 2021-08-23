@@ -2,6 +2,42 @@
 MvsSln - https://github.com/3F/MvsSln
 - - - - - - - - - - - - - - - - - - - 
 
+[v2.6] 2021.08.23
+
+    * FIXED: Fixed CalculateHashCode() Extension.
+             Internally affects many objects due to broken GetHashCode().
+             
+    * FIXED: Fixed SlnItems.ProjectDependenciesXml when empty input:
+             Report https://github.com/3F/MvsSln/issues/25#issuecomment-743840401
+
+    * NEW: packages.config support PR #30. Related issues #27, #28.
+           To activate it, use the following flags:
+            * PackagesConfig, PackagesConfigSolution, PackagesConfigLegacy.
+            
+            For example,
+            ```
+            using Sln l = new("Input.sln", SlnItems.AllNoLoad | SlnItems.PackagesConfig);
+
+            IPackageInfo found = l.Result.PackagesConfigs
+                                            .SelectMany(s => s.Packages)
+                                            .FirstOrDefault(p => p.Id.StartsWith("Microsoft."));
+            // found.MetaTFM ...
+
+            Version v = l.Result.PackagesConfigs.First().GetPackage("LX4Cnh")?.VersionParsed;
+            ```
+              Including GetNuTool compatible packages, format:
+              https://github.com/3F/GetNuTool#format-of-packages-list      
+      
+    * NEW: Added HasValue and HasNothing properties in PropertyItem.
+      
+    * NEW: Added SlnItems.AllMinimal and SlnItems.AllNoLoad in addition to SlnItems.All.
+    
+    * NEW: Added IXProject.GetPackageReferences().
+      
+    * CHANGED: ConfigItem.Format() marked as obsolete.
+               Use `ToString()` and `IConfPlatform.Formatted` instead.
+    
+
 [v2.5.3] 2020.07.23
 
     * FIXED: Fixed XProjectEnv. Issue #29
