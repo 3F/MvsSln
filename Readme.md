@@ -6,7 +6,7 @@ Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj
 Copyright (c) 2013-2021  Denis Kuzmin <x-3F@outlook.com> github/3F
 ```
 
-[ [ <sub>@</sub> ☕ ] ](https://3F.github.io/Donation/) [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
+[ 「 <sub>@</sub> ☕ 」 ](https://3F.github.io/Donation/) [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
 
 MvsSln contributors https://github.com/3F/MvsSln/graphs/contributors
 
@@ -14,11 +14,10 @@ We're waiting for your awesome contributions!
 
 <table><tr><td>
 
-| GitHub Releases | Windows | Linux
-|-----------------|---------|--------
-| [![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest) | [![status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master) | [![status](https://ci.appveyor.com/api/projects/status/vdt3taxswrxo37tt/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/branch/master) 
-|    | [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
-|    | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests) 
+| Releases    | Windows | Linux
+|-------------|---------|--------
+| [📦 ![NuGet](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/) | [![status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master) | [![status](https://ci.appveyor.com/api/projects/status/vdt3taxswrxo37tt/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/branch/master) 
+| [![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests) 
 
 </td><td>
 

@@ -1,5 +1,10 @@
 ﻿<Project>
 
+  <!-- Let's help to override something when it used as a submodule.
+       Or build with /p:OverrideMvsSlnTFM=... etc -->
+  <Import Project="..\redefine.props" Condition="Exists('..\redefine.props')" />
+  <Import Project="..\..\redefine.props" Condition="Exists('..\..\redefine.props')" />
+
   <PropertyGroup>
     <RootOutDir>bin\prj\</RootOutDir>
     <RootObjDir>bin\obj\</RootObjDir>
@@ -8,15 +13,18 @@
     <OsUnixLike Condition="$([MSBuild]::IsOsUnixLike())">true</OsUnixLike>
 
     <NetStdTFM>netstandard2.0</NetStdTFM>
-    <NetStdTFM Condition="$(SuppressNetStdTFM) == 'true'"></NetStdTFM>
+    <NetStdTFM Condition="'$(SuppressNetStdTFM)' == 'true'"></NetStdTFM>
 
-    <NetCoreTFM>netcoreapp2.1;net5</NetCoreTFM>
+    <!-- .NET Core Support Policy: https://dotnet.microsoft.com/platform/support/policy/dotnet-core -->
+    <NetCoreTFM>netcoreapp3.1;net6</NetCoreTFM>
 
     <MvsSlnTFM>net40;net472;$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
-    <MvsSlnTFM Condition="$(OsUnixLike) == 'true'">$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
+    <MvsSlnTFM Condition="'$(OsUnixLike)'=='true'">$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
+    <MvsSlnTFM Condition="'$(OverrideMvsSlnTFM)'!=''">$(OverrideMvsSlnTFM)</MvsSlnTFM>
 
     <MvsSlnTestTFM>net472;$(NetCoreTFM)</MvsSlnTestTFM>
-    <MvsSlnTestTFM Condition="$(OsUnixLike)=='true'">$(NetCoreTFM)</MvsSlnTestTFM>
+    <MvsSlnTestTFM Condition="'$(OsUnixLike)'=='true'">$(NetCoreTFM)</MvsSlnTestTFM>
+    <MvsSlnTestTFM Condition="'$(OverrideMvsSlnTestTFM)'!=''">$(OverrideMvsSlnTestTFM)</MvsSlnTestTFM>
 
   </PropertyGroup>
 
@@ -50,9 +58,9 @@
 
   <ItemGroup>
     <!-- Microsoft.Build -->
-    <PackageReference Version="16.11.0" Condition=" 'net5' == '$(TargetFramework)' " Include="Microsoft.Build" />
-    <PackageReference Version="16.5.0" Condition=" 'netcoreapp2.1' == '$(TargetFramework)' " Include="Microsoft.Build" />
-    <PackageReference Version="15.9.20" Condition=" 'netstandard2.0' == '$(TargetFramework)' " Include="Microsoft.Build" />
+    <PackageReference Version="15.9.20" Condition="'netstandard2.0'=='$(TargetFramework)'" Include="Microsoft.Build" />
+    <PackageReference Version="16.9.0" Condition="'netcoreapp3.1'=='$(TargetFramework)'" Include="Microsoft.Build" />
+    <PackageReference Version="17.0.0" Condition="'net6'=='$(TargetFramework)'" Include="Microsoft.Build" />
 
     <!-- https://github.com/3F/MvsSln/wiki/Advanced-Features#how-to-use-modern-versions-of-msbuild-for-netfx -->
     <!-- <PackageReference Version="16.3.0" Condition=" 'net472' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
