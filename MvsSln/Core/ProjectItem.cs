@@ -229,9 +229,7 @@ namespace net.r_eg.MvsSln.Core
 
         private void SetFullPath(string slnDir)
         {
-            if(path == null) {
-                return;
-            }
+            if(string.IsNullOrWhiteSpace(path)) return;
 
             if(Path.IsPathRooted(path)) {
                 fullPath = path;

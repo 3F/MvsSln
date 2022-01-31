@@ -209,6 +209,18 @@ namespace MvsSlnTest.Core
             );
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData("  ")]
+        [InlineData(null)]
+        public void CtorTest4(string name)
+        {
+            ProjectItem p = new(name, ProjectType.Cs);
+
+            Assert.Null(p.fullPath);
+            Assert.Equal(p.path, p.name);
+        }
+
         [Fact]
         public void EqTest1()
         {
