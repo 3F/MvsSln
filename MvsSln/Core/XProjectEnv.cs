@@ -213,9 +213,10 @@ namespace net.r_eg.MvsSln.Core
                 throw new ArgumentException($"Properties does not contain {PropertyNames.CONFIG} or {PropertyNames.PLATFORM} key.");
             }
 
+            ConfigItem conf = new(properties[PropertyNames.CONFIG], properties[PropertyNames.PLATFORM]);
             foreach(var eProject in ValidProjects)
             {
-                if(IsEqual(eProject, pItem, properties[PropertyNames.CONFIG], properties[PropertyNames.PLATFORM])) {
+                if(IsEqual(eProject, pItem, conf)) {
                     //LSender.Send(this, $"Found project from collection {pItem.pGuid}: {propCfg} == {eCfg}", Message.Level.Trace);
                     return eProject;
                 }
@@ -354,18 +355,14 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public ProjectItemCfg ExtractItemCfg(Project project)
         {
-            if(project == null) {
-                throw new ArgumentNullException(nameof(project));
-            }
+            if(project == null) throw new ArgumentNullException(nameof(project));
 
             foreach(ProjectItemCfg cfg in Sln.ProjectItemsConfigs)
             {
-                if(IsEqual(project, cfg.project, project.GetConfig(), project.GetPlatform())) {
-                    return cfg;
-                }
+                if(IsEqual(project, cfg.project, cfg.projectConfig)) return cfg;
             }
 
-            var pItem = new ProjectItem
+            ProjectItem pItem = new
             (
                 project.GetProjectGuid(), 
                 project.GetProjectName(), 
@@ -375,7 +372,7 @@ namespace net.r_eg.MvsSln.Core
 
             ConfigSln slnCfg = null; // Sln.SolutionConfigs?.FirstOrDefault() ?? Sln.DefaultConfig;
 
-            var prjCfg = new ConfigPrj
+            ConfigPrj prjCfg = new
             (
                 project.GetConfig(), 
                 project.GetPlatform(),
@@ -384,7 +381,7 @@ namespace net.r_eg.MvsSln.Core
                 slnCfg
             );
 
-            return new ProjectItemCfg(pItem, slnCfg, prjCfg);
+            return new(pItem, slnCfg, prjCfg);
         }
 
         /// <summary>
@@ -516,8 +513,10 @@ namespace net.r_eg.MvsSln.Core
             return pItems.GroupBy(p => new{ p.project.pGuid, p.projectConfig }).Select(g => g.First());
         }
 
-        protected bool IsEqual(Project prj, ProjectItem pItem, string config, string platform)
+        protected bool IsEqual(Project prj, ProjectItem pItem, IConfPlatform conf)
         {
+            if(prj == null || conf == null) return false;
+
             // TODO: https://github.com/3F/vsSolutionBuildEvent/issues/40
             //       https://github.com/3F/DllExport/issues/36#issuecomment-320794498
 
@@ -525,12 +524,9 @@ namespace net.r_eg.MvsSln.Core
             //    continue;
             //}
 
-            if(prj.FullPath != pItem.fullPath) {
-                return false;
-            }
+            if(prj.FullPath != pItem.fullPath) return false;
 
-            return prj.GetConfig() == config
-                && prj.GetPlatform() == platform;
+            return conf.IsEqualByRule(prj.GetConfig(), prj.GetPlatform());
         }
 
         protected IXProject XProjectByFile(string file, IConfPlatform cfg, bool tryLoad, IDictionary<string, string> props)
