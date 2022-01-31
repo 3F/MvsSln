@@ -1,5 +1,6 @@
-MvsSln  [ https://github.com/3F/MvsSln ]
-- - - - - - - - - - - - - - - - - - - - -
+- - - - - - - - - - - - - - - - - - - 
+MvsSln - https://github.com/3F/MvsSln
+- - - - - - - - - - - - - - - - - - - 
 
 # Third-party software components
 
@@ -30,4 +31,6 @@ MvsSln  [ https://github.com/3F/MvsSln ]
         
     * GetNuTool
         https://github.com/3F/GetNuTool
-
+        
+    * netfx4sdk
+        https://github.com/3F/netfx4sdk

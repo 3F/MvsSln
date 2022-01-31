@@ -2,6 +2,20 @@
 MvsSln - https://github.com/3F/MvsSln
 - - - - - - - - - - - - - - - - - - - 
 
+[v2.6.1] 2022.02.01
+
+    * FIXED: Incorrect project instances for the active solution configuration in XProject Environment.
+             Related issue: https://github.com/3F/vsSolutionBuildEvent/issues/71
+    
+    * FIXED: Fixed possible 'The path is not of a legal form.' when instantiating ProjectItem.
+    
+    * NEW: Added .IsVc() extension method for ProjectItem objects.
+    
+    * CHANGED: Updated logic for .IsSdk() extension method.
+               Now it will use information from ProjectType when null or empty ProjectItem.fullPath.
+               Otherwise, same logic from v2.5.3 described here: https://github.com/3F/MvsSln/blob/0ec96021b7/MvsSln/Extensions/ProjectItemExtension.cs#L59-L77
+               
+
 [v2.6] 2021.08.23
 
     * FIXED: Fixed CalculateHashCode() Extension.
