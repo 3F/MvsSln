@@ -30,18 +30,30 @@ namespace net.r_eg.MvsSln.Extensions
         public static bool IsVb(this ProjectItem prj) => prj.EpType == ProjectType.Vb || prj.EpType == ProjectType.VbSdk;
 
         /// <summary>
+        /// Is it C++ ? Checking <see cref="ProjectType.Vc"/> type.
+        /// </summary>
+        public static bool IsVc(this ProjectItem prj) => prj.EpType == ProjectType.Vc;
+
+        /// <summary>
         /// While <see cref="ProjectType"/> cannot inform the actual use of the modern Sdk style in projects,
         /// current method will try to detect this by using the extended logic:
         /// https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
         /// </summary>
-        /// <returns>Returns false if this is a legacy style or if <see cref="ProjectItem.fullPath"/> is null or empty or path is not accessible. Otherwise true.</returns>
+        /// <returns>Returns false if this is a legacy style or if <see cref="ProjectItem.fullPath"/> is not accessible. Otherwise true.</returns>
+        /// <remarks>For null or empty <see cref="ProjectItem.fullPath"/> it will only use information from <see cref="ProjectType"/>.</remarks>
         /// <exception cref="System.Xml.XmlException">Requires valid XML data.</exception>
         public static bool IsSdk(this ProjectItem prj)
         {
-            if(string.IsNullOrWhiteSpace(prj.fullPath) || !File.Exists(prj.fullPath))
+            if(string.IsNullOrEmpty(prj.fullPath))
             {
-                return false;
+                return prj.EpType switch
+                {
+                    ProjectType.CsSdk or ProjectType.FsSdk or ProjectType.VbSdk => true,
+                    _ => false
+                };
             }
+
+            if(!File.Exists(prj.fullPath)) return false;
 
             /*
              Sdk-style, if:
