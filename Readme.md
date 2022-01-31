@@ -3,7 +3,7 @@
 Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more … 🧩
 
 ```r
-Copyright (c) 2013-2021  Denis Kuzmin <x-3F@outlook.com> github/3F
+Copyright (c) 2013-2022  Denis Kuzmin <x-3F@outlook.com> github/3F
 ```
 
 [ 「 <sub>@</sub> ☕ 」 ](https://3F.github.io/Donation/) [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
