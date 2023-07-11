@@ -41,7 +41,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
                 sb.AppendLine($"MinimumVisualStudioVersion = {header.MinimumVisualStudioVersion.ToString()}");
             }
 
-            return sb.ToString(0, sb.Length - 2);
+            return sb.ToString(0, sb.Length - Environment.NewLine.Length);
         }
 
         public WVisualStudioVersion(SlnHeader header)
