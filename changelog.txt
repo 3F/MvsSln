@@ -2,6 +2,12 @@
 MvsSln - https://github.com/3F/MvsSln
 - - - - - - - - - - - - - - - - - - - 
 
+[v2.6.2] 2023.07.12
+
+    * FIXED: Fix issue with string builder removing too much raw sln data on Unix platforms.
+             Related issue: https://github.com/3F/MvsSln/issues/57
+             Related PR: https://github.com/3F/MvsSln/pull/58
+
 [v2.6.1] 2022.02.01
 
     * FIXED: Incorrect project instances for the active solution configuration in XProject Environment.

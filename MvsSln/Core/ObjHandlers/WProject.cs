@@ -54,7 +54,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
             }
 
             if(sb.Length > 1) {
-                return sb.ToString(0, sb.Length - 2);
+                return sb.ToString(0, sb.Length - Environment.NewLine.Length);
             }
             return String.Empty;
         }
