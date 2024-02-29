@@ -305,6 +305,7 @@ namespace net.r_eg.MvsSln.Core
             }
 
             if(!isAct) {
+                tt?.Action(TransactAction.Rollback);
                 return false;
             }
 

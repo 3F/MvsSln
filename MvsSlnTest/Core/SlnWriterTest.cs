@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MvsSlnTest._svc;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Core.ObjHandlers;
@@ -13,7 +14,7 @@ namespace MvsSlnTest.Core
 {
     public class SlnWriterTest
     {
-        private SlnItems defaultSlnItems = SlnItems.Projects
+        private readonly SlnItems defaultSlnItems = SlnItems.Projects
                                             | SlnItems.SolutionConfPlatforms
                                             | SlnItems.ProjectConfPlatforms
                                             | SlnItems.ProjectDependencies
@@ -75,6 +76,22 @@ namespace MvsSlnTest.Core
                     Assert.Equal(expectedCount, sln.Result.Map.Count);
                 }
             }
+        }
+
+        [Theory]
+        [InlineData(SlnItems.AllNoLoad)]
+        [InlineData(SlnItems.AllNoLoad & ~SlnItems.Header)]
+        [InlineData(SlnItems.AllNoLoad & ~SlnItems.SolutionItems)]
+        [InlineData(SlnItems.AllNoLoad & ~(SlnItems.SolutionItems | SlnItems.ExtItems))]
+        public void L102Test1(SlnItems conf)
+        {
+            using Sln sln = new(TestData.PathTo(@"SlnWriter\L-102\src.sln"), conf);
+
+            RwChecker.Check(sln, []);
+            RwChecker.Check(sln, new()
+            {
+                [typeof(LProject)] = new HandlerValue(new WProject(sln.Result.ProjectItems, sln.Result.ProjectDependencies)),
+            });
         }
     }
 }

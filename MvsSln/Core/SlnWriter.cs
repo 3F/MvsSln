@@ -139,26 +139,29 @@ namespace net.r_eg.MvsSln.Core
             var ret     = new List<ISection>();
             var hTypes  = new HashSet<Type>();
 
-            foreach(var part in sections.Where(s => !s.Ignore))
+            void _HashType(Type root, Type item)
             {
-                if(part.Handler == null) {
+                if(Handlers.ContainsKey(root)) hTypes.Add(item);
+            }
+
+            foreach(ISection part in sections.Where(s => !s.Ignore))
+            {
+                if(part.Handler == null)
+                {
                     ret.Add(part);
                     continue;
                 }
 
-                if(part.Handler is ISlnHandler sh) {
-                    sh.CoHandlers?.ForEach(h => hTypes.Add(h));
+                Type root = part.Handler.GetType();
+
+                if(part.Handler is ISlnHandler sh)
+                {
+                    sh.CoHandlers?.ForEach(h => _HashType(root, h));
                 }
 
-                var type = part.Handler.GetType();
+                if(hTypes.Contains(root)) continue;
+                _HashType(root, root);
 
-                if(hTypes.Contains(type)) {
-                    continue;
-                }
-
-                if(Handlers.ContainsKey(type)) {
-                    hTypes.Add(type);
-                }
                 ret.Add(part);
             }
 

@@ -46,7 +46,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                     handlers.Select(r => r.GetType())
                 );
 
-                has[h.Id] = registered.Count() > 0;
+                has[h.Id] = registered.Any();
 
                 var _this = this;
                 registered.ForEach(t => _this.set.Add(t));
