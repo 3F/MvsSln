@@ -59,7 +59,7 @@
           "",
           "#[( !(#[IO exists.file(\"packages/__checked\")]) )",
           "{",
-          "    #[File call(\"tools\\hmsbuild.bat\", \"-t:restore /v:q /nologo /p:Configuration=$(Configuration) /p:Platform=\\\"Any CPU\\\"\", 1000)]",
+          "    #[File call(\".tools\\hmsbuild.bat\", \"~c $(Configuration) -t:restore /v:q /nologo\", 300)]",
           "        ",
           "    ",
           "    #[IO copy.directory(\"\", \"packages/\", true)]",
@@ -234,7 +234,7 @@
         "Type": "Script",
         "Command__": [
           "#[IO copy.file(",
-          "            \"$(SolutionDir)tools/*.*\", ",
+          "            \"$(SolutionDir).tools/*.*\", ",
           "            \"$(odir)/tools/\", ",
           "            true, ",
           "            {\"*.nuspec\", \"*.config\"})]",

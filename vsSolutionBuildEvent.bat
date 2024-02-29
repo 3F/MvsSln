@@ -1,0 +1,1 @@
+@echo off & build # & packages\vsSolutionBuildEvent\GUI

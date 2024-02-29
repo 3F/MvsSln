@@ -1,7 +1,7 @@
 @echo off
 
 setlocal
-    cd tools
+    cd .tools
     call netfx4sdk -mode sys
 endlocal
 

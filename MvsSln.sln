@@ -21,11 +21,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{297F83DE-F
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{600BF727-4AAF-4BC9-B5D8-4F06DB2E9CF6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{600BF727-4AAF-4BC9-B5D8-4F06DB2E9CF6}"
 	ProjectSection(SolutionItems) = preProject
-		tools\gnt.bat = tools\gnt.bat
-		tools\hMSBuild.bat = tools\hMSBuild.bat
-		tools\MvsSln.nuspec = tools\MvsSln.nuspec
+		.tools\gnt.bat = .tools\gnt.bat
+		.tools\hMSBuild.bat = .tools\hMSBuild.bat
+		.tools\MvsSln.nuspec = .tools\MvsSln.nuspec
 	EndProjectSection
 EndProject
 Global
