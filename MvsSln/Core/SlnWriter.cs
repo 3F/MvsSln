@@ -249,8 +249,8 @@ namespace net.r_eg.MvsSln.Core
 
         protected IEnumerable<ISection> WritableSections(IEnumerable<ISection> sections)
         {
-            var ret     = new List<ISection>();
-            var hTypes  = new HashSet<Type>();
+            List<ISection> ret      = [];
+            HashSet<Type> hTypes    = [];
 
             void _HashType(Type root, Type item)
             {
@@ -275,7 +275,10 @@ namespace net.r_eg.MvsSln.Core
                 if(hTypes.Contains(root)) continue;
                 _HashType(root, root);
 
-                ret.Add(part);
+                if(!Handlers.ContainsKey(root) || Handlers[root].handler != null)
+                {
+                    ret.Add(part);
+                }
             }
 
             return ret;
