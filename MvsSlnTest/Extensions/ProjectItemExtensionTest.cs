@@ -6,6 +6,7 @@ namespace MvsSlnTest.Extensions
 {
     public class ProjectItemExtensionTest
     {
+#if !NET40
         [Theory]
         [InlineData(true, ProjectType.CsSdk)]
         [InlineData(true, ProjectType.FsSdk)]
@@ -55,6 +56,7 @@ namespace MvsSlnTest.Extensions
             Assert.False(prj.IsFs());
             Assert.True(prj.IsVb());
         }
+#endif
 
         [Fact]
         public void CheckProjectTypeVcTest()

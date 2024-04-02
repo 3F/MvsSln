@@ -6,6 +6,7 @@ namespace MvsSlnTest.Core
 {
     public class SlnHeaderTest
     {
+#if !NET40
         [Theory]
         [InlineData("12.00", "17.0.31912.275", "17")]
         [InlineData("11.00", "17.0.31912.275")]
@@ -66,6 +67,7 @@ namespace MvsSlnTest.Core
 
             Assert.Throws<ArgumentNullException>(() => new SlnHeader(formatVersion: null));
         }
+#endif
 
         [Fact]
         public void MakeDefaultTest1()

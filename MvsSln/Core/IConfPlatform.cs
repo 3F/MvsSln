@@ -66,5 +66,13 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="icase">Case insensitive flag.</param>
         /// <returns></returns>
         bool IsEqualByRule(string config, string platform, bool icase = false);
+
+        /// <summary>
+        /// Checks <see cref="IConfPlatform"/> object equality using pair of (configuration + platform)
+        /// according to logic from specific implementation.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns>True if paired (configuration + platform) are equal between current object.</returns>
+        bool IsEqualPair(IConfPlatform obj);
     }
 }

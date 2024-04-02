@@ -49,6 +49,16 @@ namespace net.r_eg.MvsSln.Core
                 && string.Equals(PlatformByRule, Rule?.Platform(platform), cmp);
         }
 
+        public bool IsEqualPair(IConfPlatform obj)
+        {
+            if(obj == null) return false;
+
+            // NOTE: {SensitivityComparing} will control an `Sensitivity` logic, 
+            //       thus we need only `...ByRuleICase` properties:
+            return ConfigurationByRuleICase == obj.ConfigurationByRuleICase 
+                    && PlatformByRuleICase == obj.PlatformByRuleICase;
+        }
+
         public static bool operator ==(ConfigItem a, ConfigItem b)
         {
             return a is null ? b is null : a.Equals(b);
@@ -59,11 +69,7 @@ namespace net.r_eg.MvsSln.Core
         public override bool Equals(object obj)
         {
             if(obj is null || obj is not ConfigItem b) return false;
-
-            // NOTE: {SensitivityComparing} will control an `Sensitivity` logic, 
-            //       thus we need only `...ByRuleICase` properties:
-            return ConfigurationByRuleICase == b.ConfigurationByRuleICase 
-                    && PlatformByRuleICase == b.PlatformByRuleICase;
+            return IsEqualPair(b);
         }
 
         public override int GetHashCode() => 0.CalculateHashCode

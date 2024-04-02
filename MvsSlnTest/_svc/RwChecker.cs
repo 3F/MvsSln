@@ -4,7 +4,6 @@ using System.IO;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Core.ObjHandlers;
-using Xunit.Sdk;
 
 namespace MvsSlnTest._svc
 {
@@ -24,7 +23,7 @@ namespace MvsSlnTest._svc
         public RwChecker Check() => Check
         (
             (l1, l2, i) =>
-            throw new EqualException($"{i}: {l1}", $"{i}: {l2}")
+            throw new InvalidDataException($"{i}: {l1} == {l2}")
         );
 
         public RwChecker Check(CbLine ifNotEq)

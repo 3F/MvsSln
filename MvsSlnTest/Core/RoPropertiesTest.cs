@@ -6,6 +6,7 @@ namespace MvsSlnTest.Core
 {
     public class RoPropertiesTest
     {
+#if !NET40
         [Theory]
         [MemberData(nameof(GetDictData))]
         public void EqualsTest1(Dictionary<int, string> input, bool eq = false)
@@ -26,6 +27,7 @@ namespace MvsSlnTest.Core
                 Assert.True(a != b);
             }
         }
+#endif
 
         public static IEnumerable<object[]> GetDictData()
         {

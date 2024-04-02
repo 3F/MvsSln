@@ -20,6 +20,7 @@ namespace MvsSlnTest
                                                             SlnItems.PackagesConfigSolution };
         }
 
+#if !NET40
         [Theory]
         [MemberData(nameof(GetAnSlnItemsAll))]
         public void AllItemsTest2(SlnItems input, params SlnItems[] ignoring)
@@ -46,6 +47,7 @@ namespace MvsSlnTest
                 }
             }
         }
+#endif
 
         [Fact]
         public void ItemsTest1()

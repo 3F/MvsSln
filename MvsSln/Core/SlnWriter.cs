@@ -19,6 +19,8 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core
 {
+    using static net.r_eg.MvsSln.Static.Members;
+
     public class SlnWriter: IDisposable
     {
         private static readonly SemaphoreSlim semsync = new(initialCount: 1, maxCount: 1);
@@ -56,6 +58,53 @@ namespace net.r_eg.MvsSln.Core
                 await FlushAndReset().WriteNoLockAsync(sections);
                 return await GetReaderForString().ReadToEndAsync();
             });
+        }
+
+#else
+
+        /// <inheritdoc cref="Write(IEnumerable{ISection})"/>
+        /// <remarks>netfx4.0 legacy TAP implementation.</remarks>
+        public Task WriteAsync(IEnumerable<ISection> sections)
+        {
+            sections = ValidateAndGetWritable(sections);
+
+            semsync.Wait();
+            try
+            {
+                return WriteValidatedNoLockAsync(sections);
+            }
+            finally
+            {
+                semsync.Release();
+            }
+        }
+
+        /// <inheritdoc cref="Write(ISection)"/>
+        /// <remarks>netfx4.0 legacy TAP implementation.</remarks>
+        public Task WriteAsync(ISection section)
+        {
+            string raw = PrepareSection(section);
+            return (raw != null) ? WriteAsync(raw) : GetTaskFromResult(false);
+        }
+
+        /// <inheritdoc cref="WriteAsString(IEnumerable{ISection})"/>
+        /// <remarks>netfx4.0 legacy TAP implementation.</remarks>
+        public Task<string> WriteAsStringAsync(IEnumerable<ISection> sections)
+        {
+            CheckStreamForString();
+
+            semsync.Wait();
+            try
+            {
+                return FlushAndReset()
+                        .WriteNoLockAsync(sections)
+                        .ContinueWith(t => FlushAndReset().ReadToEndAsync(stream.BaseStream))
+                        .ContinueWith(t => t.Result.Result);
+            }
+            finally
+            {
+                semsync.Release();
+            }
         }
 
 #endif
@@ -177,7 +226,15 @@ namespace net.r_eg.MvsSln.Core
             await ValidateAndGetWritable(sections).ForEach(WriteAsync);
         }
 
+#else
+
+        protected Task WriteNoLockAsync(IEnumerable<ISection> sections)
+        {
+            return WriteValidatedNoLockAsync(ValidateAndGetWritable(sections));
+        }
+
 #endif
+
         protected void WriteNoLock(IEnumerable<ISection> sections)
         {
             ValidateAndGetWritable(sections).ForEach(Write);
@@ -305,6 +362,51 @@ namespace net.r_eg.MvsSln.Core
             await stream.WriteLineAsync(raw);
         }
 
+#else
+
+        protected Task<T> SyncAsync<T>(Func<Task<T>> act)
+        {
+            semsync.Wait();
+            try
+            {
+                return act();
+            }
+            finally
+            {
+                semsync.Release();
+            }
+        }
+
+        protected virtual Task WriteAsync(string raw)
+        {
+            if(stream == null) throw new NotSupportedException(MsgR._0_IsEmptyOrNull.Format(nameof(stream)));
+
+            byte[] data = stream.Encoding.GetBytes(raw + stream.NewLine);
+            return Task.Factory.FromAsync
+            (
+                (callback, state) => stream.BaseStream.BeginWrite(data, 0, data.Length, callback, state),
+                stream.BaseStream.EndWrite,
+                state: null
+            );
+        }
+
+        protected virtual Task<string> ReadToEndAsync(Stream stream)
+        {
+            if(stream == null) throw new NotSupportedException(MsgR._0_IsEmptyOrNull.Format(nameof(stream)));
+            if(stream.Length > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(stream), stream.Length, string.Empty);
+
+            if(stream.Length < 1) return GetTaskFromResult<string>(null);
+            byte[] data = new byte[stream.Length];
+
+            return Task.Factory.FromAsync
+            (
+                (callback, state) => stream.BeginRead(data, 0, (int)stream.Length, callback, state),
+                stream.EndRead,
+                state: null
+            )
+            .ContinueWith(t => this.stream.Encoding.GetString(data));
+        }
+
 #endif
 
         protected virtual void Write(string raw)
@@ -325,6 +427,18 @@ namespace net.r_eg.MvsSln.Core
                 semsync.Release();
             }
         }
+
+#if NET40
+
+        private Task WriteValidatedNoLockAsync(IEnumerable<ISection> sections)
+        {
+            Task last = null;
+            foreach(ISection s in sections) last = WriteAsync(s);
+
+            return last ?? GetTaskFromResult(false);
+        }
+
+#endif
 
         private SlnWriter FlushAndReset()
         {

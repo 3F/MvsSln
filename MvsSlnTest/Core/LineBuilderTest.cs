@@ -6,6 +6,7 @@ namespace MvsSlnTest.Core
 {
     public class LineBuilderTest
     {
+#if !NET40
         [Theory]
         [InlineData("\r\n", "\t")]
         [InlineData("\n", "\t")]
@@ -92,6 +93,7 @@ namespace MvsSlnTest.Core
 
             Assert.Throws<ArgumentNullException>(() => lb = new(nl, tab: null));
         }
+#endif
 
         [Fact]
         public void ContainsLastTest1()

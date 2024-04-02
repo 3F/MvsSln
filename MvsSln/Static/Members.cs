@@ -7,6 +7,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace net.r_eg.MvsSln.Static
 {
@@ -27,9 +28,16 @@ namespace net.r_eg.MvsSln.Static
 
         public static T[] EmptyArray<T>() => _EmptyArray<T>.value;
 
+        internal static Task<T> GetTaskFromResult<T>(T input)
+        {
+            TaskCompletionSource<T> tcs = new();
+            tcs.SetResult(input);
+            return tcs.Task;
+        }
+
         private static class _EmptyArray<T>
         {
-            public static readonly T[] value = new T[0];
+            public static readonly T[] value = [];
         }
 
 #else

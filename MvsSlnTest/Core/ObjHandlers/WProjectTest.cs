@@ -16,7 +16,11 @@ namespace MvsSlnTest.Core.ObjHandlers
             Assert.Equal(SlnSamplesResource.Section_Project_Dep, target);
 
             string firstLine = target.Substring(0, target.IndexOfAny(new[] { '\r', '\n' }));
+#if !NET40
             Assert.Matches(RPatterns.ProjectLine, firstLine);
+#else
+            Assert.True(RPatterns.ProjectLine.IsMatch(firstLine));
+#endif
         }
 
         private class _WProjectTestData: ISlnProjectDependencies

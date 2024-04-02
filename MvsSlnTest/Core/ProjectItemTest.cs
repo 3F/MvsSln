@@ -212,6 +212,7 @@ namespace MvsSlnTest.Core
             );
         }
 
+#if !NET40
         [Theory]
         [InlineData("")]
         [InlineData("  ")]
@@ -223,6 +224,7 @@ namespace MvsSlnTest.Core
             Assert.Null(p.fullPath);
             Assert.Equal(p.path, p.name);
         }
+#endif
 
         [Fact]
         public void EqTest1()

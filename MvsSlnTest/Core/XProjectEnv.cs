@@ -34,6 +34,7 @@ namespace MvsSlnTest.Core
             }
         }
 
+#if !NET40
         /// <summary>
         /// Verifies that project instances are valid for the active solution configuration in XProject Environment.
         /// Related problem: https://github.com/3F/vsSolutionBuildEvent/pull/77
@@ -60,7 +61,7 @@ namespace MvsSlnTest.Core
                 new Dictionary<string, string>() { { PropertyNames.CONFIG, configuration }, { PropertyNames.PLATFORM, platform } }
             );
 
-            Assert.True(input.Equals(xp.ProjectItem.projectConfig));
+            Assert.True(input.IsEqualPair(xp.ProjectItem.projectConfig));
 
             Assert.Equal
             (
@@ -72,7 +73,7 @@ namespace MvsSlnTest.Core
             (
                 l.ProjectItems.FirstOrDefault(),
                 l.ProjectItemsConfigs
-                    .FirstOrDefault(p => input.Equals(p.solutionConfig) == true)
+                    .FirstOrDefault(p => input.IsEqualPair(p.solutionConfig))
                     .projectConfig
             );
 
@@ -82,5 +83,6 @@ namespace MvsSlnTest.Core
                 input
             );
         }
+#endif
     }
 }

@@ -91,6 +91,7 @@ namespace MvsSlnTest.Core
             }
         }
 
+#if !NET40
         [Theory]
         [InlineData(SlnItems.AllNoLoad)]
         [InlineData(SlnItems.AllNoLoad & ~SlnItems.Header)]
@@ -106,9 +107,14 @@ namespace MvsSlnTest.Core
                 [typeof(LProject)] = new(new WProject(sln.Result.ProjectItems, sln.Result.ProjectDependencies)),
             });
         }
+#endif
 
         [Fact]
+#if !NET40
         public async Task WriteTest1Async()
+#else
+        public void WriteTest1()
+#endif
         {
             using Sln sln = new(defaultSlnItems, SlnSamplesResource.vsSolutionBuildEvent);
 
@@ -131,7 +137,14 @@ namespace MvsSlnTest.Core
             };
 
             using SlnWriter w = new(handlers);
+
+#if !NET40
             string data = await w.WriteAsStringAsync(sln.Result.Map);
+#else
+            Task<string> dataAsync = w.WriteAsStringAsync(sln.Result.Map);
+            dataAsync.Wait();
+            string data = dataAsync.Result;
+#endif
 
             Assert.Equal(data, w.WriteAsString(sln.Result.Map));
 
@@ -139,19 +152,37 @@ namespace MvsSlnTest.Core
             StreamWriter sw = new(new MemoryStream());
             using SlnWriter wm = new(sw, handlers);
 
+#if !NET40
             await wm.WriteAsync(sln.Result.Map);
+#else
+            wm.WriteAsync(sln.Result.Map).Wait();
+#endif
 
             sw.Flush();
             sw.BaseStream.Position = 0;
 
             using StreamReader sr = new(sw.BaseStream);
 
+#if !NET40
             Assert.Equal(data, await sr.ReadToEndAsync());
+#else
+            Assert.Equal(data, sr.ReadToEnd());
+#endif
 
             w.Write(sln.Result.Map);
+
+#if !NET40
             await w.WriteAsync(sln.Result.Map);
-            
             Assert.StartsWith(data, await w.WriteAsStringAsync(sln.Result.Map));
+
+#else
+            Task<bool> startWithAsync = w.WriteAsync(sln.Result.Map)
+                .ContinueWith(t => w.WriteAsStringAsync(sln.Result.Map))
+                .ContinueWith(t => t.Result.Result.StartsWith(data));
+
+            startWithAsync.Wait();
+            Assert.True(startWithAsync.Result);
+#endif
 
             string expected =
 @"Microsoft Visual Studio Solution File, Format Version 12.00

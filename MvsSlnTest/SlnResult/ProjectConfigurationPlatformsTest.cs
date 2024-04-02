@@ -3,6 +3,7 @@ using Xunit;
 
 namespace MvsSlnTest.Core
 {
+#if !NET40
     [Collection("Sequential")] //TODO: msbuild GlobalProjectCollection
     public class ProjectConfigurationPlatformsTest
     {
@@ -27,4 +28,5 @@ namespace MvsSlnTest.Core
             }
         }
     }
+#endif
 }

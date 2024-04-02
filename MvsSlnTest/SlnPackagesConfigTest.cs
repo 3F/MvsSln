@@ -9,6 +9,7 @@ namespace MvsSlnTest
 {
     public class SlnPackagesConfigTest
     {
+#if !NET40
         [Theory]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\1\test.sln", SlnItems.PackagesConfig)]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\1\test.sln", SlnItems.PackagesConfigSolution)]
@@ -44,6 +45,7 @@ namespace MvsSlnTest
             using Sln l2 = new(input, SlnItems.Projects);
             Assert.Empty(l.Result.PackagesConfigs);
         }
+#endif
 
         [Fact]
         public void SlnPackagesConfigTest3()
@@ -60,6 +62,7 @@ namespace MvsSlnTest
             Assert.Equal("net472", info.MetaTFM);
         }
 
+#if !NET40
         [Theory]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\3\test.sln")]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\4\test.sln")]
@@ -76,6 +79,7 @@ namespace MvsSlnTest
             Assert.Equal("1.14.1.1", info.Version);
             Assert.Equal("vsSolutionBuildEvent", info.MetaOutput);
         }
+#endif
 
         [Fact]
         public void SlnPackagesConfigTest5()

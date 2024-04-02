@@ -22,7 +22,7 @@
     <MvsSlnTFM Condition="'$(OsUnixLike)'=='true'">$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
     <MvsSlnTFM Condition="'$(OverrideMvsSlnTFM)'!=''">$(OverrideMvsSlnTFM)</MvsSlnTFM>
 
-    <MvsSlnTestTFM>net472;$(NetCoreTFM)</MvsSlnTestTFM>
+    <MvsSlnTestTFM>net40;net472;$(NetCoreTFM)</MvsSlnTestTFM>
     <MvsSlnTestTFM Condition="'$(OsUnixLike)'=='true'">$(NetCoreTFM)</MvsSlnTestTFM>
     <MvsSlnTestTFM Condition="'$(OverrideMvsSlnTestTFM)'!=''">$(OverrideMvsSlnTestTFM)</MvsSlnTestTFM>
 

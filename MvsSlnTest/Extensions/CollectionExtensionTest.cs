@@ -13,6 +13,7 @@ namespace MvsSlnTest.Extensions
 
     public class CollectionExtensionTest
     {
+#if !NET40
         [Theory]
         [MemberData(nameof(GetArrStringData))]
         public void ForEachTest1(string[] data)
@@ -47,8 +48,6 @@ namespace MvsSlnTest.Extensions
 
             Assert.Equal(sb.ToString(), sbf.ToString());
         }
-
-#if !NET40
 
         [Theory]
         [MemberData(nameof(GetArrStringData))]
@@ -88,8 +87,6 @@ namespace MvsSlnTest.Extensions
 
             Assert.Equal(sb.ToString(), sbf.ToString());
         }
-
-#endif
 
         public static IEnumerable<object[]> GetArrStringData()
         {
@@ -133,5 +130,6 @@ namespace MvsSlnTest.Extensions
         {
             public override string Extract(object _) => nameof(_WhandlerB);
         }
+#endif
     }
 }

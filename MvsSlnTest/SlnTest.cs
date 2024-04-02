@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using net.r_eg.MvsSln;
@@ -89,72 +88,77 @@ namespace MvsSlnTest
         [Fact]
         public void SlnResultTest3()
         {
-            using(var sln = new Sln(SlnItems.SolutionConfPlatforms, SlnSamplesResource.vsSolutionBuildEvent))
-            {
-                Assert.Equal(new ConfigItem("Debug", "Any CPU"), sln.Result.DefaultConfig);
+            using Sln sln = new(SlnItems.SolutionConfPlatforms, SlnSamplesResource.vsSolutionBuildEvent);
+            Assert.True(sln.Result.DefaultConfig.IsEqualPair(new ConfigItem("Debug", "Any CPU")));
 
-                Assert.Equal(8, sln.Result.SolutionConfigs.Count());
+            IConfPlatform[] configs = sln.Result.SolutionConfigs.ToArray();
+            Assert.Equal(configs.Length, sln.Result.SolutionConfigs.Count());
+            Assert.Equal(8, configs.Length);
 
-                Assert.Equal(new ConfigItem("CI_Debug_net45", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(0));
-                Assert.Equal(new ConfigItem("CI_Debug", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(1));
-                Assert.Equal(new ConfigItem("CI_Release_net45", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(2));
-                Assert.Equal(new ConfigItem("CI_Release", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(3));
-                Assert.Equal(new ConfigItem("Debug_net45", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(4));
-                Assert.Equal(new ConfigItem("Debug", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(5));
-                Assert.Equal(new ConfigItem("Release_net45", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(6));
-                Assert.Equal(new ConfigItem("Release", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(7));
-            }
+            Assert.True(configs[0].IsEqualPair(new ConfigItem("CI_Debug_net45", "Any CPU")));
+            Assert.True(configs[1].IsEqualPair(new ConfigSln("CI_Debug", "Any CPU")));
+            Assert.True(configs[2].IsEqualPair(new ConfigSln("CI_Release_net45", "Any CPU")));
+            Assert.True(configs[3].IsEqualPair(new ConfigSln("CI_Release", "Any CPU")));
+            Assert.True(configs[4].IsEqualPair(new ConfigSln("Debug_net45", "Any CPU")));
+            Assert.True(configs[5].IsEqualPair(new ConfigSln("Debug", "Any CPU")));
+            Assert.True(configs[6].IsEqualPair(new ConfigSln("Release_net45", "Any CPU")));
+            Assert.True(configs[7].IsEqualPair(new ConfigItem("Release", "Any CPU")));
         }
 
         [Fact]
         public void SlnResultTest4()
         {
-            using(var sln = new Sln(SlnItems.ProjectConfPlatforms, SlnSamplesResource.vsSolutionBuildEvent))
-            {
-                Assert.Equal(6, sln.Result.ProjectConfigs.Count());
+            using Sln sln = new(SlnItems.ProjectConfPlatforms, SlnSamplesResource.vsSolutionBuildEvent);
+            Assert.Equal(6, sln.Result.ProjectConfigs.Count());
 
-                var cfg0 = sln.Result.ProjectConfigs.ElementAt(0);
-                Assert.Equal(new ConfigItem("Release_net45", "x64"), (ConfigItem)cfg0);
-                Assert.False(cfg0.IncludeInBuild);
-                Assert.False(cfg0.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg0.PGuid);
-                Assert.Equal(new ConfigItem("CI_Debug_net45", "Any CPU"), cfg0.Sln);
+            var cfg0 = sln.Result.ProjectConfigs.ElementAt(0);
+            Assert.True(cfg0.IsEqualPair(new ConfigItem("Release_net45", "x64")));
+            Assert.False(cfg0.IncludeInBuild);
+            Assert.False(cfg0.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg0.PGuid);
+            Assert.True(cfg0.Sln.IsEqualPair(new ConfigItem("CI_Debug_net45", "Any CPU")));
 
-                var cfg1 = sln.Result.ProjectConfigs.ElementAt(1);
-                Assert.Equal(new ConfigItem("Release", "x64"), (ConfigItem)cfg1);
-                Assert.True(cfg1.IncludeInBuild);
-                Assert.False(cfg1.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg1.PGuid);
-                Assert.Equal(new ConfigItem("CI_Debug", "Any CPU"), cfg1.Sln);
+            var cfg1 = sln.Result.ProjectConfigs.ElementAt(1);
+#if !NET40
+            Assert.Equal(new ConfigItem("Release", "x64"), (ConfigItem)cfg1);
+#endif
+            Assert.True(cfg1.IsEqualPair(new ConfigItem("Release", "x64")));
 
-                var cfg2 = sln.Result.ProjectConfigs.ElementAt(2);
-                Assert.Equal(new ConfigItem("Release_net45", "Any CPU"), (ConfigItem)cfg2);
-                Assert.False(cfg2.IncludeInBuild);
-                Assert.False(cfg2.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg2.PGuid);
-                Assert.Equal(new ConfigItem("CI_Release_net45", "Any CPU"), cfg2.Sln);
+            Assert.True(cfg1.IncludeInBuild);
+            Assert.False(cfg1.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg1.PGuid);
+            Assert.Equal(new ConfigSln("CI_Debug", "Any CPU"), cfg1.Sln);
 
-                var cfg3 = sln.Result.ProjectConfigs.ElementAt(3);
-                Assert.Equal(new ConfigItem("Release", "Any CPU"), (ConfigItem)cfg3);
-                Assert.True(cfg3.IncludeInBuild);
-                Assert.True(cfg3.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg3.PGuid);
-                Assert.Equal(new ConfigItem("CI_Release", "Any CPU"), cfg3.Sln);
+            var cfg2 = sln.Result.ProjectConfigs.ElementAt(2);
+            Assert.True(cfg2.IsEqualPair(new ConfigItem("Release_net45", "Any CPU")));
+            Assert.False(cfg2.IncludeInBuild);
+            Assert.False(cfg2.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg2.PGuid);
+            Assert.Equal(new ConfigSln("CI_Release_net45", "Any CPU"), cfg2.Sln);
 
-                var cfg4 = sln.Result.ProjectConfigs.ElementAt(4);
-                Assert.Equal(new ConfigItem("Debug", "x86"), (ConfigItem)cfg4);
-                Assert.True(cfg4.IncludeInBuild);
-                Assert.False(cfg4.IncludeInDeploy);
-                Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg4.PGuid);
-                Assert.Equal(new ConfigItem("Debug", "Any CPU"), cfg4.Sln);
+            var cfg3 = sln.Result.ProjectConfigs.ElementAt(3);
+            Assert.True(cfg3.IsEqualPair(new ConfigItem("Release", "Any CPU")));
+            Assert.True(cfg3.IncludeInBuild);
+            Assert.True(cfg3.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg3.PGuid);
+            Assert.Equal(new ConfigSln("CI_Release", "Any CPU"), cfg3.Sln);
 
-                var cfg5 = sln.Result.ProjectConfigs.ElementAt(5);
-                Assert.Equal(new ConfigItem("Release", "Any CPU"), (ConfigItem)cfg5);
-                Assert.True(cfg5.IncludeInBuild);
-                Assert.False(cfg5.IncludeInDeploy);
-                Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg5.PGuid);
-                Assert.Equal(new ConfigItem("Release", "Any CPU"), cfg5.Sln);
-            }
+            var cfg4 = sln.Result.ProjectConfigs.ElementAt(4);
+#if !NET40
+            Assert.Equal(new ConfigItem("Debug", "x86"), (ConfigItem)cfg4);
+#endif
+            Assert.True(cfg4.IsEqualPair(new ConfigItem("Debug", "x86")));
+            Assert.True(cfg4.IncludeInBuild);
+            Assert.False(cfg4.IncludeInDeploy);
+            Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg4.PGuid);
+            Assert.Equal(new ConfigSln("Debug", "Any CPU"), cfg4.Sln);
+
+            var cfg5 = sln.Result.ProjectConfigs.ElementAt(5);
+            Assert.True(cfg5.IsEqualPair(new ConfigItem("Release", "Any CPU")));
+            Assert.True(cfg5.IncludeInBuild);
+            Assert.False(cfg5.IncludeInDeploy);
+            Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg5.PGuid);
+            Assert.Equal(new ConfigSln("Release", "Any CPU"), cfg5.Sln);
         }
 
         [Fact]
@@ -196,6 +200,7 @@ namespace MvsSlnTest
             }
         }
 
+#if !NET40
         [Theory]
         [InlineData("")]
         [InlineData(".spaces")]
@@ -247,6 +252,7 @@ namespace MvsSlnTest
             Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg.PGuid);
             Assert.Equal(new ConfigItem("Release", "Any.CPU.etc"), cfg.Sln);
         }
+#endif
 
         [Fact]
         public void ExtensibilityGlobalsTest1()
@@ -273,6 +279,7 @@ namespace MvsSlnTest
             Assert.Equal(@"packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin", sln.Result.ExtItems["EnterpriseLibraryConfigurationToolBinariesPath"]);
         }
 
+#if !NET40
         [Theory]
         [InlineData("tab.sln")]
         [InlineData("spaces.sln")]
@@ -362,6 +369,7 @@ namespace MvsSlnTest
             Assert.Equal("{AB650B89-1B1B-43C6-B254-226B56ACB6EB}", sln.Result.ProjectItems.ElementAt(4).parent.Value?.header.pGuid);
             Assert.Equal("dir2", sln.Result.ProjectItems.ElementAt(4).parent.Value?.header.name);
         }
+#endif
 
         [Fact]
         public void EnvTest1()
@@ -427,6 +435,7 @@ namespace MvsSlnTest
             }
         }
 
+#if !NET40
         [Theory]
         [InlineData(SlnItems.All)]
         [InlineData(SlnItems.ProjectDependenciesXml)]
@@ -438,6 +447,7 @@ namespace MvsSlnTest
                 Assert.Null(sln.Result.ProjectDependencies);
             }
         }
+#endif
 
         [Fact]
         public void MapTest1()

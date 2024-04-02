@@ -34,6 +34,7 @@ namespace MvsSlnTest.Projects
             yield return new object[] { s3.GetPackage("stdole"), "stdole", "7.0.3303", "net10" };
         }
 
+#if !NET40
         [Theory]
         [MemberData(nameof(GetPackageInfo))]
         public void ParsedItemsTest1(IPackageInfo p, string id, string version, string tfm, string output = null)
@@ -55,6 +56,7 @@ namespace MvsSlnTest.Projects
                 if(output != null) Assert.Equal(output, p.Meta[PackageInfo.ATTR_OUT]);
             }
         }
+#endif
 
         [Fact]
         public void ParsedItemsTest2()
@@ -91,6 +93,7 @@ namespace MvsSlnTest.Projects
             yield return new object[] { TestData.GetPathTo(@"PackagesConfig\packages.4.txt") };
         }
 
+#if !NET40
         [Theory]
         [MemberData(nameof(GetFailedContent))]
         public void LoadTest2(string input)
@@ -117,6 +120,7 @@ namespace MvsSlnTest.Projects
                 PackagesConfigOptions.LoadOrNew | PackagesConfigOptions.PathToStorage
             ));
         }
+#endif
 
         [Fact]
         public void LoadTest4()
@@ -145,6 +149,7 @@ namespace MvsSlnTest.Projects
             Assert.Null(pkg2.GetPackage("LX4Cnh"));
         }
 
+#if !NET40
         [Theory]
         [InlineData(PackagesConfigOptions.None)]
         [InlineData(PackagesConfigOptions.SilentLoading)]
@@ -172,6 +177,7 @@ namespace MvsSlnTest.Projects
                 new PackagesConfig(dst, PackagesConfigOptions.Load | PackagesConfigOptions.PathToStorage | silentLoading);
             });
         }
+#endif
 
         [Fact]
         public void RemoveItemTest1()
