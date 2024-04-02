@@ -85,7 +85,7 @@ namespace MvsSlnTest.Core
         [InlineData(SlnItems.AllNoLoad & ~(SlnItems.SolutionItems | SlnItems.ExtItems))]
         public void L102Test1(SlnItems conf)
         {
-            using Sln sln = new(TestData.PathTo(@"SlnWriter\L-102\src.sln"), conf);
+            using Sln sln = new(TestData.GetPathTo(@"SlnWriter\L-102\src.sln"), conf);
 
             RwChecker.Check(sln, []);
             RwChecker.Check(sln, new()

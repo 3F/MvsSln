@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using net.r_eg.MvsSln.Extensions;
 
 namespace MvsSlnTest
 {
@@ -7,6 +6,8 @@ namespace MvsSlnTest
     {
         internal const string ROOT = "resources\\";
 
-        internal static string PathTo(string file) => Path.Combine(ROOT, file ?? throw new ArgumentNullException(nameof(file)));
+        internal static string GetPathTo(string file) => $@"{ROOT}{file}".AdaptPath();
+
+        internal static string GetPkgLegacyDir(string path) => $@"{path}packages\".AdaptPath();
     }
 }

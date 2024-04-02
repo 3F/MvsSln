@@ -5,6 +5,8 @@ using Xunit;
 
 namespace MvsSlnTest.Extensions
 {
+    using _svc.Static;
+
     public class StringExtensionTest
     {
         [Fact]
@@ -42,10 +44,10 @@ namespace MvsSlnTest.Extensions
         [Fact]
         public void DirectoryPathFormatTest1()
         {
-            string dir1 = @"D:\path\to\dir1";
+            string dir1 = @"D:\path\to\dir1".AdaptWinPath();
             Assert.Equal($"{dir1}{Path.DirectorySeparatorChar}", dir1.DirectoryPathFormat());
 
-            string dir2 = @"D:\path\to\dir2\";
+            string dir2 = @"D:\path\to\dir2\".AdaptWinPath();
             Assert.Equal(dir2, dir2.DirectoryPathFormat());
 
             string dir3 = null;
@@ -68,9 +70,19 @@ namespace MvsSlnTest.Extensions
         }
 
         [Fact]
+        public void IsDirectoryPathTest2()
+        {
+            Assert.True("path/to/dir2/".IsDirectoryPath());
+            Assert.True("/".IsDirectoryPath());
+            Assert.True(@"\".IsDirectoryPath());
+            Assert.True(@"..\".IsDirectoryPath());
+            Assert.True(@".\".IsDirectoryPath());
+        }
+
+        [Fact]
         public void MakeRelativePathTest1()
         {
-            string dir0 = @"D:\path\to\dir0";
+            string dir0 = @"D:\path\to\dir0".AdaptWinPath();
 
             string dir1 = null;
             Assert.Null(dir1.MakeRelativePath(dir0));
@@ -88,14 +100,16 @@ namespace MvsSlnTest.Extensions
         [Fact]
         public void MakeRelativePathTest2()
         {
-            Assert.Equal(@"bin\Release\file", @"D:\path\to\dir1".MakeRelativePath(@"D:\path\to\dir1\bin\Release\file"));
+            string dir1 = @"D:\path\to\dir1".AdaptWinPath();
 
-            Assert.Equal(@"..\bin\Release\file", @"D:\path\to\dir1".MakeRelativePath(@"D:\path\to\bin\Release\file"));
-            Assert.Equal(@"..\dir2\bin\Release\file", @"D:\path\to\dir1".MakeRelativePath(@"D:\path\to\dir2\bin\Release\file"));
+            Assert.Equal(@"bin\Release\file".AdaptPath(), dir1.MakeRelativePath(@"D:\path\to\dir1\bin\Release\file".AdaptWinPath()));
 
-            Assert.Equal(@"bin\Release\file", @"D:\path\to\dir1".MakeRelativePath(@"bin\Release\file"));
+            Assert.Equal(@"..\bin\Release\file".AdaptPath(), dir1.MakeRelativePath(@"D:\path\to\bin\Release\file".AdaptWinPath()));
+            Assert.Equal(@"..\dir2\bin\Release\file".AdaptPath(), dir1.MakeRelativePath(@"D:\path\to\dir2\bin\Release\file".AdaptWinPath()));
 
-            Assert.Null(@"path\to\dir1".MakeRelativePath(@"D:\path\to\dir1\bin\Release\file"));
+            Assert.Equal(@"bin\Release\file".AdaptPath(), dir1.MakeRelativePath(@"bin\Release\file"));
+
+            Assert.Null(@"path\to\dir1".AdaptPath().MakeRelativePath(@"D:\path\to\dir1\bin\Release\file".AdaptWinPath()));
         }
 
         [Fact]

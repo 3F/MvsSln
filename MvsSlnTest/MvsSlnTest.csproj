@@ -3,6 +3,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(MvsSlnTestTFM)</TargetFrameworks>
+    <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\com.github.3F.test.snk</AssemblyOriginatorKeyFile>

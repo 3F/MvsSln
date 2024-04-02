@@ -13,6 +13,8 @@ using System.Text;
 
 namespace net.r_eg.MvsSln.Extensions
 {
+    using static Static.Members;
+
     public static class StringExtension
     {
         /// <summary>
@@ -188,43 +190,51 @@ namespace net.r_eg.MvsSln.Extensions
                 return null;
             }
 
-            if(!Uri.TryCreate(root.DirectoryPathFormat(), UriKind.Absolute, out Uri uriRoot)) {
+            if(!Uri.TryCreate(root.AdaptPath().DirectoryPathFormat(), UriKind.Absolute, out Uri uriRoot)) {
                 return null;
             }
+
+            path = path.AdaptPath();
 
             if(!Uri.TryCreate(path, UriKind.Absolute, out Uri uriPath)) {
                 uriPath = new Uri(uriRoot, new Uri(path, UriKind.Relative));
             }
 
-            Uri urirel  = uriRoot.MakeRelativeUri(uriPath);
-            string ret  = Uri.UnescapeDataString(urirel.IsAbsoluteUri ? urirel.LocalPath : urirel.ToString());
+            Uri urirel = uriRoot.MakeRelativeUri(uriPath);
 
-            return ret.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            return Uri.UnescapeDataString
+            (
+                urirel.IsAbsoluteUri ? urirel.LocalPath : urirel.ToString()
+            )
+            .AdaptPath(forceIfWin: true);
         }
 
         /// <summary>
-        /// Gets stream from string.
+        /// Gets new stream from string.
         /// </summary>
+        /// <remarks>Requires disposal using <see cref="IDisposable.Dispose"/></remarks>
         /// <param name="str"></param>
         /// <param name="enc">Specific encoding or null value to use UTF8 by default.</param>
         /// <returns></returns>
         public static Stream GetStream(this string str, Encoding enc = null)
         {
-            return new MemoryStream((enc ?? Encoding.UTF8)
-                            .GetBytes(str ?? String.Empty));
+            return new MemoryStream((enc ?? Encoding.UTF8).GetBytes(str ?? string.Empty));
+        }
+
+        /// <summary>
+        /// Adapt the path format to the current platform.
+        /// </summary>
+        internal static string AdaptPath(this string path, bool forceIfWin = false)
+        {
+            if(string.IsNullOrWhiteSpace(path)) return path;
+            return IsUnixLikePath ? path.Replace('\\', '/') 
+                     : forceIfWin ? path.Replace('/', '\\') : path;
         }
 
         private static bool IsEndSlash(this string path)
         {
-            if(path == null || path.Length < 1) {
-                return false;
-            }
-
-            char c = path[path.Length - 1];
-            if(c == Path.DirectorySeparatorChar || c == Path.AltDirectorySeparatorChar) {
-                return true;
-            }
-            return false;
+            if(path == null || path.Length < 1) return false;
+            return path[path.Length - 1] is '\\' or '/';
         } 
     }
 }

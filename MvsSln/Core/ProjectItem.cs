@@ -14,6 +14,8 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core
 {
+    using static Static.Members;
+
     /// <summary>
     /// Properties of project in solution file
     /// </summary>
@@ -38,11 +40,13 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// Relative path to project.
         /// </summary>
+        /// <remarks>Note: \, / follows initial declaration, i.e. NOT a platform-specific. See <see cref="fullPath"/> instead.</remarks>
         public string path;
 
         /// <summary>
         /// Evaluated full path to project.
         /// </summary>
+        /// <remarks>Note: \, / a platform-specific according to <see cref="IsUnixLikePath"/></remarks>
         public string fullPath;
 
         /// <summary>
@@ -101,30 +105,21 @@ namespace net.r_eg.MvsSln.Core
             );
         }
 
-        /// <param name="name">Project name.</param>
-        /// <param name="pType">Project type GUID.</param>
-        /// <param name="parent">Parent folder.</param>
+        /// <inheritdoc cref="ProjectItem(string, string, ProjectType, string, SolutionFolder?, string)"/>
         public ProjectItem(string name, ProjectType pType, SolutionFolder? parent = null)
             : this(name, pType, name, parent)
         {
 
         }
 
-        /// <param name="name">Project name.</param>
-        /// <param name="pType">Project type GUID.</param>
-        /// <param name="path"></param>
-        /// <param name="parent">Parent folder.</param>
-        /// <param name="slnDir">To evaluate `fullPath` define path to solution directory.</param>
+        /// <inheritdoc cref="ProjectItem(string, string, ProjectType, string, SolutionFolder?, string)"/>
         public ProjectItem(string name, ProjectType pType, string path, SolutionFolder? parent = null, string slnDir = null)
             : this(Guid.NewGuid().SlnFormat(), name, pType, path, parent, slnDir)
         {
 
         }
 
-        /// <param name="pGuid">Project GUID.</param>
-        /// <param name="name">Project name.</param>
-        /// <param name="pType">Project type GUID.</param>
-        /// <param name="parent">Parent folder.</param>
+        /// <inheritdoc cref="ProjectItem(string, string, ProjectType, string, SolutionFolder?, string)"/>
         public ProjectItem(string pGuid, string name, ProjectType pType, SolutionFolder? parent = null)
             : this(pGuid, name, pType, name, parent)
         {
@@ -136,18 +131,14 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="pType">Project type GUID.</param>
         /// <param name="path">Relative path to project.</param>
         /// <param name="parent">Parent folder.</param>
-        /// <param name="slnDir">To evaluate `fullPath` define path to solution directory.</param>
+        /// <param name="slnDir">To evaluate <see cref="fullPath"/> define path to solution directory.</param>
         public ProjectItem(string pGuid, string name, ProjectType pType, string path, SolutionFolder? parent = null, string slnDir = null)
             : this()
         {
             Init(pGuid, name, path, pType, parent, slnDir);
         }
 
-        /// <param name="pGuid">Project GUID.</param>
-        /// <param name="name">Project name.</param>
-        /// <param name="path">Relative path to project.</param>
-        /// <param name="pType">Project type GUID.</param>
-        /// <param name="slnDir">To evaluate `fullPath` define path to solution directory.</param>
+        /// <inheritdoc cref="ProjectItem(string, string, ProjectType, string, SolutionFolder?, string)"/>
         public ProjectItem(string pGuid, string name, string path, string pType, string slnDir = null)
             : this()
         {
@@ -171,7 +162,7 @@ namespace net.r_eg.MvsSln.Core
         public ProjectItem(string raw, string solutionDir)
             : this()
         {
-            Match m = RPatterns.ProjectLine.Match(raw ?? String.Empty);
+            Match m = RPatterns.ProjectLine.Match(raw ?? string.Empty);
             if(!m.Success) {
                 LSender.Send(this, $"ProjectItem: incorrect line :: '{raw}'", Message.Level.Warn);
                 return;
@@ -228,6 +219,9 @@ namespace net.r_eg.MvsSln.Core
         }
 
         private void SetFullPath(string slnDir)
+            => SetFullPathRaw(slnDir.AdaptPath(), path.AdaptPath());
+
+        private void SetFullPathRaw(string slnDir, string path)
         {
             if(string.IsNullOrWhiteSpace(path)) return;
 
@@ -243,7 +237,7 @@ namespace net.r_eg.MvsSln.Core
 
         #region DebuggerDisplay
 
-        private string DbgDisplay
+        private readonly string DbgDisplay
         {
             get => $"{name} [^{parent?.Value?.header.name}] [{pGuid}] = {path}";
         }

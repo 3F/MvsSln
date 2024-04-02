@@ -85,7 +85,7 @@ namespace net.r_eg.MvsSln.Core
                 throw new ArgumentNullException(nameof(sln), MsgResource.ValueNoEmptyOrNull);
             }
 
-            using var reader = new StreamReader(sln, encoding);
+            using StreamReader reader = new(sln.AdaptPath(), encoding);
             return Parse(reader, type);
         }
 

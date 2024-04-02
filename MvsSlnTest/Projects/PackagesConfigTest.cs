@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using MvsSlnTest._svc;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Projects;
 using Xunit;
 
@@ -16,17 +17,17 @@ namespace MvsSlnTest.Projects
 
         public static IEnumerable<object[]> GetPackageInfo()
         {
-            PackagesConfig s = new(TestData.ROOT + @"PackagesConfig\folder");
+            PackagesConfig s = new(TestData.GetPathTo(@"PackagesConfig\folder"));
 
             yield return new object[] { s.GetPackage("LX4Cnh"), "LX4Cnh", "1.1.0", "net472" };
 
-            PackagesConfig s2 = new(TestData.ROOT + @"PackagesConfig\packages.1.txt", customLoad);
+            PackagesConfig s2 = new(TestData.GetPathTo(@"PackagesConfig\packages.1.txt"), customLoad);
 
             yield return new object[] { s2.Packages.ElementAt(0), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" };
             yield return new object[] { s2.GetPackage("vssolutionbuildevent", true), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" };
             yield return new object[] { s2.Packages.ElementAt(1), "Conari", "1.5", "net472" };
 
-            PackagesConfig s3 = new(TestData.ROOT + @"PackagesConfig\packages.2.txt", customLoad);
+            PackagesConfig s3 = new(TestData.GetPathTo(@"PackagesConfig\packages.2.txt"), customLoad);
 
             yield return new object[] { s3.GetPackage("EnvDTE"), "EnvDTE", "8.0.2", "net45" };
             yield return new object[] { s3.GetPackage("EnvDTE80"), "EnvDTE80", "8.0.3", null };
@@ -58,7 +59,7 @@ namespace MvsSlnTest.Projects
         [Fact]
         public void ParsedItemsTest2()
         {
-            PackagesConfig pkg = new(TestData.ROOT + @"PackagesConfig\packages.1.txt", customLoad);
+            PackagesConfig pkg = new(TestData.GetPathTo(@"PackagesConfig\packages.1.txt"), customLoad);
 
             Assert.Null(pkg.GetPackage(string.Empty));
             Assert.Null(pkg.GetPackage(string.Empty, true));
@@ -75,7 +76,7 @@ namespace MvsSlnTest.Projects
         [Fact]
         public void LoadTest1()
         {
-            PackagesConfig pkg = new(TestData.ROOT + @"PackagesConfig\packages.1.txt", customLoad);
+            PackagesConfig pkg = new(TestData.GetPathTo(@"PackagesConfig\packages.1.txt"), customLoad);
 
             Assert.Null(pkg.FailedLoading);
             Assert.False(pkg.IsNew);
@@ -86,8 +87,8 @@ namespace MvsSlnTest.Projects
 
         public static IEnumerable<object[]> GetFailedContent()
         {
-            yield return new object[] { TestData.ROOT + @"PackagesConfig\packages.3.txt" };
-            yield return new object[] { TestData.ROOT + @"PackagesConfig\packages.4.txt" };
+            yield return new object[] { TestData.GetPathTo(@"PackagesConfig\packages.3.txt") };
+            yield return new object[] { TestData.GetPathTo(@"PackagesConfig\packages.4.txt") };
         }
 
         [Theory]
@@ -122,7 +123,7 @@ namespace MvsSlnTest.Projects
         {
             PackagesConfig pkg = new
             (
-                TestData.ROOT + @"PackagesConfig\packages.5.txt",
+                TestData.GetPathTo(@"PackagesConfig\packages.5.txt"),
                 PackagesConfigOptions.LoadOrNew | PackagesConfigOptions.PathToStorage
             );
 
@@ -135,11 +136,11 @@ namespace MvsSlnTest.Projects
         [Fact]
         public void LoadTest5()
         {
-            PackagesConfig pkg = new(TestData.ROOT + @"PackagesConfig\folder", PackagesConfigOptions.Load);
+            PackagesConfig pkg = new(TestData.GetPathTo(@"PackagesConfig\folder"), PackagesConfigOptions.Load);
             Assert.False(pkg.IsNew);
             Assert.NotNull(pkg.GetPackage("LX4Cnh"));
 
-            PackagesConfig pkg2 = new(TestData.ROOT + @"PackagesConfig\NotRealFolder", PackagesConfigOptions.LoadOrNew | PackagesConfigOptions.SilentLoading);
+            PackagesConfig pkg2 = new(TestData.GetPathTo(@"PackagesConfig\NotRealFolder"), PackagesConfigOptions.LoadOrNew | PackagesConfigOptions.SilentLoading);
             Assert.True(pkg2.IsNew);
             Assert.Null(pkg2.GetPackage("LX4Cnh"));
         }
@@ -152,12 +153,12 @@ namespace MvsSlnTest.Projects
             Assert.Throws<ArgumentNullException>(() => new PackagesConfig(null, PackagesConfigOptions.Default | silentLoading));
 
             Assert.Throws<NotSupportedException>(() => 
-                new PackagesConfig(TestData.ROOT + @"PackagesConfig\packages.1.txt", PackagesConfigOptions.None | silentLoading)
+                new PackagesConfig(TestData.GetPathTo(@"PackagesConfig\packages.1.txt"), PackagesConfigOptions.None | silentLoading)
             );
 
             Assert.Throws<FileNotFoundException>(() => 
             {
-                string dst = TestData.ROOT + @"PackagesConfig\NotRealFolder";
+                string dst = TestData.GetPathTo(@"PackagesConfig\NotRealFolder");
                 Assert.False(Directory.Exists(dst));
 
                 new PackagesConfig(dst, PackagesConfigOptions.Load | silentLoading);
@@ -165,7 +166,7 @@ namespace MvsSlnTest.Projects
 
             Assert.Throws<FileNotFoundException>(() =>
             {
-                string dst = TestData.ROOT + @"PackagesConfig\folder";
+                string dst = TestData.GetPathTo(@"PackagesConfig\folder");
                 Assert.True(Directory.Exists(dst));
 
                 new PackagesConfig(dst, PackagesConfigOptions.Load | PackagesConfigOptions.PathToStorage | silentLoading);
@@ -177,24 +178,24 @@ namespace MvsSlnTest.Projects
         {
             const string _NAME = "EnvDTE";
 
-            PackagesConfig pkg = new(TestData.ROOT + @"PackagesConfig\packages.2.txt", customLoad);
+            PackagesConfig pkg = new(TestData.GetPathTo(@"PackagesConfig\packages.2.txt"), customLoad);
 
             Assert.NotNull(pkg.GetPackage(_NAME));
             pkg.GetPackage(_NAME).Remove();
             Assert.Null(pkg.GetPackage(_NAME));
 
-            PackagesConfig pkg2 = new(TestData.ROOT + @"PackagesConfig\packages.2.txt", customLoad);
+            PackagesConfig pkg2 = new(TestData.GetPathTo(@"PackagesConfig\packages.2.txt"), customLoad);
             Assert.NotNull(pkg2.GetPackage(_NAME));
         }
 
         [Fact]
         public void ModifyItemsTest1()
         {
-            const string _FILE = TestData.ROOT + @"PackagesConfig\test.1.tmp";
-            if(File.Exists(_FILE)) File.Delete(_FILE);
+            string _file = TestData.GetPathTo(@"PackagesConfig\test.1.tmp");
+            if(File.Exists(_file)) File.Delete(_file);
 
-            using TempPackagesConfig pkg = new(_FILE, customNew);
-            Assert.Equal(pkg.File, _FILE);
+            using TempPackagesConfig pkg = new(_file, customNew);
+            Assert.Equal(pkg.File, _file);
             Assert.Empty(pkg.Packages);
 
             const string _P1 = "LX4Cnh";
@@ -219,9 +220,9 @@ namespace MvsSlnTest.Projects
 
             // commit
 
-            Assert.False(File.Exists(_FILE));
+            Assert.False(File.Exists(_file));
             pkg.Commit();
-            Assert.True(File.Exists(_FILE));
+            Assert.True(File.Exists(_file));
 
             // rollback
 
@@ -241,8 +242,8 @@ namespace MvsSlnTest.Projects
 
             // re-load
 
-            PackagesConfig pkg2 = new(_FILE, customNew);
-            Assert.Equal(pkg2.File, _FILE);
+            PackagesConfig pkg2 = new(_file, customNew);
+            Assert.Equal(pkg2.File, _file);
             Assert.Equal(2, pkg2.Packages.Count());
 
             Assert.Null(pkg2.GetPackage(_P3));
@@ -254,11 +255,11 @@ namespace MvsSlnTest.Projects
         [Fact]
         public void ModifyItemsTest2()
         {
-            const string _FILE = TestData.ROOT + @"PackagesConfig\test.2.tmp";
-            if(File.Exists(_FILE)) File.Delete(_FILE);
+            string _file = TestData.GetPathTo(@"PackagesConfig\test.2.tmp");
+            if(File.Exists(_file)) File.Delete(_file);
 
-            using TempPackagesConfig pkg = new(_FILE, customNew);
-            Assert.Equal(pkg.File, _FILE);
+            using TempPackagesConfig pkg = new(_file, customNew);
+            Assert.Equal(pkg.File, _file);
             Assert.Empty(pkg.Packages);
 
             const string _P1 = "LX4Cnh";
@@ -292,11 +293,11 @@ namespace MvsSlnTest.Projects
         [Fact]
         public void ModifyItemsTest3()
         {
-            const string _FILE = TestData.ROOT + @"PackagesConfig\test.3.tmp";
-            if(File.Exists(_FILE)) File.Delete(_FILE);
+            string _file = TestData.GetPathTo(@"PackagesConfig\test.3.tmp");
+            if(File.Exists(_file)) File.Delete(_file);
 
-            using TempPackagesConfig pkg = new(_FILE, customNew);
-            Assert.Equal(pkg.File, _FILE);
+            using TempPackagesConfig pkg = new(_file, customNew);
+            Assert.Equal(pkg.File, _file);
             Assert.Empty(pkg.Packages);
 
             const string _P1 = "LX4Cnh";
@@ -321,8 +322,8 @@ namespace MvsSlnTest.Projects
 
             // re-load
 
-            PackagesConfig pkg2 = new(_FILE, customNew);
-            Assert.Equal(pkg2.File, _FILE);
+            PackagesConfig pkg2 = new(_file, customNew);
+            Assert.Equal(pkg2.File, _file);
             Assert.Equal(2, pkg2.Packages.Count());
 
             Assert.NotNull(pkg2.GetPackage(_P2));

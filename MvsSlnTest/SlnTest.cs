@@ -5,6 +5,7 @@ using System.Linq;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Core.SlnHandlers;
+using net.r_eg.MvsSln.Extensions;
 using Xunit;
 
 namespace MvsSlnTest
@@ -16,7 +17,7 @@ namespace MvsSlnTest
         {
             using(var sln = new Sln(SlnItems.Projects, SlnSamplesResource.vsSolutionBuildEvent))
             {
-                Assert.Equal("\\", sln.Result.SolutionDir);
+                Assert.Equal("\\".AdaptPath(), sln.Result.SolutionDir);
                 Assert.Equal(SlnParser.MEM_FILE, sln.Result.Properties[PropertyNames.SLN_PATH]);
 
                 Assert.Equal(sln.Result.SolutionDir, sln.Result.Properties[PropertyNames.SLN_DIR]);

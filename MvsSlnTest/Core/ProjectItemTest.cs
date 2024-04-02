@@ -1,8 +1,11 @@
 ﻿using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Extensions;
 using Xunit;
 
 namespace MvsSlnTest.Core
 {
+    using _svc.Static;
+
     public class ProjectItemTest
     {
         [Fact]
@@ -73,13 +76,13 @@ namespace MvsSlnTest.Core
                 p
             );
 
-            p = new ProjectItem("Project 3", ProjectType.Vc, "prj path", f, @"C:\path\");
+            p = new ProjectItem("Project 3", ProjectType.Vc, "prj path", f, @"C:\path\".AdaptWinPath());
             Assert.Equal
             (
                 new ProjectItem()
                 {
                     pGuid       = p.pGuid,
-                    fullPath    = @"C:\path\prj path",
+                    fullPath    = @"C:\path\prj path".AdaptWinPath(),
                     name        = "Project 3",
                     path        = "prj path",
                     EpType      = ProjectType.Vc,
@@ -173,13 +176,13 @@ namespace MvsSlnTest.Core
                 p
             );
 
-            p = new ProjectItem("{47EF5301-84E5-4210-A145-6460A1C8627A}", "Project2", ProjectType.Cs, "path 2", f, @"D:\slndir");
+            p = new ProjectItem("{47EF5301-84E5-4210-A145-6460A1C8627A}", "Project2", ProjectType.Cs, "path 2", f, @"D:\slndir".AdaptWinPath());
             Assert.Equal
             (
                 new ProjectItem()
                 {
                     pGuid       = "{47EF5301-84E5-4210-A145-6460A1C8627A}",
-                    fullPath    = @"D:\slndir\path 2",
+                    fullPath    = @"D:\slndir\path 2".AdaptWinPath(),
                     name        = "Project2",
                     path        = "path 2",
                     EpType      = ProjectType.Cs,
@@ -325,7 +328,7 @@ namespace MvsSlnTest.Core
         [Fact]
         public void ParseTest1()
         {
-            var slnDir = "X:\\dir1\\";
+            var slnDir = "X:\\dir1\\".AdaptWinPath();
             var target = new ProjectItem(
                 "Project(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"Conari\", \"Conari\\Conari.csproj\", \"{27152FD4-7B94-4AF0-A7ED-BE7E7A196D57}\"",
                 slnDir
@@ -335,14 +338,14 @@ namespace MvsSlnTest.Core
             Assert.Equal("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", target.pType);
             Assert.Equal("Conari", target.name);
             Assert.Equal("Conari\\Conari.csproj", target.path);
-            Assert.Equal($"{slnDir}Conari\\Conari.csproj", target.fullPath);
+            Assert.Equal($"{slnDir}Conari\\Conari.csproj".AdaptPath(), target.fullPath);
             Assert.Equal(ProjectType.Cs, target.EpType);
         }
 
         [Fact]
         public void ParseTest2()
         {
-            var slnDir = "X:\\dir1\\";
+            var slnDir = "X:\\dir1\\".AdaptWinPath();
             var target = new ProjectItem(
                 "\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"Conari\", \"Conari\\Conari.csproj\", \"{27152FD4-7B94-4AF0-A7ED-BE7E7A196D57}\"",
                 slnDir
@@ -359,7 +362,7 @@ namespace MvsSlnTest.Core
         [Fact]
         public void ParseTest3()
         {
-            var target1 = new ProjectItem(null, "X:\\dir1\\");
+            var target1 = new ProjectItem(null, "X:\\dir1\\".AdaptWinPath());
             Assert.Null(target1.pGuid);
             Assert.Null(target1.fullPath);
 

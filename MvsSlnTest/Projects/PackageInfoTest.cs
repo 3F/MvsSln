@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Projects;
 using Xunit;
 
@@ -35,7 +36,7 @@ namespace MvsSlnTest.Projects
         [Fact]
         public void CtorTest2()
         {
-            XDocument xml   = XDocument.Load(TestData.ROOT + @"PackagesConfig\packages.2.txt");
+            XDocument xml   = XDocument.Load(TestData.GetPathTo(@"PackagesConfig\packages.2.txt"));
             PackageInfo pkg = new(xml.Element(PackagesConfig.ROOT).Elements().First());
 
             Assert.Equal("EnvDTE", pkg.Id);
