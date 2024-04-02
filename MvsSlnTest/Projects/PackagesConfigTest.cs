@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using MvsSlnTest._svc;
-using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Projects;
 using Xunit;
 
@@ -12,26 +11,29 @@ namespace MvsSlnTest.Projects
 {
     public class PackagesConfigTest
     {
-        private static readonly PackagesConfigOptions customLoad    = PackagesConfigOptions.Load | PackagesConfigOptions.PathToStorage;
-        private static readonly PackagesConfigOptions customNew     = PackagesConfigOptions.LoadOrNew | PackagesConfigOptions.PathToStorage;
+        private static readonly PackagesConfigOptions customLoad
+            = PackagesConfigOptions.Load | PackagesConfigOptions.PathToStorage;
+
+        private static readonly PackagesConfigOptions customNew
+            = PackagesConfigOptions.LoadOrNew | PackagesConfigOptions.PathToStorage;
 
         public static IEnumerable<object[]> GetPackageInfo()
         {
             PackagesConfig s = new(TestData.GetPathTo(@"PackagesConfig\folder"));
 
-            yield return new object[] { s.GetPackage("LX4Cnh"), "LX4Cnh", "1.1.0", "net472" };
+            yield return [ s.GetPackage("LX4Cnh"), "LX4Cnh", "1.1.0", "net472" ];
 
             PackagesConfig s2 = new(TestData.GetPathTo(@"PackagesConfig\packages.1.txt"), customLoad);
 
-            yield return new object[] { s2.Packages.ElementAt(0), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" };
-            yield return new object[] { s2.GetPackage("vssolutionbuildevent", true), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" };
-            yield return new object[] { s2.Packages.ElementAt(1), "Conari", "1.5", "net472" };
+            yield return [ s2.Packages.ElementAt(0), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" ];
+            yield return [ s2.GetPackage("vssolutionbuildevent", true), "vsSolutionBuildEvent", "1.14.1.1", null, "vsSBE" ];
+            yield return [ s2.Packages.ElementAt(1), "Conari", "1.5", "net472" ];
 
             PackagesConfig s3 = new(TestData.GetPathTo(@"PackagesConfig\packages.2.txt"), customLoad);
 
-            yield return new object[] { s3.GetPackage("EnvDTE"), "EnvDTE", "8.0.2", "net45" };
-            yield return new object[] { s3.GetPackage("EnvDTE80"), "EnvDTE80", "8.0.3", null };
-            yield return new object[] { s3.GetPackage("stdole"), "stdole", "7.0.3303", "net10" };
+            yield return [ s3.GetPackage("EnvDTE"), "EnvDTE", "8.0.2", "net45" ];
+            yield return [ s3.GetPackage("EnvDTE80"), "EnvDTE80", "8.0.3", null ];
+            yield return [ s3.GetPackage("stdole"), "stdole", "7.0.3303", "net10" ];
         }
 
 #if !NET40
@@ -50,7 +52,7 @@ namespace MvsSlnTest.Projects
             else
             {
                 Assert.NotNull(p.Meta);
-                Assert.Equal(1, p.Meta.Count);
+                Assert.Single(p.Meta);
 
                 if(tfm != null) Assert.Equal(tfm, p.Meta[PackageInfo.ATTR_TFM]);
                 if(output != null) Assert.Equal(output, p.Meta[PackageInfo.ATTR_OUT]);
@@ -87,13 +89,13 @@ namespace MvsSlnTest.Projects
             Assert.Equal(2, pkg.Packages.Count());
         }
 
-        public static IEnumerable<object[]> GetFailedContent()
-        {
-            yield return new object[] { TestData.GetPathTo(@"PackagesConfig\packages.3.txt") };
-            yield return new object[] { TestData.GetPathTo(@"PackagesConfig\packages.4.txt") };
-        }
-
 #if !NET40
+        public static TheoryData<string> GetFailedContent() => new()
+        {
+            TestData.GetPathTo(@"PackagesConfig\packages.3.txt"),
+            TestData.GetPathTo(@"PackagesConfig\packages.4.txt"),
+        };
+
         [Theory]
         [MemberData(nameof(GetFailedContent))]
         public void LoadTest2(string input)

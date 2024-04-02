@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using net.r_eg.MvsSln;
 using Xunit;
 
@@ -7,20 +6,19 @@ namespace MvsSlnTest
 {
     public class SlnItemsTest
     {
-        public static IEnumerable<object[]> GetAnSlnItemsAll()
-        {
-            yield return new object[] { SlnItems.All, SlnItems.LoadMinimalDefaultData };
-
-            yield return new object[] { SlnItems.AllMinimal, SlnItems.LoadDefaultData, 
-                                                             SlnItems.PackagesConfigLegacy };
-
-            yield return new object[] { SlnItems.AllNoLoad, SlnItems.LoadDefaultData, 
-                                                            SlnItems.LoadMinimalDefaultData, 
-                                                            SlnItems.PackagesConfigLegacy, 
-                                                            SlnItems.PackagesConfigSolution };
-        }
-
 #if !NET40
+        public static TheoryData<SlnItems, SlnItems[]> GetAnSlnItemsAll() => new()
+        {
+            { SlnItems.All, [ SlnItems.LoadMinimalDefaultData ] },
+
+            { SlnItems.AllMinimal, [ SlnItems.LoadDefaultData, SlnItems.PackagesConfigLegacy ] },
+
+            { SlnItems.AllNoLoad, [ SlnItems.LoadDefaultData,
+                                    SlnItems.LoadMinimalDefaultData,
+                                    SlnItems.PackagesConfigLegacy,
+                                    SlnItems.PackagesConfigSolution ] },
+        };
+
         [Theory]
         [MemberData(nameof(GetAnSlnItemsAll))]
         public void AllItemsTest2(SlnItems input, params SlnItems[] ignoring)
@@ -42,7 +40,7 @@ namespace MvsSlnTest
 
                     if(failed)
                     {
-                        Assert.False(true, $"`{input}` is not completed. Found `{v}`");
+                        Assert.Fail($"`{input}` is not completed. Found `{v}`");
                     }
                 }
             }

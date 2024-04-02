@@ -88,14 +88,14 @@ namespace MvsSlnTest.Extensions
             Assert.Equal(sb.ToString(), sbf.ToString());
         }
 
-        public static IEnumerable<object[]> GetArrStringData()
+        public static TheoryData<string[]> GetArrStringData() => new()
         {
-            yield return new object[] { new string[] { "one", "two", "three", "four", "five" } };
-            yield return new object[] { new string[] { "one" } };
-            yield return new object[] { EmptyArray<string>() };
-            yield return new object[] { null };
-            yield return new object[] { new string[] { "one", "two" } };
-        }
+            { new string[] { "one", "two", "three", "four", "five" } },
+            { new string[] { "one" } },
+            { EmptyArray<string>() },
+            { null },
+            { new string[] { "one", "two" } }
+        };
 
         [Theory]
         [InlineData("\r\n")]
@@ -121,6 +121,7 @@ namespace MvsSlnTest.Extensions
             Assert.Equal(nl ?? Environment.NewLine, handlers[typeof(LNestedProjects)].handler.NewLine);
         }
 
+#pragma warning disable IDE1006 // Naming Styles
         private sealed class _WhandlerA: WAbstract
         {
             public override string Extract(object _) => nameof(_WhandlerA);
@@ -130,6 +131,8 @@ namespace MvsSlnTest.Extensions
         {
             public override string Extract(object _) => nameof(_WhandlerB);
         }
+#pragma warning restore IDE1006 // Naming Styles
+
 #endif
     }
 }

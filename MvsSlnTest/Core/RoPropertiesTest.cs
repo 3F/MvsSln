@@ -31,18 +31,18 @@ namespace MvsSlnTest.Core
 
         public static IEnumerable<object[]> GetDictData()
         {
-            yield return new object[] { new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bbb" }, { 3, "ccc" } }, true};
-            yield return new object[] { new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bxb" }, { 3, "ccc" } } };
-            yield return new object[] { new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bbb" }, { 4, "ccc" } } };
-            yield return new object[] { new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bbb" }, { 3, "ccc" }, { 4, "ddd" } } };
-            yield return new object[] { new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bbb" } } };
-            yield return new object[] { new Dictionary<int, string>() { { 1, "aa" }, { 2, "bbb" }, { 3, "ccc" } } };
-            yield return new object[] { new Dictionary<int, string>() { { 1, "aaA" }, { 2, "bbb" }, { 3, "ccc" } } };
+            yield return [ new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bbb" }, { 3, "ccc" } }, true ];
+            yield return [ new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bxb" }, { 3, "ccc" } } ];
+            yield return [ new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bbb" }, { 4, "ccc" } } ];
+            yield return [ new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bbb" }, { 3, "ccc" }, { 4, "ddd" } } ];
+            yield return [ new Dictionary<int, string>() { { 1, "aaa" }, { 2, "bbb" } } ];
+            yield return [ new Dictionary<int, string>() { { 1, "aa" }, { 2, "bbb" }, { 3, "ccc" } } ];
+            yield return [ new Dictionary<int, string>() { { 1, "aaA" }, { 2, "bbb" }, { 3, "ccc" } } ];
 
 #if FEATURE_EXACT_ROP_ORDER_CMP
-            yield return new object[] { new Dictionary<int, string>() { { 2, "bbb" }, { 1, "aaa" }, { 3, "ccc" } }, false };
+            yield return [ new Dictionary<int, string>() { { 2, "bbb" }, { 1, "aaa" }, { 3, "ccc" } }, false ];
 #else
-            yield return new object[] { new Dictionary<int, string>() { { 2, "bbb" }, { 1, "aaa" }, { 3, "ccc" } }, true };
+            yield return [ new Dictionary<int, string>() { { 2, "bbb" }, { 1, "aaa" }, { 3, "ccc" } }, true ];
 #endif
         }
     }

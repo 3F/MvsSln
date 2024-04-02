@@ -52,7 +52,6 @@
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <Configurations>Debug;Release;PublicRelease</Configurations>
     <NoWarn>1701;1702;CS1591</NoWarn>
-    <LangVersion>latest</LangVersion>
     <PackageIconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</PackageIconUrl>
   </PropertyGroup>
 
