@@ -87,6 +87,7 @@ namespace net.r_eg.MvsSln.Core
 
         #region DebuggerDisplay
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DbgDisplay
         {
             get => $"{(Ignore ? "x: " : "")}[{Handler?.GetType().Name}] #{Line}:'{Raw}'";

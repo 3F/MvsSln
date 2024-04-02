@@ -93,6 +93,7 @@ namespace net.r_eg.MvsSln.Projects
 
         #region DebuggerDisplay
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly string DbgDisplay => $"{project} - {label} [{condition}]";
 
         #endregion

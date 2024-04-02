@@ -70,6 +70,7 @@ namespace net.r_eg.MvsSln.Core
 
         #region DebuggerDisplay
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DbgDisplay => data;
 
         #endregion

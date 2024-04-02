@@ -155,6 +155,7 @@ namespace net.r_eg.MvsSln.Core
 
         #region DebuggerDisplay
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DbgDisplay
         {
             get => $"{header.name} [^{header.parent?.Value?.header.name}] = {items?.Count()} [{header.pGuid}]";

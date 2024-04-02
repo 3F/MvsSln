@@ -231,6 +231,7 @@ namespace net.r_eg.MvsSln.Core
 
         #region DebuggerDisplay
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly string DbgDisplay
         {
             get => $"{name} [^{parent?.Value?.header.name}] [{pGuid}] = {path}";

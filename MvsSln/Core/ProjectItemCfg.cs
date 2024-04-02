@@ -21,6 +21,7 @@ namespace net.r_eg.MvsSln.Core
 
         public readonly IConfPlatformPrj projectConfig = prj;
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DbgDisplay => $"{project.name} ({projectConfig}) [{project.pGuid}]";
     }
 }
