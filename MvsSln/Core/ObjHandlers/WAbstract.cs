@@ -11,16 +11,17 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
     public abstract class WAbstract: IObjHandler
     {
-        /// <summary>
-        /// Default indent.
-        /// </summary>
+        [Obsolete("Use modern LineBuilder")]
         public const string SP = "\t";
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
+        protected LineBuilder lbuilder = new();
+
+        public string NewLine
+        {
+            get => lbuilder.NewLine;
+            set => lbuilder.NewLine = value;
+        }
+
         public abstract string Extract(object data);
 
         /// <summary>

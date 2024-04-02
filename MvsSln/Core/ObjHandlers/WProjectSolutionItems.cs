@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
@@ -19,42 +18,34 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// </summary>
         protected IEnumerable<SolutionFolder> folders;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            lbuilder.Clear();
 
-            foreach(var folder in folders)
+            foreach(SolutionFolder folder in folders)
             {
-                var prj = folder.header;
+                ProjectItem prj = folder.header;
 
-                sb.AppendLine(
+                lbuilder.AppendLine
+                (
                     $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
-                );
+                )
+                .AppendLv1Line("ProjectSection(SolutionItems) = preProject");
 
-                sb.AppendLine($"{SP}ProjectSection(SolutionItems) = preProject");
+                {
+                    folder.items.ForEach(item => lbuilder.AppendLv2Line($"{item} = {item}"));
+                }
 
-                    folder.items.ForEach(item => sb.AppendLine($"{SP}{SP}{item} = {item}"));
-
-                sb.AppendLine($"{SP}EndProjectSection");
-
-                sb.AppendLine("EndProject");
+                lbuilder.AppendLv1Line("EndProjectSection").AppendLine("EndProject");
             }
 
-            if(sb.Length > 1) {
-                return sb.ToString(0, sb.Length - Environment.NewLine.Length);
-            }
-            return String.Empty;
+            return lbuilder.ToString(removeNewLine: true);
         }
 
         /// <param name="folders">List of solution folders.</param>
         public WProjectSolutionItems(IEnumerable<SolutionFolder> folders)
         {
-            this.folders = folders ?? throw new ArgumentNullException();
+            this.folders = folders ?? throw new ArgumentNullException(nameof(folders));
         }
     }
 }

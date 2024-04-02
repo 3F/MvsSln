@@ -10,9 +10,15 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
     public interface IObjHandler: IHandler
     {
         /// <summary>
+        /// Specifies the EOL character (or a sequence of characters) for this <see cref="IObjHandler"/>.
+        /// </summary>
+        /// <remarks>Platform independent. Alternatively see <see cref="System.Environment.NewLine"/></remarks>
+        string NewLine { get; set; }
+
+        /// <summary>
         /// To extract prepared raw-data.
         /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
+        /// <param name="data">Any object data which is ready for this <see cref="IObjHandler"/>.</param>
         /// <returns>Final part of sln data.</returns>
         string Extract(object data);
     }

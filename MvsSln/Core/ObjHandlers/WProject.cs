@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
@@ -24,47 +23,39 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// </summary>
         protected ISlnProjectDependencies projectDependencies;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            lbuilder.Clear();
 
-            foreach(var prj in projectItems)
+            foreach(ProjectItem prj in projectItems)
             {
-                sb.AppendLine(
+                lbuilder.AppendLine(
                     $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
                 );
 
                 if(projectDependencies.Dependencies.ContainsKey(prj.pGuid) 
                     && projectDependencies.Dependencies[prj.pGuid].Count > 0)
                 {
-                    sb.AppendLine($"{SP}ProjectSection(ProjectDependencies) = postProject");
+                    lbuilder.AppendLv1Line("ProjectSection(ProjectDependencies) = postProject");
 
                         projectDependencies.Dependencies[prj.pGuid]
-                                           .ForEach(dep => sb.AppendLine($"{SP}{SP}{dep} = {dep}"));
+                                           .ForEach(dep => lbuilder.AppendLv2Line($"{dep} = {dep}"));
 
-                    sb.AppendLine($"{SP}EndProjectSection");
+                    lbuilder.AppendLv1Line("EndProjectSection");
                 }
 
-                sb.AppendLine("EndProject");
+                lbuilder.AppendLine("EndProject");
             }
 
-            if(sb.Length > 1) {
-                return sb.ToString(0, sb.Length - Environment.NewLine.Length);
-            }
-            return String.Empty;
+            return lbuilder.ToString(removeNewLine: true);
         }
 
         /// <param name="pItems">List of projects in solution.</param>
         /// <param name="deps">Solution Project Dependencies.</param>
         public WProject(IEnumerable<ProjectItem> pItems, ISlnProjectDependencies deps)
         {
-            projectItems        = pItems ?? throw new ArgumentNullException();
-            projectDependencies = deps ?? throw new ArgumentNullException();
+            projectItems        = pItems ?? throw new ArgumentNullException(nameof(pItems));
+            projectDependencies = deps ?? throw new ArgumentNullException(nameof(deps));
         }
     }
 }

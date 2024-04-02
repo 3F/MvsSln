@@ -380,20 +380,18 @@ public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
 
     public override string Extract(object data)
     {
-        var sb = new StringBuilder();
+        LineBuilder lb = new();
 
-        sb.AppendLine($"{SP}GlobalSection(SolutionConfigurationPlatforms) = preSolution");
+        lb.AppendLv1Line("GlobalSection(SolutionConfigurationPlatforms) = preSolution");
 
-        configs.ForEach(cfg => sb.AppendLine($"{SP}{SP}{cfg} = {cfg}"));
+        configs.ForEach(cfg => lb.AppendLv2Line($"{cfg} = {cfg}"));
 
-        sb.Append($"{SP}EndGlobalSection");
-
-        return sb.ToString();
+        return lb.AppendLv1("EndGlobalSection").ToString();
     }
 
     public WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
     {
-        this.configs = configs ?? throw new ArgumentNullException();
+        this.configs = configs ?? throw new ArgumentNullException(nameof(configs));
     }
 }
 ```

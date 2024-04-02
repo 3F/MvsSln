@@ -6,7 +6,6 @@
 */
 
 using System;
-using System.Text;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
@@ -17,31 +16,29 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// </summary>
         protected SlnHeader header;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            lbuilder.Clear();
 
-            string fmt = String.Format("{0}.{1:00}", header.FormatVersion.Major, header.FormatVersion.Minor);
-            sb.AppendLine($"Microsoft Visual Studio Solution File, Format Version {fmt}");
+            string fmt = string.Format("{0}.{1:00}", header.FormatVersion.Major, header.FormatVersion.Minor);
+            lbuilder.AppendLine($"Microsoft Visual Studio Solution File, Format Version {fmt}");
 
-            if(header.ProgramVersion != null) {
-                sb.AppendLine($"# Visual Studio {header.ProgramVersion}");
+            if(header.ProgramVersion != null)
+            {
+                lbuilder.AppendLine($"# Visual Studio {header.ProgramVersion}");
             }
 
-            if(header.VisualStudioVersion != null) {
-                sb.AppendLine($"VisualStudioVersion = {header.VisualStudioVersion.ToString()}");
+            if(header.VisualStudioVersion != null)
+            {
+                lbuilder.AppendLine($"VisualStudioVersion = {header.VisualStudioVersion}");
             }
 
-            if(header.MinimumVisualStudioVersion != null) {
-                sb.AppendLine($"MinimumVisualStudioVersion = {header.MinimumVisualStudioVersion.ToString()}");
+            if(header.MinimumVisualStudioVersion != null)
+            {
+                lbuilder.AppendLine($"MinimumVisualStudioVersion = {header.MinimumVisualStudioVersion}");
             }
 
-            return sb.ToString(0, sb.Length - Environment.NewLine.Length);
+            return lbuilder.ToString(removeNewLine: true);
         }
 
         public WVisualStudioVersion(SlnHeader header)

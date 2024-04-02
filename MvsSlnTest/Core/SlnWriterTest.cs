@@ -90,7 +90,7 @@ namespace MvsSlnTest.Core
             RwChecker.Check(sln, []);
             RwChecker.Check(sln, new()
             {
-                [typeof(LProject)] = new HandlerValue(new WProject(sln.Result.ProjectItems, sln.Result.ProjectDependencies)),
+                [typeof(LProject)] = new(new WProject(sln.Result.ProjectItems, sln.Result.ProjectDependencies)),
             });
         }
     }

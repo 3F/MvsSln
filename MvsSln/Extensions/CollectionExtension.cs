@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Core.ObjHandlers;
 
 namespace net.r_eg.MvsSln.Extensions
 {
@@ -98,6 +99,15 @@ namespace net.r_eg.MvsSln.Extensions
                 }
             }
             return false;
+        }
+
+        public static IDictionary<Type, HandlerValue> UpdateNewLine(this IDictionary<Type, HandlerValue> handlers, string newline)
+        {
+            handlers?.ForEach(h =>
+            {
+                if(h.Value.handler != null) h.Value.handler.NewLine = newline;
+            });
+            return handlers;
         }
     }
 }
