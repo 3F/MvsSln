@@ -185,7 +185,7 @@ namespace net.r_eg.MvsSln.Core
         /// Sets or adds properties inside group.
         /// To remove group, just delete all properties inside.
         /// </summary>
-        /// <param name="properties">List of properties name=unevaluatedValue.</param>
+        /// <param name="properties">List of properties name=unevaluated.</param>
         /// <param name="condition">Optional 'Condition' attr for group.</param>
         void SetProperties(IEnumerable<KeyValuePair<string, string>> properties, string condition = null);
 

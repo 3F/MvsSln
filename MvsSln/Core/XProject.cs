@@ -340,7 +340,7 @@ namespace net.r_eg.MvsSln.Core
         /// Sets or adds properties inside group.
         /// To remove group, just delete all properties inside.
         /// </summary>
-        /// <param name="properties">List of properties name=unevaluatedValue.</param>
+        /// <param name="properties">List of properties name=unevaluated.</param>
         /// <param name="condition">Optional 'Condition' attr for group.</param>
         public void SetProperties(IEnumerable<KeyValuePair<string, string>> properties, string condition = null)
         {
@@ -360,9 +360,9 @@ namespace net.r_eg.MvsSln.Core
                 group.Condition = condition;
             }
 
-            foreach(var prop in properties)
+            foreach(PropertyItem prop in properties)
             {
-                var ret = group.SetProperty(prop.name, prop.unevaluatedValue);
+                var ret = group.SetProperty(prop.name, prop.unevaluated);
                 if(prop.condition != null) {
                     ret.Condition = prop.condition;
                 }
@@ -760,7 +760,7 @@ namespace net.r_eg.MvsSln.Core
 
         protected Item GetItem(Microsoft.Build.Evaluation.ProjectItem eItem)
         {
-            return (eItem == null) ? default : new Item(eItem) { parentProject = this };
+            return (eItem == null) ? default : new Item(eItem, parentProject: this);
         }
 
         protected ImportElement GetImportElement(ProjectImportElement element)

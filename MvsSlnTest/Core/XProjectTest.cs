@@ -22,7 +22,7 @@ namespace MvsSlnTest.Core
 
                 Assert.Null(project.GetProperty("NOT_REAL_PROPERTY").name);
                 Assert.Equal("MyProperty1", project.SetProperty("MyProperty1", "Value1").name);
-                Assert.Equal("Value1", project.GetProperty("MyProperty1").evaluatedValue);
+                Assert.Equal("Value1", project.GetProperty("MyProperty1").evaluated);
 
                 Assert.False(project.RemoveProperty("NOT_REAL_PROPERTY_2"));
                 Assert.True(project.RemoveProperty("MyProperty1"));
@@ -45,8 +45,8 @@ namespace MvsSlnTest.Core
                 var prop = project.GetProperty("Platform", false);
 
                 Assert.Equal("Platform", prop.name);
-                Assert.Equal("x86", prop.unevaluatedValue);
-                Assert.Equal("x86", prop.evaluatedValue);
+                Assert.Equal("x86", prop.unevaluated);
+                Assert.Equal("x86", prop.evaluated);
                 Assert.NotNull(prop.parentProperty);
                 Assert.Null(prop.parentProperty.Xml);
                 Assert.NotNull(prop.parentProject);
@@ -67,8 +67,8 @@ namespace MvsSlnTest.Core
                 var prop = project.GetProperty("Platform", true);
 
                 Assert.Null(prop.name);
-                Assert.Null(prop.unevaluatedValue);
-                Assert.Null(prop.evaluatedValue);
+                Assert.Null(prop.unevaluated);
+                Assert.Null(prop.evaluated);
                 Assert.Null(prop.parentProperty);
                 Assert.NotNull(prop.parentProject);
             }
@@ -108,13 +108,13 @@ namespace MvsSlnTest.Core
             {
                 IXProject project = sln.Result.Env.Projects.FirstOrDefault();
 
-                Assert.Null(project.GetItem("Reference", "NOT_REAL_INC").evaluatedInclude);
+                Assert.Null(project.GetItem("Reference", "NOT_REAL_INC").evaluated);
                 Assert.True(project.AddItem("Reference", "MyInclude"));
-                Assert.Equal("MyInclude", project.GetItem("Reference", "MyInclude").evaluatedInclude);
+                Assert.Equal("MyInclude", project.GetItem("Reference", "MyInclude").evaluated);
 
                 Assert.False(project.RemoveItem("Reference", "NOT_REAL_INC"));
                 Assert.True(project.RemoveItem("Reference", "MyInclude"));
-                Assert.Null(project.GetItem("Reference", "MyInclude").evaluatedInclude);
+                Assert.Null(project.GetItem("Reference", "MyInclude").evaluated);
             }
         }
     }

@@ -7,7 +7,6 @@
 
 using System;
 using System.Diagnostics;
-using Microsoft.Build.Construction;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 
@@ -34,7 +33,7 @@ namespace net.r_eg.MvsSln.Projects
         /// <summary>
         /// Access to parent element.
         /// </summary>
-        public ProjectImportElement parentElement;
+        public Microsoft.Build.Construction.ProjectImportElement parentElement;
 
         /// <summary>
         /// Link to parent container.
@@ -63,17 +62,30 @@ namespace net.r_eg.MvsSln.Projects
             parentProject
         );
 
-        public ImportElement(ProjectImportElement element, IXProject parentProject)
-            : this(element)
+        public ImportElement(string project, string condition = null, IXProject parentProject = null)
+            : this(project, condition, label: null, parentProject)
         {
+
+        }
+
+        public ImportElement(string project, string condition, string label = null, IXProject parentProject = null)
+        {
+            this.project = project;
+            this.condition = condition;
+            this.label = label;
             this.parentProject = parentProject;
         }
 
-        public ImportElement(ProjectImportElement element)
+        public ImportElement(Microsoft.Build.Construction.ProjectImportElement element, IXProject parentProject)
+            : this(element)
+        {
+            this.parentProject = parentProject ?? throw new ArgumentNullException(nameof(parentProject));
+        }
+
+        public ImportElement(Microsoft.Build.Construction.ProjectImportElement element)
             : this()
         {
             parentElement   = element ?? throw new ArgumentNullException(nameof(element));
-
             project         = element.Project;
             condition       = element.Condition;
             label           = element.Label;

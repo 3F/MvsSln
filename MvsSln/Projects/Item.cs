@@ -26,12 +26,12 @@ namespace net.r_eg.MvsSln.Projects
         /// <summary>
         /// The unevaluated value of the Include attribute.
         /// </summary>
-        public string unevaluatedInclude;
+        public string unevaluated;
 
         /// <summary>
         /// The evaluated value of the Include attribute.
         /// </summary>
-        public string evaluatedInclude;
+        public string evaluated;
 
         /// <summary>
         /// True if this item originates from an imported file.
@@ -92,17 +92,12 @@ namespace net.r_eg.MvsSln.Projects
         public IXProject parentProject;
 
         /// <summary>
-        /// Value of <see cref="evaluatedInclude"/> if not null, otherwise <see cref="unevaluatedInclude"/>
-        /// </summary>
-        public readonly string Include => evaluatedInclude ?? unevaluatedInclude;
-
-        /// <summary>
         /// Try to extract assembly information, e.g.:
         /// Include="DllExport, Version=1.5.1.35977, Culture=neutral, PublicKeyToken=8337224c9ad9e356, processorArchitecture=MSIL"
         /// Include="System.Core"
         /// ...
         /// </summary>
-        public readonly AsmData Assembly => MakeAssemblyInfo(Include);
+        public readonly AsmData Assembly => MakeAssemblyInfo(evaluated ?? unevaluated);
 
         public sealed class AsmData(AssemblyName asm = null)
         {
@@ -120,8 +115,8 @@ namespace net.r_eg.MvsSln.Projects
             if(obj is null || obj is not Item b) return false;
 
             return type == b.type
-                && unevaluatedInclude == b.unevaluatedInclude
-                && evaluatedInclude == b.evaluatedInclude
+                && unevaluated == b.unevaluated
+                && evaluated == b.evaluated
                 && isImported == b.isImported
                 && meta == b.meta;
         }
@@ -129,24 +124,49 @@ namespace net.r_eg.MvsSln.Projects
         public override readonly int GetHashCode() => 0.CalculateHashCode
         (
             type,
-            unevaluatedInclude,
-            evaluatedInclude,
+            unevaluated,
+            evaluated,
             isImported,
             meta,
             parentItem,
             parentProject
         );
 
+        public Item(string evaluated, RoProperties<string, Metadata> meta = null, IXProject parentProject = null)
+            : this(evaluated, evaluated, meta, parentProject)
+        {
+
+        }
+
+        public Item(string unevaluated, string evaluated, string type, RoProperties<string, Metadata> meta = null, IXProject parentProject = null)
+        {
+            this.unevaluated = unevaluated;
+            this.evaluated = evaluated;
+            this.type = type;
+            this.meta = meta;
+            this.parentProject = parentProject;
+        }
+
+        public Item(string unevaluated, string evaluated, RoProperties<string, Metadata> meta = null, IXProject parentProject = null)
+            : this(unevaluated, evaluated, type: null, meta, parentProject)
+        {
+            
+        }
+
+        public Item(Microsoft.Build.Evaluation.ProjectItem eItem, IXProject parentProject)
+            : this(eItem)
+        {
+            this.parentProject = parentProject ?? throw new ArgumentNullException(nameof(parentProject));
+        }
+
         public Item(Microsoft.Build.Evaluation.ProjectItem eItem)
             : this()
         {
-            if(eItem == null) throw new ArgumentNullException(nameof(eItem));
-
-            type                = eItem.ItemType;
-            unevaluatedInclude  = eItem.UnevaluatedInclude;
-            evaluatedInclude    = eItem.EvaluatedInclude;
-            isImported          = eItem.IsImported;
-            parentItem          = eItem;
+            parentItem      = eItem ?? throw new ArgumentNullException(nameof(eItem));
+            type            = eItem.ItemType;
+            unevaluated     = eItem.UnevaluatedInclude;
+            evaluated       = eItem.EvaluatedInclude;
+            isImported      = eItem.IsImported;
 
             meta = eItem.DirectMetadata.Select(m => new KeyValuePair<string, Metadata>
             (
@@ -165,9 +185,21 @@ namespace net.r_eg.MvsSln.Projects
             return new AsmData(new AssemblyName(name));
         }
 
+        #region Obsolete fields
+        #pragma warning disable IDE1006
+
+        [Obsolete("Renamed as " + nameof(unevaluated))]
+        public readonly string unevaluatedValue => unevaluated;
+
+        [Obsolete("Renamed as " + nameof(evaluated))]
+        public readonly string evaluatedValue => evaluated;
+
+        #pragma warning restore IDE1006
+        #endregion
+
         #region DebuggerDisplay
 
-        private readonly string DbgDisplay => $"{type} = {evaluatedInclude} [{unevaluatedInclude}]";
+        private readonly string DbgDisplay => $"{type} = {evaluated} [{unevaluated}]";
 
         #endregion
     }
