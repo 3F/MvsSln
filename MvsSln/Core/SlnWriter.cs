@@ -21,9 +21,9 @@ namespace net.r_eg.MvsSln.Core
 {
     public class SlnWriter: IDisposable
     {
-        protected StreamWriter stream;
-
         private static readonly SemaphoreSlim semsync = new(initialCount: 1, maxCount: 1);
+
+        protected readonly StreamWriter stream;
 
         /// <summary>
         /// Available writers to process sections.
@@ -136,14 +136,38 @@ namespace net.r_eg.MvsSln.Core
         {
             stream      = writer ?? throw new ArgumentNullException(nameof(writer));
             Handlers    = handlers ?? throw new ArgumentNullException(nameof(handlers));
+
+            IObjHandler first = handlers.Values.FirstOrDefault().handler;
+            if(first != null)
+            {
+                stream.NewLine = first.NewLine;
+            }
+        }
+
+        /// <summary>
+        /// Custom stream implementation using <see cref="SlnWriter"/> logic.
+        /// </summary>
+        protected SlnWriter()
+        {
+
         }
 
         protected virtual void CheckStreamForString()
         {
             if(stream?.BaseStream is not MemoryStream)
             {
-                throw new NotSupportedException($"{stream.BaseStream.GetType()} is not {nameof(MemoryStream)}");
+                throw new NotSupportedException($"{stream?.BaseStream.GetType()} is not {nameof(MemoryStream)}");
             }
+        }
+
+        /// <returns>
+        /// Returns new <see cref="StreamReader"/> but do NOT dispose it because this is from BaseStream 
+        /// that will be disposed along with <see cref="SlnWriter"/>.
+        /// </returns>
+        protected virtual StreamReader GetReaderForString()
+        {
+            FlushAndReset();
+            return new StreamReader(stream.BaseStream, stream.Encoding);
         }
 
 #if !NET40
@@ -274,6 +298,7 @@ namespace net.r_eg.MvsSln.Core
 
         protected virtual async Task WriteAsync(string raw)
         {
+            if(stream == null) throw new NotSupportedException(MsgR._0_IsEmptyOrNull.Format(nameof(stream)));
             await stream.WriteLineAsync(raw);
         }
 
@@ -281,6 +306,7 @@ namespace net.r_eg.MvsSln.Core
 
         protected virtual void Write(string raw)
         {
+            if(stream == null) throw new NotSupportedException(MsgR._0_IsEmptyOrNull.Format(nameof(stream)));
             stream.WriteLine(raw);
         }
 
@@ -297,19 +323,9 @@ namespace net.r_eg.MvsSln.Core
             }
         }
 
-        /// <returns>
-        /// Returns new <see cref="StreamReader"/> but do NOT dispose it because this is from BaseStream 
-        /// that will be disposed along with <see cref="SlnWriter"/>.
-        /// </returns>
-        private StreamReader GetReaderForString()
-        {
-            FlushAndReset();
-            return new StreamReader(stream.BaseStream, stream.Encoding);
-        }
-
         private SlnWriter FlushAndReset()
         {
-            if(stream.BaseStream.Position > 0)
+            if(stream?.BaseStream.Position > 0)
             {
                 stream.Flush();
                 stream.BaseStream.Position = 0;

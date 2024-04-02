@@ -19,6 +19,7 @@ namespace MvsSlnTest.Core
                                             | SlnItems.SolutionConfPlatforms
                                             | SlnItems.ProjectConfPlatforms
                                             | SlnItems.ProjectDependencies
+                                            | SlnItems.Header
                                             | SlnItems.Map;
 
         [Fact]
@@ -111,9 +112,10 @@ namespace MvsSlnTest.Core
 
             Dictionary<Type, HandlerValue> handlers = new()
             {
-                [typeof(LProject)] = new(),
-                [typeof(LProjectConfigurationPlatforms)] = new(),
+                [typeof(LVisualStudioVersion)] = new(new WVisualStudioVersion(SlnHeader.MakeDefault())),
                 [typeof(LSolutionConfigurationPlatforms)] = new(),
+                [typeof(LProject)] = new(new WProject(sln.Result.ProjectItems, sln.Result.ProjectDependencies)),
+                [typeof(LProjectConfigurationPlatforms)] = new(new WProjectConfigurationPlatforms(sln.Result.ProjectConfigs)),
             };
 
             using SlnWriter w = new(handlers);
