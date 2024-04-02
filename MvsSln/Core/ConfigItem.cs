@@ -66,16 +66,13 @@ namespace net.r_eg.MvsSln.Core
                     && PlatformByRuleICase == b.PlatformByRuleICase;
         }
 
-        public override int GetHashCode()
-        {
-            return 0.CalculateHashCode
-            (
-                Configuration,
-                Platform,
-                Rule,
-                SensitivityComparing
-            );
-        }
+        public override int GetHashCode() => 0.CalculateHashCode
+        (
+            Configuration,
+            Platform,
+            Rule,
+            SensitivityComparing
+        );
 
         public override string ToString() => Format(Configuration, Platform);
 

@@ -4,7 +4,7 @@ namespace net.r_eg.MvsSln
 {
     using System;
 
-    public struct MvsSlnVersion
+    public readonly struct MvsSlnVersion
     {
         public static readonly Version number = new Version(S_NUM_REV);
 

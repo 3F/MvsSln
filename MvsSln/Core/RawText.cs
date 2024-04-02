@@ -12,16 +12,16 @@ using net.r_eg.MvsSln.Extensions;
 namespace net.r_eg.MvsSln.Core
 {
     [DebuggerDisplay("{DbgDisplay}")]
-    public struct RawText
+    public readonly struct RawText
     {
-        public Encoding encoding;
+        public readonly Encoding encoding;
 
-        public string data;
+        public readonly string data;
 
         /// <summary>
         /// data without whitespace characters.
         /// </summary>
-        public string trimmed;
+        public readonly string trimmed;
 
         public static implicit operator string(RawText raw) => raw.ToString();
 
@@ -33,26 +33,19 @@ namespace net.r_eg.MvsSln.Core
 
         public override bool Equals(object obj)
         {
-            if(obj is null || !(obj is RawText)) {
-                return false;
-            }
-
-            var b = (RawText)obj;
+            if(obj is null || obj is not RawText b) return false;
 
             return data == b.data
                     && trimmed == b.trimmed
                     && encoding == b.encoding;
         }
 
-        public override int GetHashCode()
-        {
-            return 0.CalculateHashCode
-            (
-                data,
-                trimmed,
-                encoding
-            );
-        }
+        public override int GetHashCode() => 0.CalculateHashCode
+        (
+            data,
+            trimmed,
+            encoding
+        );
 
         public override string ToString()
         {
@@ -77,10 +70,7 @@ namespace net.r_eg.MvsSln.Core
 
         #region DebuggerDisplay
 
-        private string DbgDisplay
-        {
-            get => data;
-        }
+        private string DbgDisplay => data;
 
         #endregion
     }

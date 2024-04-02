@@ -42,13 +42,10 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return a.pGuid == b.pGuid && a.csln == b.csln && a.cprj == b.cprj;
             }
 
-            public int GetHashCode(Cortege x)
-            {
-                return 0.CalculateHashCode
-                (
-                    x.pGuid, x.csln, x.cprj
-                );
-            }
+            public int GetHashCode(Cortege x) => 0.CalculateHashCode
+            (
+                x.pGuid, x.csln, x.cprj
+            );
         }
 
         public override bool IsActivated(ISvc svc)
