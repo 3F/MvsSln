@@ -8,48 +8,50 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
-    /// <summary>
-    /// TODO: review
-    /// </summary>
-    internal struct CoHandlers
+    internal sealed class CoHandlers
     {
-        public HashSet<Type> set;
+#if FEATURE_COH_EXT
 
-        public Dictionary<Guid, bool> has;
+        public readonly HashSet<Type> set;
 
-        public IEnumerable<ISlnHandler> handlers;
+        public readonly IEnumerable<ISlnHandler> handlers;
 
-        public bool Contains(Guid id)
-        {
-            return has.ContainsKey(id) && has[id];
-        }
+        public readonly Dictionary<Guid, bool> has;
+#else
 
-        /// <param name="slnHandlers"></param>
+        private readonly Dictionary<Guid, bool> has;
+#endif
+
+        public bool Contains(Guid id) => has.ContainsKey(id) && has[id];
+
         public CoHandlers(IEnumerable<ISlnHandler> slnHandlers)
         {
+#if FEATURE_COH_EXT
+            set = [];
+#else
+            IEnumerable<ISlnHandler> handlers;
+#endif
             handlers = slnHandlers ?? throw new ArgumentNullException(nameof(slnHandlers));
 
-            set = new HashSet<Type>();
-            has = new Dictionary<Guid, bool>();
+            has = [];
 
             foreach(ISlnHandler h in handlers)
             {
-                if(h.CoHandlers == null || h.CoHandlers.Count < 1) {
-                    continue;
-                }
+                if(h.CoHandlers == null || h.CoHandlers.Count < 1) continue;
 
-                var registered = h.CoHandlers.Intersect(
+                IEnumerable<Type> registered = h.CoHandlers.Intersect
+                (
                     handlers.Select(r => r.GetType())
                 );
 
                 has[h.Id] = registered.Any();
 
-                var _this = this;
-                registered.ForEach(t => _this.set.Add(t));
+#if FEATURE_COH_EXT
+                foreach(Type t in registered) set.Add(t);
+#endif
             }
         }
     }

@@ -12,19 +12,18 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
     using static net.r_eg.MvsSln.Core.Keywords;
 
-    public class WVisualStudioVersion: WAbstract, IObjHandler
+    public class WVisualStudioVersion(SlnHeader header): WAbstract, IObjHandler
     {
         /// <summary>
         /// Header information.
         /// </summary>
-        protected SlnHeader header;
+        protected SlnHeader header = header ?? throw new ArgumentNullException(MsgR._0_IsRequired.Format(nameof(header.FormatVersion)));
 
         public override string Extract(object data)
         {
             lbuilder.Clear();
 
-            string fmt = string.Format("{0}.{1:00}", header.FormatVersion.Major, header.FormatVersion.Minor);
-            lbuilder.AppendLine($"Microsoft Visual Studio Solution File, Format Version {fmt}");
+            lbuilder.AppendLine($"Microsoft Visual Studio Solution File, Format Version {header.FormatVersionMajorMinor}");
 
             if(header.ProgramVersion != null)
             {
@@ -42,14 +41,6 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
             }
 
             return lbuilder.ToString(removeNewLine: true);
-        }
-
-        public WVisualStudioVersion(SlnHeader header)
-        {
-            if(header.FormatVersion == null) {
-                throw new ArgumentNullException(MsgR._0_IsRequired.Format(nameof(header.FormatVersion)));
-            }
-            this.header = header;
         }
     }
 }

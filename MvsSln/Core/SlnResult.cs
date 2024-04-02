@@ -207,7 +207,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="info"></param>
         public void SetHeader(SlnHeader info)
         {
-            Header = info;
+            Header = info ?? new();
         }
     }
 }
