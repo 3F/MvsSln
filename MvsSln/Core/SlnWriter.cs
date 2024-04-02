@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using net.r_eg.MvsSln.Core.ObjHandlers;
 using net.r_eg.MvsSln.Core.SlnHandlers;
 using net.r_eg.MvsSln.Exceptions;
@@ -21,14 +23,42 @@ namespace net.r_eg.MvsSln.Core
     {
         protected StreamWriter stream;
 
+        private static readonly SemaphoreSlim semsync = new(initialCount: 1, maxCount: 1);
+
         /// <summary>
         /// Available writers to process sections.
         /// </summary>
-        public IDictionary<Type, HandlerValue> Handlers
+        public IDictionary<Type, HandlerValue> Handlers { get; protected set; }
+
+#if !NET40
+
+        /// <inheritdoc cref="Write(IEnumerable{ISection})"/>
+        public async Task WriteAsync(IEnumerable<ISection> sections)
         {
-            get;
-            protected set;
+            sections = ValidateAndGetWritable(sections);
+            await SyncAsync(async () => await sections.ForEach(WriteAsync));
         }
+
+        /// <inheritdoc cref="Write(ISection)"/>
+        public async Task WriteAsync(ISection section)
+        {
+            string raw = PrepareSection(section);
+            if(raw != null) await WriteAsync(raw);
+        }
+
+        /// <inheritdoc cref="WriteAsString(IEnumerable{ISection})"/>
+        public async Task<string> WriteAsStringAsync(IEnumerable<ISection> sections)
+        {
+            CheckStreamForString();
+
+            return await SyncAsync(async () =>
+            {
+                await FlushAndReset().WriteNoLockAsync(sections);
+                return await GetReaderForString().ReadToEndAsync();
+            });
+        }
+
+#endif
 
         /// <summary>
         /// To write all not ignored sections with rules from handlers.
@@ -36,10 +66,8 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="sections"></param>
         public void Write(IEnumerable<ISection> sections)
         {
-            sections = sections.Select(s => s.Clone()).ToArray();
-            Validate(sections);
-
-            WritableSections(sections).ForEach(s => Write(s));
+            sections = ValidateAndGetWritable(sections);
+            Sync(() => sections.ForEach(Write));
         }
 
         /// <summary>
@@ -48,27 +76,28 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="section"></param>
         public void Write(ISection section)
         {
-            if(section == null) throw new ArgumentNullException(nameof(section));
-
-            if(section.Ignore) return;
-
-            if(section.Handler == null)
-            {
-                Write(section.Raw.data);
-                return;
-            }
-
-            Type tid = section.Handler.GetType();
-            Write
-            (
-                (Handlers.ContainsKey(tid) && Handlers[tid].handler != null) ?
-                    Handlers[tid].handler.Extract(Handlers[tid].value)
-                    : section.Raw.data
-            );
+            string raw = PrepareSection(section);
+            if(raw != null) Write(raw);
         }
 
-        /// <param name="sln">Destination file.</param>
-        /// <param name="handlers">Should contain writers by specific types of readers.</param>
+        /// <summary>
+        /// To write all not ignored sections with rules from handlers into the input string.
+        /// </summary>
+        /// <param name="sections"></param>
+        /// <returns>Processed sections as string data</returns>
+        /// <exception cref="NotSupportedException"></exception>
+        public string WriteAsString(IEnumerable<ISection> sections)
+        {
+            CheckStreamForString();
+
+            return Sync(() =>
+            {
+                FlushAndReset().WriteNoLock(sections);
+                return GetReaderForString().ReadToEnd();
+            });
+        }
+
+        /// <inheritdoc cref="SlnWriter(string, IDictionary{Type, HandlerValue}, Encoding)"/>
         public SlnWriter(string sln, IDictionary<Type, HandlerValue> handlers)
             : this(sln, handlers, Encoding.UTF8)
         {
@@ -76,20 +105,81 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <param name="sln">Destination file.</param>
-        /// <param name="handlers">Should contain writers by specific types of readers.</param>
-        /// <param name="enc">Use specific encoding.</param>
+        /// <param name="handlers">Prepared write-handlers (see <see cref="IObjHandler"/>) for a specific types of readers (see <see cref="ISlnHandler"/>).</param>
+        /// <param name="enc">Text encoding for result data.</param>
         public SlnWriter(string sln, IDictionary<Type, HandlerValue> handlers, Encoding enc)
             : this(new StreamWriter(sln, false, enc), handlers)
         {
 
         }
 
-        /// <param name="writer"></param>
-        /// <param name="handlers">Should contain writers by specific types of readers.</param>
+        /// <inheritdoc cref="SlnWriter(IDictionary{Type, HandlerValue}, Encoding)"/>
+        public SlnWriter(IDictionary<Type, HandlerValue> handlers)
+            : this(new StreamWriter(new MemoryStream()), handlers)
+        {
+
+        }
+
+        /// <summary>
+        /// Initialize using <see cref="MemoryStream"/>.
+        /// </summary>
+        /// <param name="handlers">Prepared write-handlers (see <see cref="IObjHandler"/>) for a specific types of readers (see <see cref="ISlnHandler"/>).</param>
+        /// <param name="enc">Text encoding for result data.</param>
+        public SlnWriter(IDictionary<Type, HandlerValue> handlers, Encoding enc)
+            : this(new StreamWriter(new MemoryStream(), enc), handlers)
+        {
+
+        }
+
+        /// <inheritdoc cref="SlnWriter(IDictionary{Type, HandlerValue}, Encoding)"/>
         public SlnWriter(StreamWriter writer, IDictionary<Type, HandlerValue> handlers)
         {
             stream      = writer ?? throw new ArgumentNullException(nameof(writer));
             Handlers    = handlers ?? throw new ArgumentNullException(nameof(handlers));
+        }
+
+        protected virtual void CheckStreamForString()
+        {
+            if(stream?.BaseStream is not MemoryStream)
+            {
+                throw new NotSupportedException($"{stream.BaseStream.GetType()} is not {nameof(MemoryStream)}");
+            }
+        }
+
+#if !NET40
+
+        protected async Task WriteNoLockAsync(IEnumerable<ISection> sections)
+        {
+            await ValidateAndGetWritable(sections).ForEach(WriteAsync);
+        }
+
+#endif
+        protected void WriteNoLock(IEnumerable<ISection> sections)
+        {
+            ValidateAndGetWritable(sections).ForEach(Write);
+        }
+
+        protected IEnumerable<ISection> ValidateAndGetWritable(IEnumerable<ISection> sections)
+        {
+            sections = sections.Select(s => s.Clone()).ToArray();
+            Validate(sections);
+
+            return WritableSections(sections);
+        }
+
+        protected string GetHandlerValueOrRaw(Type tid, ISection section)
+            => Handlers.GetOrDefault(tid).handler?.Extract(Handlers[tid].value)
+            ?? section.Raw.data;
+
+        protected string PrepareSection(ISection section)
+        {
+            if(section == null) throw new ArgumentNullException(nameof(section));
+
+            if(section.Ignore) return null;
+
+            return section.Handler == null
+                ? section.Raw.data
+                : GetHandlerValueOrRaw(section.Handler.GetType(), section);
         }
 
         protected void Validate(IEnumerable<ISection> sections)
@@ -167,9 +257,64 @@ namespace net.r_eg.MvsSln.Core
             return ret;
         }
 
+#if !NET40
+
+        protected async Task<T> SyncAsync<T>(Func<Task<T>> act)
+        {
+            await semsync.WaitAsync();
+            try
+            {
+                return await act();
+            }
+            finally
+            {
+                semsync.Release();
+            }
+        }
+
+        protected virtual async Task WriteAsync(string raw)
+        {
+            await stream.WriteLineAsync(raw);
+        }
+
+#endif
+
         protected virtual void Write(string raw)
         {
             stream.WriteLine(raw);
+        }
+
+        protected T Sync<T>(Func<T> act)
+        {
+            semsync.Wait();
+            try
+            {
+                return act();
+            }
+            finally
+            {
+                semsync.Release();
+            }
+        }
+
+        /// <returns>
+        /// Returns new <see cref="StreamReader"/> but do NOT dispose it because this is from BaseStream 
+        /// that will be disposed along with <see cref="SlnWriter"/>.
+        /// </returns>
+        private StreamReader GetReaderForString()
+        {
+            FlushAndReset();
+            return new StreamReader(stream.BaseStream, stream.Encoding);
+        }
+
+        private SlnWriter FlushAndReset()
+        {
+            if(stream.BaseStream.Position > 0)
+            {
+                stream.Flush();
+                stream.BaseStream.Position = 0;
+            }
+            return this;
         }
 
         #region IDisposable

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using MvsSlnTest._svc;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
@@ -59,22 +60,31 @@ namespace MvsSlnTest.Core
         [Fact]
         public void MapRefTest1()
         {
-            using(var sln = new Sln(defaultSlnItems, SlnSamplesResource.vsSolutionBuildEvent))
+            using Sln sln = new(defaultSlnItems, SlnSamplesResource.vsSolutionBuildEvent);
+            int expectedCount = sln.Result.Map.Count;
+            var expectedMap = sln.Result.Map.Select(s => s.Clone()).ToArray();
+
+            Dictionary<Type, HandlerValue> handlers = new()
             {
-                int expectedCount   = sln.Result.Map.Count;
-                var expectedMap     = sln.Result.Map.Select(s => s.Clone()).ToArray();
+                [typeof(LProject)] = new(),
+                [typeof(LProjectConfigurationPlatforms)] = new(),
+                [typeof(LSolutionConfigurationPlatforms)] = new(),
+            };
 
-                var handlers = new Dictionary<Type, HandlerValue>() {
-                    [typeof(LProject)] = new HandlerValue(),
-                    [typeof(LProjectConfigurationPlatforms)] = new HandlerValue(),
-                    [typeof(LSolutionConfigurationPlatforms)] = new HandlerValue(),
-                };
+            using SlnWriter sw = new(new StreamWriter(new MemoryStream()), handlers);
+            sw.Write(sln.Result.Map);
 
-                using(var stream = new StreamWriter(new MemoryStream()))
-                {
-                    (new SlnWriter(stream, handlers)).Write(sln.Result.Map);
-                    Assert.Equal(expectedCount, sln.Result.Map.Count);
-                }
+            Assert.Equal(expectedCount, sln.Result.Map.Count);
+
+            for(int i = 0; i < expectedCount; ++i)
+            {
+                Assert.Equal
+                (
+                    (expectedMap[i].Handler as IObjHandler)?.Id,
+                    (sln.Result.Map[i].Handler as IObjHandler)?.Id
+                );
+                Assert.Equal(expectedMap[i].Line, sln.Result.Map[i].Line);
+                Assert.Equal(expectedMap[i].Raw, sln.Result.Map[i].Raw);
             }
         }
 
@@ -92,6 +102,41 @@ namespace MvsSlnTest.Core
             {
                 [typeof(LProject)] = new(new WProject(sln.Result.ProjectItems, sln.Result.ProjectDependencies)),
             });
+        }
+
+        [Fact]
+        public async Task WriteTest1()
+        {
+            using Sln sln = new(defaultSlnItems, SlnSamplesResource.vsSolutionBuildEvent);
+
+            Dictionary<Type, HandlerValue> handlers = new()
+            {
+                [typeof(LProject)] = new(),
+                [typeof(LProjectConfigurationPlatforms)] = new(),
+                [typeof(LSolutionConfigurationPlatforms)] = new(),
+            };
+
+            using SlnWriter w = new(handlers);
+            string data = await w.WriteAsStringAsync(sln.Result.Map);
+
+            Assert.Equal(data, w.WriteAsString(sln.Result.Map));
+
+
+            StreamWriter sw = new(new MemoryStream());
+            using SlnWriter wm = new(sw, handlers);
+            await wm.WriteAsync(sln.Result.Map);
+
+            sw.Flush();
+            sw.BaseStream.Position = 0;
+
+            using StreamReader sr = new(sw.BaseStream);
+
+            Assert.Equal(data, await sr.ReadToEndAsync());
+
+            w.Write(sln.Result.Map);
+            await w.WriteAsync(sln.Result.Map);
+            
+            Assert.StartsWith(data, await w.WriteAsStringAsync(sln.Result.Map));
         }
     }
 }
