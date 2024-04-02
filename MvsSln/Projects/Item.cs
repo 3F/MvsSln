@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Projects
 {
@@ -42,22 +43,42 @@ namespace net.r_eg.MvsSln.Projects
         /// </summary>
         public RoProperties<string, Metadata> meta;
 
-        public struct Metadata
+        public readonly struct Metadata(string name, string evaluated, string unevaluated)
         {
             /// <summary>
             /// The name of the metadata.
             /// </summary>
-            public string name;
+            public readonly string name = name;
 
             /// <summary>
             /// The evaluated metadata value.
             /// </summary>
-            public string evaluated;
+            public readonly string evaluated = evaluated;
 
             /// <summary>
             /// The unevaluated metadata value.
             /// </summary>
-            public string unevaluated;
+            public readonly string unevaluated = unevaluated;
+
+            public static bool operator ==(Metadata a, Metadata b) => a.Equals(b);
+
+            public static bool operator !=(Metadata a, Metadata b) => !(a == b);
+
+            public override readonly bool Equals(object obj)
+            {
+                if(obj is null || obj is not Metadata b) return false;
+
+                return name == b.name
+                    && evaluated == b.evaluated
+                    && unevaluated == b.unevaluated;
+            }
+
+            public override readonly int GetHashCode() => 0.CalculateHashCode
+            (
+                name,
+                evaluated,
+                unevaluated
+            );
         }
 
         /// <summary>
@@ -71,61 +92,55 @@ namespace net.r_eg.MvsSln.Projects
         public IXProject parentProject;
 
         /// <summary>
+        /// Value of <see cref="evaluatedInclude"/> if not null, otherwise <see cref="unevaluatedInclude"/>
+        /// </summary>
+        public readonly string Include => evaluatedInclude ?? unevaluatedInclude;
+
+        /// <summary>
         /// Try to extract assembly information, e.g.:
         /// Include="DllExport, Version=1.5.1.35977, Culture=neutral, PublicKeyToken=8337224c9ad9e356, processorArchitecture=MSIL"
         /// Include="System.Core"
         /// ...
         /// </summary>
-        public AsmData Assembly
+        public readonly AsmData Assembly => MakeAssemblyInfo(Include);
+
+        public sealed class AsmData(AssemblyName asm = null)
         {
-            get
-            {
-                string name = evaluatedInclude ?? unevaluatedInclude;
-                if(String.IsNullOrWhiteSpace(name) || name.IndexOfAny(new[] { '\\', '/' }) != -1) {
-                    return default(AsmData);
-                }
-                return new AsmData(new AssemblyName(name));
-            }
+            public AssemblyName Info { get; } = asm;
+
+            public string PublicKeyToken { get; } = asm?.GetPublicKeyToken().ToHexString();
         }
 
-        public struct AsmData
+        public static bool operator ==(Item a, Item b) => a.Equals(b);
+
+        public static bool operator !=(Item a, Item b) => !(a == b);
+
+        public override readonly bool Equals(object obj)
         {
-            public AssemblyName Info
-            {
-                get;
-                private set;
-            }
+            if(obj is null || obj is not Item b) return false;
 
-            public string PublicKeyToken
-            {
-                get;
-                private set;
-            }
-
-            public AsmData(AssemblyName asm)
-                : this()
-            {
-                Info = asm;
-
-                byte[] data = asm?.GetPublicKeyToken();
-                if(data == null || data.Length < 1) {
-                    return;
-                }
-
-                PublicKeyToken = String.Empty;
-                foreach(var b in data) {
-                    PublicKeyToken += b.ToString("x");
-                }
-            }
+            return type == b.type
+                && unevaluatedInclude == b.unevaluatedInclude
+                && evaluatedInclude == b.evaluatedInclude
+                && isImported == b.isImported
+                && meta == b.meta;
         }
 
-        /// <param name="eItem"></param>
+        public override readonly int GetHashCode() => 0.CalculateHashCode
+        (
+            type,
+            unevaluatedInclude,
+            evaluatedInclude,
+            isImported,
+            meta,
+            parentItem,
+            parentProject
+        );
+
         public Item(Microsoft.Build.Evaluation.ProjectItem eItem)
             : this()
         {
-            if(eItem == null) {
-                throw new ArgumentNullException(nameof(eItem));
-            }
+            if(eItem == null) throw new ArgumentNullException(nameof(eItem));
 
             type                = eItem.ItemType;
             unevaluatedInclude  = eItem.UnevaluatedInclude;
@@ -136,21 +151,23 @@ namespace net.r_eg.MvsSln.Projects
             meta = eItem.DirectMetadata.Select(m => new KeyValuePair<string, Metadata>
             (
                 m.Name,
-                new Metadata() 
-                {
-                    name = m.Name,
-                    unevaluated = m.UnevaluatedValue,
-                    evaluated = m.EvaluatedValue
-                }
-            )).ToDictionary(m => m.Key, m => m.Value, StringComparer.OrdinalIgnoreCase);
+                new Metadata(m.Name, m.EvaluatedValue, m.UnevaluatedValue) 
+            ))
+            .ToDictionary(m => m.Key, m => m.Value, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private static AsmData MakeAssemblyInfo(string name)
+        {
+            if(string.IsNullOrWhiteSpace(name) || name.IndexOfAny(['\\', '/']) != -1)
+            {
+                return new();
+            }
+            return new AsmData(new AssemblyName(name));
         }
 
         #region DebuggerDisplay
 
-        private string DbgDisplay
-        {
-            get => $"{type} = {evaluatedInclude} [{unevaluatedInclude}]";
-        }
+        private readonly string DbgDisplay => $"{type} = {evaluatedInclude} [{unevaluatedInclude}]";
 
         #endregion
     }

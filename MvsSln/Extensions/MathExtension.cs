@@ -5,8 +5,14 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
 namespace net.r_eg.MvsSln.Extensions
 {
+    using static net.r_eg.MvsSln.Static.Members;
+
     public static class MathExtension
     {
         /// <summary>
@@ -25,11 +31,27 @@ namespace net.r_eg.MvsSln.Extensions
         /// <returns></returns>
         public static int CalculateHashCode(this int r, params object[] values)
         {
+            return r.CalculateHashCode(values?.AsEnumerable() ?? EmptyArray<object>());
+        }
+
+        /// <inheritdoc cref="CalculateHashCode(int, object[])"/>
+        public static int CalculateHashCode<T>(this int r, IEnumerable<T> values)
+        {
             int h = r;
-            foreach(var v in values) {
+            foreach(T v in values)
+            {
                 h = h.HashPolynom(v?.GetHashCode() ?? 0);
             }
             return h;
+        }
+
+        internal static string ToHexString(this byte[] data, bool uppercase = false)
+        {
+            if(data == null || data.Length < 1) return string.Empty;
+            StringBuilder sb = new(data.Length);
+
+            foreach(byte b in data) sb.Append(b.ToString(uppercase ? "X" : "x"));
+            return sb.ToString();
         }
     }
 }

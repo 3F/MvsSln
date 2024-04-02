@@ -292,20 +292,14 @@ namespace net.r_eg.MvsSln.Core
         /// <returns>null if no property of that name and scope exists.</returns>
         public PropertyItem GetProperty(string name, bool localScope = true)
         {
-            PropertyItem defvalue = default;
-            if(string.IsNullOrWhiteSpace(name)) {
-                return defvalue;
-            }
+            if(string.IsNullOrWhiteSpace(name)) return default;
 
-            var ret = GetProperty(Project.GetProperty(name));
-            if(!localScope) {
-                return ret;
-            }
+            PropertyItem ret = GetProperty(Project.GetProperty(name));
+            if(!localScope) return ret;
 
             if(ret.isImported || ret.isEnvironmentProperty || ret.isReservedProperty || ret.isGlobalProperty) 
             {
-                defvalue.parentProject = ret.parentProject;
-                return defvalue;
+                return new PropertyItem(ret.parentProject);
             }
             return ret;
         }
@@ -761,7 +755,7 @@ namespace net.r_eg.MvsSln.Core
 
         protected PropertyItem GetProperty(ProjectProperty eProperty)
         {
-            return (eProperty == null) ? default : new PropertyItem(eProperty) { parentProject = this };
+            return (eProperty == null) ? default : new PropertyItem(eProperty, parentProject: this);
         }
 
         protected Item GetItem(Microsoft.Build.Evaluation.ProjectItem eItem)
@@ -771,7 +765,7 @@ namespace net.r_eg.MvsSln.Core
 
         protected ImportElement GetImportElement(ProjectImportElement element)
         {
-            return (element == null) ? default : new ImportElement(element) { parentProject = this };
+            return (element == null) ? default : new ImportElement(element, parentProject: this);
         }
 
         protected bool AddImport(ProjectImportElement element, string condition, string label)

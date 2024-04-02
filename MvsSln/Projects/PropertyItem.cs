@@ -77,24 +77,20 @@ namespace net.r_eg.MvsSln.Projects
         /// <summary>
         /// Check an <see cref="unevaluatedValue"/> for not null.
         /// </summary>
-        public bool HasValue => unevaluatedValue != null;
+        public readonly bool HasValue => unevaluatedValue != null;
 
         /// <summary>
         /// Check an <see cref="unevaluatedValue"/> for null or empty or whitespace.
         /// </summary>
-        public bool HasNothing => string.IsNullOrWhiteSpace(unevaluatedValue);
+        public readonly bool HasNothing => string.IsNullOrWhiteSpace(unevaluatedValue);
 
         public static bool operator ==(PropertyItem a, PropertyItem b) => a.Equals(b);
 
         public static bool operator !=(PropertyItem a, PropertyItem b) => !(a == b);
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
-            if(obj is null || !(obj is PropertyItem)) {
-                return false;
-            }
-
-            var b = (PropertyItem)obj;
+            if(obj is null || obj is not PropertyItem b) return false;
 
             return name == b.name
                 && evaluatedValue == b.evaluatedValue
@@ -104,28 +100,23 @@ namespace net.r_eg.MvsSln.Projects
                 && isGlobalProperty == b.isGlobalProperty
                 && isReservedProperty == b.isReservedProperty
                 && isImported == b.isImported
-                && isUserDef == b.isUserDef
-                && parentProperty == b.parentProperty
-                && parentProject == b.parentProject;
+                && isUserDef == b.isUserDef;
         }
 
-        public override int GetHashCode()
-        {
-            return 0.CalculateHashCode
-            (
-                name,
-                evaluatedValue,
-                unevaluatedValue,
-                condition,
-                isEnvironmentProperty,
-                isGlobalProperty,
-                isReservedProperty,
-                isImported,
-                isUserDef,
-                parentProperty,
-                parentProject
-            );
-        }
+        public override readonly int GetHashCode() => 0.CalculateHashCode
+        (
+            name,
+            evaluatedValue,
+            unevaluatedValue,
+            condition,
+            isEnvironmentProperty,
+            isGlobalProperty,
+            isReservedProperty,
+            isImported,
+            isUserDef,
+            parentProperty,
+            parentProject
+        );
 
         /// <param name="name">The name of property.</param>
         /// <param name="value">Unevaluated value.</param>
@@ -143,7 +134,12 @@ namespace net.r_eg.MvsSln.Projects
             // evaluatedValue = unevaluatedValue;
         }
 
-        /// <param name="eProperty"></param>
+        public PropertyItem(ProjectProperty eProperty, IXProject parentProject)
+            : this(eProperty)
+        {
+            this.parentProject = parentProject;
+        }
+
         public PropertyItem(ProjectProperty eProperty)
             : this()
         {
@@ -165,12 +161,15 @@ namespace net.r_eg.MvsSln.Projects
             evaluatedValue = eProperty.EvaluatedValue ?? string.Empty;
         }
 
+        internal PropertyItem(IXProject parentProject)
+            : this()
+        {
+            this.parentProject = parentProject;
+        }
+
         #region DebuggerDisplay
 
-        private string DbgDisplay
-        {
-            get => $"{name} = {evaluatedValue} [{unevaluatedValue}]";
-        }
+        private readonly string DbgDisplay => $"{name} = {evaluatedValue} [{unevaluatedValue}]";
 
         #endregion
     }

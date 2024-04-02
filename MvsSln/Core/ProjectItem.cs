@@ -74,13 +74,9 @@ namespace net.r_eg.MvsSln.Core
 
         public static bool operator !=(ProjectItem a, ProjectItem b) => !(a == b);
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
-            if(obj is null || !(obj is ProjectItem)) {
-                return false;
-            }
-
-            var b = (ProjectItem)obj;
+            if(obj is null || obj is not ProjectItem b) return false;
 
             return pGuid == b.pGuid
                     && pType == b.pType
@@ -91,19 +87,16 @@ namespace net.r_eg.MvsSln.Core
                     && parent == b.parent;
         }
 
-        public override int GetHashCode()
-        {
-            return 0.CalculateHashCode
-            (
-                pGuid,
-                pType,
-                name,
-                path,
-                fullPath,
-                EpType,
-                parent
-            );
-        }
+        public override readonly int GetHashCode() => 0.CalculateHashCode
+        (
+            pGuid,
+            pType,
+            name,
+            path,
+            fullPath,
+            EpType,
+            parent
+        );
 
         /// <inheritdoc cref="ProjectItem(string, string, ProjectType, string, SolutionFolder?, string)"/>
         public ProjectItem(string name, ProjectType pType, SolutionFolder? parent = null)

@@ -9,6 +9,7 @@ using System;
 using System.Diagnostics;
 using Microsoft.Build.Construction;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Projects
 {
@@ -40,7 +41,34 @@ namespace net.r_eg.MvsSln.Projects
         /// </summary>
         public IXProject parentProject;
 
-        /// <param name="element"></param>
+        public static bool operator ==(ImportElement a, ImportElement b) => a.Equals(b);
+
+        public static bool operator !=(ImportElement a, ImportElement b) => !(a == b);
+
+        public override readonly bool Equals(object obj)
+        {
+            if(obj is null || obj is not ImportElement b) return false;
+
+            return project == b.project
+                && condition == b.condition
+                && label == b.label;
+        }
+
+        public override readonly int GetHashCode() => 0.CalculateHashCode
+        (
+            project,
+            condition,
+            label,
+            parentElement,
+            parentProject
+        );
+
+        public ImportElement(ProjectImportElement element, IXProject parentProject)
+            : this(element)
+        {
+            this.parentProject = parentProject;
+        }
+
         public ImportElement(ProjectImportElement element)
             : this()
         {
@@ -53,10 +81,7 @@ namespace net.r_eg.MvsSln.Projects
 
         #region DebuggerDisplay
 
-        private string DbgDisplay
-        {
-            get => $"{project} - {label} [{condition}]";
-        }
+        private readonly string DbgDisplay => $"{project} - {label} [{condition}]";
 
         #endregion
     }
