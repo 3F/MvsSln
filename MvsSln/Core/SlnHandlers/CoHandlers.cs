@@ -31,7 +31,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         /// <param name="slnHandlers"></param>
         public CoHandlers(IEnumerable<ISlnHandler> slnHandlers)
         {
-            handlers = slnHandlers ?? throw new ArgumentNullException();
+            handlers = slnHandlers ?? throw new ArgumentNullException(nameof(slnHandlers));
 
             set = new HashSet<Type>();
             has = new Dictionary<Guid, bool>();

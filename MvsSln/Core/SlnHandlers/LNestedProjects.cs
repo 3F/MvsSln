@@ -12,38 +12,24 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class LNestedProjects: LAbstract, ISlnHandler
     {
-        /// <summary>
-        /// Checks the readiness to process data.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <returns>True value if it's ready at current time.</returns>
         public override bool IsActivated(ISvc svc)
         {
-            return ((svc.Sln.ResultType & SlnItems.SolutionItems) == SlnItems.SolutionItems);
+            return (svc.Sln.ResultType & SlnItems.SolutionItems) == SlnItems.SolutionItems;
         }
 
-        /// <summary>
-        /// Condition for line to continue processing.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns>true value to continue.</returns>
         public override bool Condition(RawText line)
         {
-            return line.trimmed.StartsWith("GlobalSection(NestedProjects)", StringComparison.Ordinal);
+            return line.trimmed.StartsWith(NestedProjects, StringComparison.Ordinal);
         }
 
-        /// <summary>
-        /// New position in stream.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <param name="line">Received line.</param>
-        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
         public override bool Positioned(ISvc svc, RawText line)
         {
             string _line;
-            while((_line = svc.ReadLine(this)) != null && _line.Trim() != "EndGlobalSection")
+            while((_line = svc.ReadLine(this)) != null && _line.Trim() != EndGlobalSection)
             {
                 int pos = _line.IndexOf('='); // Guids: src = dest
                 if(pos < 0) {
@@ -54,9 +40,9 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 string src  = _line.Substring(0, pos).Trim();
                 string dest = _line.Substring(pos + 1).Trim();
 
-                LSender.Send(this, $"NestedProjects '{src}' -> '{dest}'", Message.Level.Info);
+                LSender.Send(this, $"{NestedProjects} '{src}' -> '{dest}'", Message.Level.Info);
 
-                var parent = svc.Sln.SolutionFolderList.Where(f => f.header.pGuid == dest).First();
+                SolutionFolder parent = svc.Sln.SolutionFolderList.First(f => f.header.pGuid == dest);
 
                 svc.Sln.SolutionFolderList.Where(f => f.header.pGuid == src)
                     .ForEach(f => f.header.parent.Value = parent);

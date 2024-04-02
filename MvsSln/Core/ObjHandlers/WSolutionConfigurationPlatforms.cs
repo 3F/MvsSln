@@ -11,6 +11,8 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
     {
         /// <summary>
@@ -22,11 +24,11 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         {
             lbuilder.Clear();
 
-            lbuilder.AppendLv1Line("GlobalSection(SolutionConfigurationPlatforms) = preSolution");
+            lbuilder.AppendLv1Line(SolutionConfigurationPlatformsPreSolution);
 
             configs.ForEach(cfg => lbuilder.AppendLv2Line($"{cfg} = {cfg}"));
 
-            return lbuilder.AppendLv1("EndGlobalSection").ToString();
+            return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
         /// <param name="configs">Solution configurations with platforms.</param>

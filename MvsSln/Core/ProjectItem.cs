@@ -163,8 +163,9 @@ namespace net.r_eg.MvsSln.Core
             : this()
         {
             Match m = RPatterns.ProjectLine.Match(raw ?? string.Empty);
-            if(!m.Success) {
-                LSender.Send(this, $"ProjectItem: incorrect line :: '{raw}'", Message.Level.Warn);
+            if(!m.Success)
+            {
+                LSender.Send(this, MsgR._0_HasIncorrectLine_1.Format(nameof(ProjectItem), raw), Message.Level.Warn);
                 return;
             }
 
@@ -197,7 +198,7 @@ namespace net.r_eg.MvsSln.Core
             this.pGuid  = pGuid.ReformatSlnGuid();
 
             SetFullPath(slnDir);
-            LSender.Send(this, $"ProjectItem ->['{pGuid}'; '{name}'; '{path}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
+            LSender.Send(this, $"{nameof(ProjectItem)} ->['{pGuid}'; '{name}'; '{path}'; '{fullPath}'; '{pType}' ]", Message.Level.Trace);
 
             this.parent = new RefType<SolutionFolder?>(parent);
         }

@@ -1,0 +1,53 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{20FD5406-C998-4926-956F-5779766D7C31}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dir1", "dir1", "{1571A74C-579F-4C91-8484-322B7D89B430}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{3D3E87AF-22F7-4E26-937F-AA430BCA2942}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary2", "ClassLibrary2\ClassLibrary2.csproj", "{59DBA902-B8F1-4345-A09E-3F63D1A52269}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "subdir1", "subdir1", "{260202C1-F43A-43E9-A43B-E3E75406A985}"
+    ProjectSection(SolutionItems) = preProject
+        .gitignore = .gitignore
+        Readme.txt = Readme.txt
+    EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dir3", "dir3", "{49B0FC00-2D07-419C-86D4-FDEC8BF0F12C}"
+    ProjectSection(SolutionItems) = preProject
+        .gitattributes = .gitattributes
+    EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp3", "ConsoleApp3\ConsoleApp3.csproj", "{DF3B9B68-E1FB-4DB6-80D0-9F4F571551E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dir2", "dir2", "{AB650B89-1B1B-43C6-B254-226B56ACB6EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2", "ConsoleApp2\ConsoleApp2.csproj", "{18C05E0C-91D7-4928-9F3F-460136A16A92}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {20FD5406-C998-4926-956F-5779766D7C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {20FD5406-C998-4926-956F-5779766D7C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+    EndGlobalSection
+    GlobalSection(SolutionProperties) = preSolution
+        HideSolutionNode = FALSE
+    EndGlobalSection
+    GlobalSection(NestedProjects) = preSolution
+        {20FD5406-C998-4926-956F-5779766D7C31} = {1571A74C-579F-4C91-8484-322B7D89B430}
+        {3D3E87AF-22F7-4E26-937F-AA430BCA2942} = {260202C1-F43A-43E9-A43B-E3E75406A985}
+        {260202C1-F43A-43E9-A43B-E3E75406A985} = {1571A74C-579F-4C91-8484-322B7D89B430}
+        {49B0FC00-2D07-419C-86D4-FDEC8BF0F12C} = {260202C1-F43A-43E9-A43B-E3E75406A985}
+        {DF3B9B68-E1FB-4DB6-80D0-9F4F571551E7} = {49B0FC00-2D07-419C-86D4-FDEC8BF0F12C}
+        {18C05E0C-91D7-4928-9F3F-460136A16A92} = {AB650B89-1B1B-43C6-B254-226B56ACB6EB}
+    EndGlobalSection
+    GlobalSection(ExtensibilityGlobals) = postSolution
+        SolutionGuid = {B3244B90-20DE-4D69-8692-EBC686503F90}
+    EndGlobalSection
+EndGlobal

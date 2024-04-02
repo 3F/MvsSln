@@ -730,7 +730,7 @@ namespace net.r_eg.MvsSln.Core
         {
             Sln         = data;
             ProjectItem = pItem;
-            Project     = prj ?? throw new ArgumentNullException(nameof(prj), MsgResource.ValueNoEmptyOrNull);
+            Project     = prj ?? throw new ArgumentNullException(nameof(prj), MsgR.ValueNoEmptyOrNull);
             PId         = CalculatePId(prj);
         }
 

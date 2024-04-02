@@ -6,9 +6,12 @@
 */
 
 using System;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WVisualStudioVersion: WAbstract, IObjHandler
     {
         /// <summary>
@@ -30,12 +33,12 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
             if(header.VisualStudioVersion != null)
             {
-                lbuilder.AppendLine($"VisualStudioVersion = {header.VisualStudioVersion}");
+                lbuilder.AppendLine($"{VisualStudioVersion} = {header.VisualStudioVersion}");
             }
 
             if(header.MinimumVisualStudioVersion != null)
             {
-                lbuilder.AppendLine($"MinimumVisualStudioVersion = {header.MinimumVisualStudioVersion}");
+                lbuilder.AppendLine($"{MinimumVisualStudioVersion} = {header.MinimumVisualStudioVersion}");
             }
 
             return lbuilder.ToString(removeNewLine: true);
@@ -44,7 +47,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         public WVisualStudioVersion(SlnHeader header)
         {
             if(header.FormatVersion == null) {
-                throw new ArgumentNullException("Format Version is required.");
+                throw new ArgumentNullException(MsgR._0_IsRequired.Format(nameof(header.FormatVersion)));
             }
             this.header = header;
         }

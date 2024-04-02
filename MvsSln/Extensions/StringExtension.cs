@@ -231,6 +231,9 @@ namespace net.r_eg.MvsSln.Extensions
                      : forceIfWin ? path.Replace('/', '\\') : path;
         }
 
+        internal static string Format(this string str, params object[] args)
+            => string.IsNullOrWhiteSpace(str) ? str : string.Format(str, args);
+
         private static bool IsEndSlash(this string path)
         {
             if(path == null || path.Length < 1) return false;

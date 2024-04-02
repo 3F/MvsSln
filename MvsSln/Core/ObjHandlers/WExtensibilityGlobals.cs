@@ -10,6 +10,8 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WExtensibilityGlobals: WAbstract, IObjHandler
     {
         protected IDictionary<string, string> items;
@@ -19,13 +21,13 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
             if(items == null) return string.Empty;
 
             lbuilder.Clear();
-            lbuilder.AppendLv1Line("GlobalSection(ExtensibilityGlobals) = postSolution");
+            lbuilder.AppendLv1Line(ExtensibilityGlobalsPostSolution);
 
             items.ForEach(i =>
                 lbuilder.AppendLv2Line($"{i.Key}" + (i.Value != null ? $" = {i.Value}" : string.Empty))
             );
 
-            return lbuilder.AppendLv1("EndGlobalSection").ToString();
+            return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
         /// <param name="items">Extensible Key[-Value] records like `SolutionGuid` and so on.</param>

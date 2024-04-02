@@ -11,6 +11,8 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WProject: WAbstract, IObjHandler
     {
         /// <summary>
@@ -29,22 +31,25 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
             foreach(ProjectItem prj in projectItems)
             {
-                lbuilder.AppendLine(
-                    $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
+                lbuilder.AppendLine
+                (
+                    $"{Project_}\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
                 );
 
                 if(projectDependencies.Dependencies.ContainsKey(prj.pGuid) 
                     && projectDependencies.Dependencies[prj.pGuid].Count > 0)
                 {
-                    lbuilder.AppendLv1Line("ProjectSection(ProjectDependencies) = postProject");
+                    lbuilder.AppendLv1Line(ProjectDependenciesPostProject);
 
+                    {
                         projectDependencies.Dependencies[prj.pGuid]
                                            .ForEach(dep => lbuilder.AppendLv2Line($"{dep} = {dep}"));
+                    }
 
-                    lbuilder.AppendLv1Line("EndProjectSection");
+                    lbuilder.AppendLv1Line(EndProjectSection);
                 }
 
-                lbuilder.AppendLine("EndProject");
+                lbuilder.AppendLine(EndProject);
             }
 
             return lbuilder.ToString(removeNewLine: true);

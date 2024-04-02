@@ -1,0 +1,32 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.30319.1
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		CI.Debug.net45|Any.CPU.etc = CI.Debug.net45|Any.CPU.etc
+		CI.Debug|Any.CPU.etc = CI.Debug|Any.CPU.etc
+		CI.Release.net45|Any.CPU.etc = CI.Release.net45|Any.CPU.etc
+		CI.Release|Any.CPU.etc = CI.Release|Any.CPU.etc
+		Debug.net45|Any.CPU.etc = Debug.net45|Any.CPU.etc
+		Debug.x64.x86|Any.CPU.etc = Debug.x64.x86|Any.CPU.etc
+		Release.net45|Any.CPU.etc = Release.net45|Any.CPU.etc
+		Release|Any.CPU.etc = Release|Any.CPU.etc
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI.Debug.net45|Any.CPU.etc.ActiveCfg = Release.net45|x64
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI.Debug|Any.CPU.etc.ActiveCfg = Release|x64
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI.Debug|Any.CPU.etc.Build.0 = Release|x64
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI.Release.net45|Any.CPU.etc.ActiveCfg = Release.net45|Any.CPU.etc
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI.Release|Any.CPU.etc.ActiveCfg = Release|Any.CPU.etc
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI.Release|Any.CPU.etc.Build.0 = Release|Any.CPU.etc
+		{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI.Release|Any.CPU.etc.Deploy.0 = Release|Any.CPU.etc
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.Debug.x64.x86|Any.CPU.etc.ActiveCfg = Debug.x64.x86|x86
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.Debug.x64.x86|Any.CPU.etc.Build.0 = Debug.x64.x86|x86
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.Release|Any.CPU.etc.ActiveCfg = Release|Any.CPU.etc
+		{32E44995-F621-4E77-B46A-8F65D64E7FEA}.Release|Any.CPU.etc.Build.0 = Release|Any.CPU.etc
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

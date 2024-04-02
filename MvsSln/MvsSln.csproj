@@ -88,4 +88,19 @@
     <None Include="..\.tools\gnt.bat" Pack="true" PackagePath="tools\" Visible="false" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="MsgR.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MsgR.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="MsgR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MsgR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

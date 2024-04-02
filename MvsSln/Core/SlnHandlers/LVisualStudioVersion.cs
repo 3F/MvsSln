@@ -10,6 +10,8 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class LVisualStudioVersion: LAbstract, ISlnHandler
     {
         protected LineType lineType;
@@ -23,40 +25,24 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             MinimumVisualStudioVersion,
         }
 
-        /// <summary>
-        /// Checks the readiness to process data.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <returns>True value if it's ready at current time.</returns>
         public override bool IsActivated(ISvc svc)
         {
-            return ((svc.Sln.ResultType & SlnItems.Header) == SlnItems.Header);
+            return (svc.Sln.ResultType & SlnItems.Header) == SlnItems.Header;
         }
 
-        /// <summary>
-        /// Condition for line to continue processing.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns>true value to continue.</returns>
         public override bool Condition(RawText line)
         {
             return Eq(line.trimmed, out lineType);
         }
 
-        /// <summary>
-        /// New position in stream.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <param name="line">Received line.</param>
-        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
         public override bool Positioned(ISvc svc, RawText line)
         {
-            int pos = line.trimmed.LastIndexOfAny(new char[] { '=', ' ' });
+            int pos = line.trimmed.LastIndexOfAny(['=', ' ']);
             string version;
 
             if(pos == -1 
                 || lineType == LineType.Unknown 
-                || String.IsNullOrWhiteSpace(version = line.trimmed.Substring(pos + 1)))
+                || string.IsNullOrWhiteSpace(version = line.trimmed.Substring(pos + 1)))
             {
                 LSender.Send(this, $"Incorrect version info from header: '{line.trimmed}'", Message.Level.Warn);
                 return false;
@@ -104,12 +90,12 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return true;
             }
 
-            if(_cmp(line, "MinimumVisualStudioVersion")) {
+            if(_cmp(line, MinimumVisualStudioVersion)) {
                 type = LineType.MinimumVisualStudioVersion;
                 return true;
             }
 
-            if(_cmp(line, "VisualStudioVersion")) {
+            if(_cmp(line, VisualStudioVersion)) {
                 type = LineType.VisualStudioVersion;
                 return true;
             }

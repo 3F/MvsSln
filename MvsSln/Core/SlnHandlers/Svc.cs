@@ -16,44 +16,20 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
 
     public sealed class Svc: ISvc
     {
-        private StreamReader stream;
+        private readonly StreamReader stream;
 
-        private TransactTracking<ISection, IList<ISection>> tracking;
+        private readonly TransactSection tracking;
 
         private long nline = 0;
 
-        private object sync = new object();
+        private readonly object sync = new();
 
-        /// <summary>
-        /// Used encoding for all data.
-        /// </summary>
-        public Encoding CurrentEncoding
-        {
-            get => stream?.CurrentEncoding;
-        }
+        public Encoding CurrentEncoding => stream?.CurrentEncoding;
 
-        /// <summary>
-        /// Prepared solution data.
-        /// </summary>
-        public ISlnResultSvc Sln
-        {
-            get;
-            set;
-        }
+        public ISlnResultSvc Sln { get; set; }
 
-        /// <summary>
-        /// Unspecified storage of the user scope.
-        /// </summary>
-        public Dictionary<Guid, object> UData
-        {
-            get;
-            set;
-        } = new Dictionary<Guid, object>();
+        public Dictionary<Guid, object> UData { get; set; } = [];
 
-        /// <summary>
-        /// Reads a line of characters from stream.
-        /// </summary>
-        /// <returns></returns>
         public string ReadLine()
         {
             lock(sync)
@@ -63,11 +39,6 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             }
         }
 
-        /// <summary>
-        /// Reads a line of characters from stream with tracking.
-        /// </summary>
-        /// <param name="handler"></param>
-        /// <returns></returns>
         public string ReadLine(object handler)
         {
             string line = ReadLine();
@@ -75,23 +46,16 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             return line;
         }
 
-        /// <summary>
-        /// Resets stream and its related data.
-        /// </summary>
         public void ResetStream()
         {
-            if(stream != null) {
+            if(stream != null)
+            {
                 nline = stream.BaseStream.Seek(0, SeekOrigin.Begin);
                 return;
             }
             nline = 0;
         }
 
-        /// <summary>
-        /// Non-Transact tracking for line.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
         public ISection Track(RawText line, object handler = null)
         {
             if((Sln.ResultType & SlnItems.Map) != SlnItems.Map) {
@@ -108,24 +72,11 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             }
         }
 
-        /// <summary>
-        /// Transact tracking for line.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
-        /// <returns></returns>
         public TransactSection TransactTrack(RawText line, object handler = null)
         {
-            return TransactTrack(out ISection ss, line, handler);
+            return TransactTrack(out ISection _, line, handler);
         }
 
-        /// <summary>
-        /// Transact tracking for line.
-        /// </summary>
-        /// <param name="section">Provides requested section.</param>
-        /// <param name="line"></param>
-        /// <param name="handler">Specific handler if used, or null as an unspecified.</param>
-        /// <returns></returns>
         public TransactSection TransactTrack(out ISection section, RawText line, object handler = null)
         {
             section = null;
@@ -145,14 +96,14 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         public Svc(StreamReader reader, ISlnResultSvc rsln)
             : this(reader)
         {
-            Sln         = rsln ?? throw new ArgumentNullException();
-            tracking    = new TransactTracking<ISection, IList<ISection>>(Sln.Map);
+            Sln         = rsln ?? throw new ArgumentNullException(nameof(rsln));
+            tracking    = new(Sln.Map);
         }
 
         /// <param name="reader"></param>
         public Svc(StreamReader reader)
         {
-            stream = reader ?? throw new ArgumentNullException();
+            stream = reader ?? throw new ArgumentNullException(nameof(reader));
         }
     }
 }

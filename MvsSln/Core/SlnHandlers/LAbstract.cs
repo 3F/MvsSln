@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
@@ -93,14 +94,16 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
         {
             var pItem = new ProjectItem(line, solutionDir);
 
-            if(pItem.pGuid == null) {
-                LSender.Send(this, $"The Guid is null or empty for line :: '{line}'", Message.Level.Error);
-                return default(ProjectItem);
+            if(pItem.pGuid == null)
+            {
+                LSender.Send(this, $"{MsgR._0_IsEmptyOrNull.Format(nameof(pItem.pGuid))} at {line}", Message.Level.Error);
+                return default;
             }
 
-            if(String.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase)) {
-                LSender.Send(this, $"{pItem.name} has been ignored as solution-folder :: '{line}'", Message.Level.Debug);
-                return default(ProjectItem);
+            if(string.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase))
+            {
+                LSender.Send(this, MsgR._0_HasBeenIgnoredAs_1.Format(pItem.name, nameof(Guids.SLN_FOLDER)) + $": {line}", Message.Level.Debug);
+                return default;
             }
 
             return pItem;

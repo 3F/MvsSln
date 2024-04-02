@@ -88,8 +88,8 @@ namespace net.r_eg.MvsSln.Core
             : this
             (   new ProjectItem
                 (
-                    fGuid ?? throw new ArgumentNullException(), 
-                    name ?? throw new ArgumentNullException(), 
+                    fGuid ?? throw new ArgumentNullException(nameof(fGuid)), 
+                    name ?? throw new ArgumentNullException(nameof(name)), 
                     ProjectType.SlnFolder, 
                     parent
                 ),
@@ -115,7 +115,7 @@ namespace net.r_eg.MvsSln.Core
             : this
             (   new ProjectItem
                 (
-                    name ?? throw new ArgumentNullException(), 
+                    name ?? throw new ArgumentNullException(nameof(name)), 
                     ProjectType.SlnFolder
                 ), 
                 items
@@ -142,7 +142,7 @@ namespace net.r_eg.MvsSln.Core
             : this
             (   new ProjectItem
                 (
-                    name ?? throw new ArgumentNullException(), 
+                    name ?? throw new ArgumentNullException(nameof(name)), 
                     ProjectType.SlnFolder, 
                     parent
                 ),

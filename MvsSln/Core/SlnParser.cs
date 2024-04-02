@@ -82,7 +82,7 @@ namespace net.r_eg.MvsSln.Core
         public ISlnResult Parse(string sln, SlnItems type)
         {
             if(string.IsNullOrWhiteSpace(sln)) {
-                throw new ArgumentNullException(nameof(sln), MsgResource.ValueNoEmptyOrNull);
+                throw new ArgumentNullException(nameof(sln), MsgR.ValueNoEmptyOrNull);
             }
 
             using StreamReader reader = new(sln.AdaptPath(), encoding);
@@ -98,7 +98,7 @@ namespace net.r_eg.MvsSln.Core
         public ISlnResult Parse(StreamReader reader, SlnItems type)
         {
             if(reader == null) {
-                throw new ArgumentNullException(nameof(reader), MsgResource.ValueNoEmptyOrNull);
+                throw new ArgumentNullException(nameof(reader), MsgR.ValueNoEmptyOrNull);
             }
 
             string sln = (reader.BaseStream is FileStream stream) ? stream.Name : MEM_FILE;

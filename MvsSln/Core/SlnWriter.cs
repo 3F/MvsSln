@@ -48,20 +48,17 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="section"></param>
         public void Write(ISection section)
         {
-            if(section == null) {
-                throw new ArgumentNullException();
-            }
+            if(section == null) throw new ArgumentNullException(nameof(section));
 
-            if(section.Ignore) {
-                return;
-            }
+            if(section.Ignore) return;
 
-            if(section.Handler == null) {
+            if(section.Handler == null)
+            {
                 Write(section.Raw.data);
                 return;
             }
 
-            var tid = section.Handler.GetType();
+            Type tid = section.Handler.GetType();
             Write
             (
                 (Handlers.ContainsKey(tid) && Handlers[tid].handler != null) ?
@@ -91,8 +88,8 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="handlers">Should contain writers by specific types of readers.</param>
         public SlnWriter(StreamWriter writer, IDictionary<Type, HandlerValue> handlers)
         {
-            stream      = writer ?? throw new ArgumentNullException();
-            Handlers    = handlers ?? throw new ArgumentNullException();
+            stream      = writer ?? throw new ArgumentNullException(nameof(writer));
+            Handlers    = handlers ?? throw new ArgumentNullException(nameof(handlers));
         }
 
         protected void Validate(IEnumerable<ISection> sections)
@@ -105,9 +102,11 @@ namespace net.r_eg.MvsSln.Core
             {
                 if(coh.ContainsKey(h.Key))
                 {
-                    if(coh[h.Key].Except(Handlers.Keys).Count() != coh[h.Key].Count) {
-                        throw new CoHandlerRuleException(
-                            $"Only parent handler is allowed '{h.Key}' <- {String.Join(", ", coh[h.Key].Select(c => c.Name))}"
+                    if(coh[h.Key].Except(Handlers.Keys).Count() != coh[h.Key].Count)
+                    {
+                        throw new CoHandlerRuleException
+                        (
+                            $"{MsgR.OnlyParentHandlerAllowed} '{h.Key}' <- {string.Join(", ", coh[h.Key].Select(c => c.Name))}"
                         );
                     }
                     continue;
@@ -115,9 +114,9 @@ namespace net.r_eg.MvsSln.Core
 
                 if(coh.Where(v => v.Value.Contains(h.Key))
                         .Select(v => v.Key)
-                        .Except(Handlers.Keys).Count() > 0)
+                        .Except(Handlers.Keys).Any())
                 {
-                    throw new CoHandlerRuleException($"Define parent handler instead of '{h.Key}'.");
+                    throw new CoHandlerRuleException($"{MsgR.ParentHandlerInstead} of '{h.Key}'");
                 }
             }
         }

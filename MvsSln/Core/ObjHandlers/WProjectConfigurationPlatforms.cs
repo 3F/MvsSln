@@ -10,6 +10,8 @@ using System.Collections.Generic;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WProjectConfigurationPlatforms: WAbstract, IObjHandler
     {
         /// <summary>
@@ -21,7 +23,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         {
             lbuilder.Clear();
 
-            lbuilder.AppendLv1Line("GlobalSection(ProjectConfigurationPlatforms) = postSolution");
+            lbuilder.AppendLv1Line(ProjectConfigurationPlatformsPostSolution);
 
             foreach(IConfPlatformPrj cfg in configs)
             {
@@ -38,7 +40,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
                 }
             }
 
-            return lbuilder.AppendLv1("EndGlobalSection").ToString();
+            return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
         /// <param name="configs">Project configurations with platforms.</param>

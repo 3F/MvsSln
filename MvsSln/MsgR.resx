@@ -117,7 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="OnlyParentHandlerAllowed" xml:space="preserve">
+    <value>Only parent handler is allowed.</value>
+  </data>
+  <data name="ParentHandlerInstead" xml:space="preserve">
+    <value>Define parent handler instead</value>
+  </data>
+  <data name="ValueMustBeInRange_0_1" xml:space="preserve">
+    <value>Value must be in range {0} - {1}</value>
+  </data>
   <data name="ValueNoEmptyOrNull" xml:space="preserve">
     <value>Value cannot be null or empty.</value>
+  </data>
+  <data name="_0_HasBeenIgnoredAs_1" xml:space="preserve">
+    <value>{0} has been ignored as {1}</value>
+  </data>
+  <data name="_0_HasIncorrectLine_1" xml:space="preserve">
+    <value>{0} has incorrect line: {1}</value>
+  </data>
+  <data name="_0_IsEmptyOrNull" xml:space="preserve">
+    <value>{0} is empty or null</value>
+  </data>
+  <data name="_0_IsRequired" xml:space="preserve">
+    <value>{0} is required.</value>
   </data>
 </root>

@@ -10,6 +10,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core
@@ -200,7 +201,7 @@ namespace net.r_eg.MvsSln.Core
                 lock(sync)
                 {
                     if(index < 0 || index >= listeners.Count) {
-                        throw new ArgumentOutOfRangeException("index", index, $"Value must be in range: 0 - {listeners.Count - 1}");
+                        throw new ArgumentOutOfRangeException(nameof(index), index, MsgR.ValueMustBeInRange_0_1.Format(0, listeners.Count - 1));
                     }
                     listeners[index] = value;
                 }

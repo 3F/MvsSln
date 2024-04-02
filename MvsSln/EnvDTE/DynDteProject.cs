@@ -96,13 +96,13 @@ namespace net.r_eg.MvsSln.EnvDTE
         public DynDteProject(dynamic pdte, IEnvironment env)
         {
             this.pdte   = pdte;
-            this.env    = env ?? throw new ArgumentNullException(nameof(env), MsgResource.ValueNoEmptyOrNull);
+            this.env    = env ?? throw new ArgumentNullException(nameof(env), MsgR.ValueNoEmptyOrNull);
         }
 
         protected virtual void CheckName(ref string name)
         {
             if(String.IsNullOrWhiteSpace(name)) {
-                throw new ArgumentNullException(nameof(name), MsgResource.ValueNoEmptyOrNull);
+                throw new ArgumentNullException(nameof(name), MsgR.ValueNoEmptyOrNull);
             }
         }
     }

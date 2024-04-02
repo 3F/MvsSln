@@ -10,6 +10,8 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WNestedProjects: WAbstract, IObjHandler
     {
         protected IEnumerable<SolutionFolder> folders;
@@ -20,7 +22,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         {
             lbuilder.Clear();
 
-            lbuilder.AppendLv1Line("GlobalSection(NestedProjects) = preSolution");
+            lbuilder.AppendLv1Line(NestedProjectsPreSolution);
             bool hasDep = false;
 
             folders?.ForEach(p =>
@@ -43,7 +45,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
             if(!hasDep) return string.Empty;
 
-            return lbuilder.AppendLv1("EndGlobalSection").ToString();
+            return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
         /// <inheritdoc cref="WNestedProjects(IEnumerable{SolutionFolder}, IEnumerable{ProjectItem})"/>

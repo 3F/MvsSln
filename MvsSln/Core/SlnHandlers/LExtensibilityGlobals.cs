@@ -11,34 +11,20 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class LExtensibilityGlobals: LAbstract, ISlnHandler
     {
-        /// <summary>
-        /// Checks the readiness to process data.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <returns>True value if it's ready at current time.</returns>
         public override bool IsActivated(ISvc svc)
         {
-            return ((svc.Sln.ResultType & SlnItems.ExtItems) == SlnItems.ExtItems);
+            return (svc.Sln.ResultType & SlnItems.ExtItems) == SlnItems.ExtItems;
         }
 
-        /// <summary>
-        /// Condition for line to continue processing.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns>true value to continue.</returns>
         public override bool Condition(RawText line)
         {
-            return line.trimmed.StartsWith("GlobalSection(ExtensibilityGlobals)", StringComparison.Ordinal);
+            return line.trimmed.StartsWith(ExtensibilityGlobals, StringComparison.Ordinal);
         }
 
-        /// <summary>
-        /// New position in stream.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <param name="line">Received line.</param>
-        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
         public override bool Positioned(ISvc svc, RawText line)
         {
             if(svc.Sln.ExtItems == null) {
@@ -46,7 +32,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             }
 
             string _line;
-            while((_line = svc.ReadLine(this)) != null && _line.Trim() != "EndGlobalSection")
+            while((_line = svc.ReadLine(this)) != null && _line.Trim() != EndGlobalSection)
             {
                 int pos = _line.IndexOf('=');
                 if(pos < 0) // we will use non-strict processing

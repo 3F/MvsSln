@@ -11,6 +11,8 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WProjectSolutionItems: WAbstract, IObjHandler
     {
         /// <summary>
@@ -28,15 +30,15 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
                 lbuilder.AppendLine
                 (
-                    $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
+                    $"{Project_}\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
                 )
-                .AppendLv1Line("ProjectSection(SolutionItems) = preProject");
+                .AppendLv1Line(SolutionItemsPreProject);
 
                 {
                     folder.items.ForEach(item => lbuilder.AppendLv2Line($"{item} = {item}"));
                 }
 
-                lbuilder.AppendLv1Line("EndProjectSection").AppendLine("EndProject");
+                lbuilder.AppendLv1Line(EndProjectSection).AppendLine(EndProject);
             }
 
             return lbuilder.ToString(removeNewLine: true);

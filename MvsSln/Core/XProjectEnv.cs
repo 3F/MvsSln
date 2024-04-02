@@ -205,8 +205,8 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public Project GetOrLoadProject(ProjectItem pItem, IDictionary<string, string> properties)
         {
-            if(String.IsNullOrWhiteSpace(pItem.pGuid)) {
-                throw new ArgumentException($"GUID of project is empty or null ['{pItem.name}', '{pItem.fullPath}']");
+            if(string.IsNullOrWhiteSpace(pItem.pGuid)) {
+                throw new ArgumentException($"{MsgR._0_IsEmptyOrNull.Format("Guid of project")} ['{pItem.name}', '{pItem.fullPath}']");
             }
 
             if(!properties.ContainsKey(PropertyNames.CONFIG) || !properties.ContainsKey(PropertyNames.PLATFORM)) {
@@ -223,8 +223,8 @@ namespace net.r_eg.MvsSln.Core
             }
 
             LSender.Send(this, $"Load project {pItem.pGuid}:{properties[PropertyNames.CONFIG]}|{properties[PropertyNames.PLATFORM]} :: '{pItem.name}' ('{pItem.fullPath}')", Message.Level.Info);
-            if(String.IsNullOrWhiteSpace(pItem.fullPath)) {
-                throw new NotFoundException($"Path is empty to project ['{pItem.name}', '{pItem.pGuid}']");
+            if(string.IsNullOrWhiteSpace(pItem.fullPath)) {
+                throw new NotFoundException($"{MsgR._0_IsEmptyOrNull.Format("Path to project")} ['{pItem.name}', '{pItem.pGuid}']");
             }
 
             return Load(pItem, properties);
