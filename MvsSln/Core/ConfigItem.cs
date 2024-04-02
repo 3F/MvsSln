@@ -58,11 +58,7 @@ namespace net.r_eg.MvsSln.Core
 
         public override bool Equals(object obj)
         {
-            if(obj is null || !(obj is ConfigItem)) {
-                return false;
-            }
-
-            var b = (ConfigItem)obj;
+            if(obj is null || obj is not ConfigItem b) return false;
 
             // NOTE: {SensitivityComparing} will control an `Sensitivity` logic, 
             //       thus we need only `...ByRuleICase` properties:
