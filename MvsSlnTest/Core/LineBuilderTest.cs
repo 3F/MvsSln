@@ -31,11 +31,11 @@ namespace MvsSlnTest.Core
             Assert.Equal(tab, lb.Tab);
             Assert.Equal(nl, lb.NewLine);
 
-            Assert.Equal(exp, lb.ToString(removeNewLine: true));
-            Assert.Equal($"{exp}{nl}", lb.ToString(removeNewLine: false));
+            Assert.Equal(exp, lb.ToString(noLastNewLine: true));
+            Assert.Equal($"{exp}{nl}", lb.ToString(noLastNewLine: false));
             Assert.Equal($"{exp}{nl}", lb.ToString());
 
-            lb.RemoveNewLine();
+            lb.RemoveLastNewLine();
             Assert.Equal(exp, lb.ToString());
 
             lb.Clear();
@@ -64,11 +64,11 @@ namespace MvsSlnTest.Core
             Assert.Equal(tab, lb.Tab);
             Assert.Equal(nl, lb.NewLine);
 
-            Assert.Equal(exp, lb.ToString(removeNewLine: true));
-            Assert.Equal(exp, lb.ToString(removeNewLine: false));
+            Assert.Equal(exp, lb.ToString(noLastNewLine: true));
+            Assert.Equal(exp, lb.ToString(noLastNewLine: false));
             Assert.Equal(exp, lb.ToString());
 
-            lb.RemoveNewLine();
+            lb.RemoveLastNewLine();
             Assert.Equal(exp, lb.ToString());
 
             lb.Clear();
@@ -94,6 +94,17 @@ namespace MvsSlnTest.Core
             Assert.Throws<ArgumentNullException>(() => lb = new(nl, tab: null));
         }
 #endif
+
+        [Fact]
+        public void CtorTest2()
+        {
+            LineBuilder lb = new();
+            lb.AppendLine("1").AppendLine("2").AppendLine("3")
+                .RemoveLastNewLine();
+
+            string nl = Environment.NewLine;
+            Assert.Equal($"1{nl}2{nl}3", lb.ToString());
+        }
 
         [Fact]
         public void ContainsLastTest1()
@@ -137,16 +148,16 @@ namespace MvsSlnTest.Core
         {
             LineBuilder lb = new();
 
-            Assert.Equal(string.Empty, lb.ToString(removeNewLine: true));
+            Assert.Equal(string.Empty, lb.ToString(noLastNewLine: true));
             Assert.Equal(0, lb.Length);
 
             string wrd = "Hello";
             lb.AppendLine(wrd);
             Assert.Equal(wrd.Length + lb.NewLine.Length, lb.Length);
-            Assert.Equal(wrd, lb.ToString(removeNewLine: true));
+            Assert.Equal(wrd, lb.ToString(noLastNewLine: true));
             Assert.Equal(wrd.Length + lb.NewLine.Length, lb.Length);
 
-            lb.RemoveNewLine();
+            lb.RemoveLastNewLine();
             Assert.Equal(wrd.Length, lb.Length);
         }
 

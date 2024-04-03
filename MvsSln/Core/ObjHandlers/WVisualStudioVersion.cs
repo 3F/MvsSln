@@ -40,7 +40,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
                 lbuilder.AppendLine($"{MinimumVisualStudioVersion} = {header.MinimumVisualStudioVersion}");
             }
 
-            return lbuilder.ToString(removeNewLine: true);
+            return lbuilder.ToString(noLastNewLine: true);
         }
     }
 }

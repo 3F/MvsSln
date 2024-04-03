@@ -52,7 +52,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
                 lbuilder.AppendLine(EndProject);
             }
 
-            return lbuilder.ToString(removeNewLine: true);
+            return lbuilder.ToString(noLastNewLine: true);
         }
 
         /// <param name="pItems">List of projects in solution.</param>

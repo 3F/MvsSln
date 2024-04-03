@@ -41,7 +41,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
                 lbuilder.AppendLv1Line(EndProjectSection).AppendLine(EndProject);
             }
 
-            return lbuilder.ToString(removeNewLine: true);
+            return lbuilder.ToString(noLastNewLine: true);
         }
 
         /// <param name="folders">List of solution folders.</param>
