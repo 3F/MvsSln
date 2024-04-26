@@ -272,6 +272,10 @@ Global
 EndGlobal
 ";
             Assert.Equal(expected, w.WriteAsString(sln.Result.Map));
+
+            using Sln sln2 = new(SlnItems.AllNoLoad, expected);
+            using SlnWriter w2 = new(DefaultHandlers.MakeFrom(sln2.Result));
+            Assert.Equal(expected, w2.WriteAsString(sln.Result.Map));
         }
 
         [Fact]

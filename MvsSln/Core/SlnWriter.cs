@@ -268,24 +268,7 @@ namespace net.r_eg.MvsSln.Core
 
 #endif
 
-        protected List<ISection> MakeDefaultSkeleton() =>
-        [
-            new Section(new LVisualStudioVersion()),
-
-            new Section(new LProject()),
-            new Section(new LProjectDependencies()),
-            new Section(new LProjectSolutionItems()),
-
-            new Section(handler: null, Keywords.Global),
-
-                new Section(new LSolutionConfigurationPlatforms()),
-                new Section(new LProjectConfigurationPlatforms()),
-
-                new Section(new LNestedProjects()),
-                new Section(new LExtensibilityGlobals()),
-
-            new Section(handler: null, Keywords.EndGlobal),
-        ];
+        protected List<ISection> MakeDefaultSkeleton() => DefaultHandlers.MakeSkeleton();
 
 #if !NET40
 
