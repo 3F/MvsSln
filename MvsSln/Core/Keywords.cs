@@ -29,6 +29,10 @@ namespace net.r_eg.MvsSln.Core
 
         internal const string EndProject = "EndProject";
 
+        internal const string Global = "Global";
+
+        internal const string EndGlobal = "EndGlobal";
+
         internal const string SolutionConfigurationPlatforms = GlobalSection + "(SolutionConfigurationPlatforms)";
 
         internal const string SolutionItems = ProjectSection + "(SolutionItems)";

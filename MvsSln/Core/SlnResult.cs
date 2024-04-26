@@ -152,7 +152,7 @@ namespace net.r_eg.MvsSln.Core
         /// Contains map of all found (known/unknown) solution data.
         /// This value is never null.
         /// </summary>
-        public IList<ISection> Map { get; private set; } = new List<ISection>();
+        public SMap Map { get; } = [];
 
         public IEnumerable<PackagesConfig> PackagesConfigs { get; set; }
 

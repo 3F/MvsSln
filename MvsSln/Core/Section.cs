@@ -78,11 +78,16 @@ namespace net.r_eg.MvsSln.Core
             };
         }
 
-        public Section(object h, RawText raw, long line = -1)
+        public Section(object handler, long line = -1)
         {
-            Handler = h;
-            Raw     = raw;
-            Line    = line;
+            Handler = handler;
+            Line = line;
+        }
+
+        public Section(object handler, RawText raw, long line = -1)
+            : this(handler, line)
+        {
+            Raw = raw;
         }
 
         #region DebuggerDisplay

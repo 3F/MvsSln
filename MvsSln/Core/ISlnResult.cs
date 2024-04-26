@@ -95,7 +95,7 @@ namespace net.r_eg.MvsSln.Core
         /// Contains map of all found (known/unknown) solution data.
         /// This value is never null.
         /// </summary>
-        IList<ISection> Map { get; }
+        SMap Map { get; }
 
         /// <summary>
         /// According to <see cref="SlnItems.PackagesConfig"/> related flags, 

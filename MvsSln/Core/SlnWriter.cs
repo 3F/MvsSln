@@ -25,12 +25,18 @@ namespace net.r_eg.MvsSln.Core
     {
         private static readonly SemaphoreSlim semsync = new(initialCount: 1, maxCount: 1);
 
+        private readonly Lazy<List<ISection>> skeleton;
+
+        private readonly Lazy<StreamReader> reader;
+
         protected readonly StreamWriter stream;
 
         /// <summary>
         /// Available writers to process sections.
         /// </summary>
         public IDictionary<Type, HandlerValue> Handlers { get; protected set; }
+
+        public List<ISection> Skeleton => skeleton.Value;
 
 #if !NET40
 
@@ -48,6 +54,10 @@ namespace net.r_eg.MvsSln.Core
             if(raw != null) await WriteAsync(raw);
         }
 
+        /// <inheritdoc cref="WriteAsync(IEnumerable{ISection})"/>
+        /// <remarks>*default sections using <see cref="Skeleton"/></remarks>
+        public async Task WriteAsync() => await WriteAsync(Skeleton);
+
         /// <inheritdoc cref="WriteAsString(IEnumerable{ISection})"/>
         public async Task<string> WriteAsStringAsync(IEnumerable<ISection> sections)
         {
@@ -58,10 +68,14 @@ namespace net.r_eg.MvsSln.Core
                 await FlushAndResetAsync();
                 await WriteNoLockAsync(sections);
 
-                await FlushAndResetAsync();
-                return await GetReaderForString().ReadToEndAsync();
+                StreamReader reader = await PrepareReaderAsync();
+                return await reader.ReadToEndAsync();
             });
         }
+
+        /// <inheritdoc cref="WriteAsStringAsync(IEnumerable{ISection})"/>
+        /// <remarks>*default sections using <see cref="Skeleton"/></remarks>
+        public async Task<string> WriteAsStringAsync() => await WriteAsStringAsync(Skeleton);
 
 #else
 
@@ -90,6 +104,10 @@ namespace net.r_eg.MvsSln.Core
             return (raw != null) ? WriteAsync(raw) : GetTaskFromResult(false);
         }
 
+        /// <inheritdoc cref="WriteAsync(IEnumerable{ISection})"/>
+        /// <remarks>*default sections using <see cref="Skeleton"/></remarks>
+        public Task WriteAsync() => WriteAsync(Skeleton);
+
         /// <inheritdoc cref="WriteAsString(IEnumerable{ISection})"/>
         /// <remarks>netfx4.0 legacy TAP implementation.</remarks>
         public Task<string> WriteAsStringAsync(IEnumerable<ISection> sections)
@@ -109,6 +127,10 @@ namespace net.r_eg.MvsSln.Core
                 semsync.Release();
             }
         }
+
+        /// <inheritdoc cref="WriteAsStringAsync(IEnumerable{ISection})"/>
+        /// <remarks>*default sections using <see cref="Skeleton"/></remarks>
+        public Task<string> WriteAsStringAsync() => WriteAsStringAsync(Skeleton);
 
 #endif
 
@@ -132,6 +154,10 @@ namespace net.r_eg.MvsSln.Core
             if(raw != null) Write(raw);
         }
 
+        /// <inheritdoc cref="Write(IEnumerable{ISection})"/>
+        /// <remarks>*default sections using <see cref="Skeleton"/></remarks>
+        public void Write() => Write(Skeleton);
+
         /// <summary>
         /// To write all not ignored sections with rules from handlers into the string.
         /// </summary>
@@ -146,10 +172,13 @@ namespace net.r_eg.MvsSln.Core
             {
                 FlushAndReset().WriteNoLock(sections);
 
-                return FlushAndReset()
-                        .GetReaderForString().ReadToEnd();
+                return PrepareReader().ReadToEnd();
             });
         }
+
+        /// <inheritdoc cref="WriteAsString(IEnumerable{ISection})"/>
+        /// <remarks>*default sections using <see cref="Skeleton"/></remarks>
+        public string WriteAsString() => WriteAsString(Skeleton);
 
         /// <inheritdoc cref="SlnWriter(string, IDictionary{Type, HandlerValue}, Encoding)"/>
         public SlnWriter(string sln, IDictionary<Type, HandlerValue> handlers)
@@ -196,6 +225,11 @@ namespace net.r_eg.MvsSln.Core
             {
                 stream.NewLine = first.NewLine;
             }
+
+            skeleton = new(MakeDefaultSkeleton);
+
+            // note, it will be disposed along with the writer
+            reader = new(() => new(stream.BaseStream, stream.Encoding));
         }
 
         /// <summary>
@@ -214,12 +248,44 @@ namespace net.r_eg.MvsSln.Core
             }
         }
 
-        /// <returns>
-        /// Returns new <see cref="StreamReader"/> but do NOT dispose it because this is from BaseStream 
-        /// that will be disposed along with <see cref="SlnWriter"/>.
-        /// </returns>
-        protected virtual StreamReader GetReaderForString()
-            => new(stream.BaseStream, stream.Encoding);
+        /// <inheritdoc cref="reader"/>
+        protected virtual StreamReader PrepareReader()
+        {
+            if(reader == null) throw new ArgumentNullException(nameof(reader));
+            FlushAndReset();
+            return reader.Value;
+        }
+
+#if !NET40
+
+        /// <inheritdoc cref="reader"/>
+        protected virtual async Task<StreamReader> PrepareReaderAsync()
+        {
+            if(reader == null) throw new ArgumentNullException(nameof(reader));
+            await FlushAndResetAsync();
+            return reader.Value;
+        }
+
+#endif
+
+        protected List<ISection> MakeDefaultSkeleton() =>
+        [
+            new Section(new LVisualStudioVersion()),
+
+            new Section(new LProject()),
+            new Section(new LProjectDependencies()),
+            new Section(new LProjectSolutionItems()),
+
+            new Section(handler: null, Keywords.Global),
+
+                new Section(new LSolutionConfigurationPlatforms()),
+                new Section(new LProjectConfigurationPlatforms()),
+
+                new Section(new LNestedProjects()),
+                new Section(new LExtensibilityGlobals()),
+
+            new Section(handler: null, Keywords.EndGlobal),
+        ];
 
 #if !NET40
 
@@ -247,7 +313,7 @@ namespace net.r_eg.MvsSln.Core
             sections = sections.Select(s => s.Clone()).ToArray();
             Validate(sections);
 
-            return WritableSections(sections);
+            return GetWritableSections(sections);
         }
 
         protected string GetHandlerValueOrRaw(Type tid, ISection section)
@@ -306,7 +372,42 @@ namespace net.r_eg.MvsSln.Core
             return sh;
         }
 
-        protected IEnumerable<ISection> WritableSections(IEnumerable<ISection> sections)
+        protected IEnumerable<ISection> MergeSkeletonWith(List<ISection> sections)
+        {
+            List<ISection> final = [];
+
+            static int _Find(List<ISection> src, int idx, ISection current) => FindSection
+            (
+                src,
+                idx,
+                s => current.Handler != null
+                    ? s.Handler?.GetType() == current.Handler.GetType()
+                    : (string)s.Raw == (string)current.Raw // due to possible different encoding keep conversion to string
+            );
+
+            int idx = 0;
+            foreach(ISection current in Skeleton)
+            {
+                int found = _Find(sections, idx, current);
+
+                if(found == -1)
+                {
+                    if(_Find(final, 0, current) == -1) // see SlnWriterTest.MergeTest2()
+                        final.Add(current);
+
+                    continue;
+                }
+
+                for(; idx <= found; ++idx)
+                {
+                    final.Add(sections[idx]);
+                }
+            }
+
+            return final;
+        }
+
+        protected IEnumerable<ISection> GetWritableSections(IEnumerable<ISection> sections)
         {
             List<ISection> ret      = [];
             HashSet<Type> hTypes    = [];
@@ -340,7 +441,7 @@ namespace net.r_eg.MvsSln.Core
                 }
             }
 
-            return ret;
+            return MergeSkeletonWith(ret);
         }
 
 #if !NET40
@@ -428,6 +529,28 @@ namespace net.r_eg.MvsSln.Core
             {
                 semsync.Release();
             }
+        }
+
+        private static int FindSection<T>(IList<T> input, int start, Func<T, bool> predicate)
+        {
+            int found = -1;
+            if(start < 0 || start >= input.Count) return found;
+
+            for(int i = start; i < input.Count; ++i)
+            {
+                T item = input[i];
+
+                if(predicate(item))
+                {
+                    found = i;
+                    continue;
+                }
+                else
+                {
+                    if(found != -1) return found;
+                }
+            }
+            return found;
         }
 
 #if NET40

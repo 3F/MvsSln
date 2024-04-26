@@ -243,21 +243,74 @@ EndGlobal
         {
             using Sln sln = new(TestData.GetPathTo(@"SlnWriter\L-13\src.sln"), SlnItems.AllNoLoad);
 
-            List<SolutionFolder> folders = [new SolutionFolder("My Folder", "item1.log", "item2.txt")];
+            List<SolutionFolder> folders =
+            [
+                new SolutionFolder("{5738BD21-E021-4D0F-B391-0448D074302F}", "My Folder", ["item1.log", "item2.txt"])
+            ];
 
-            //string output = sln.Result.SolutionFile + "_modified.sln";
             using SlnWriter w = new(new Dictionary<Type, HandlerValue>()
             {
                 [typeof(LNestedProjects)] = new(new WNestedProjects(folders, sln.Result.ProjectItems)),
                 [typeof(LProjectSolutionItems)] = new(new WProjectSolutionItems(folders)),
             });
 
-            //w.Write(sln.Result.Map);
+            string expected =
+@"Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project(""{2150E333-8FDC-42A3-9474-1A3956D46DE8}"") = ""My Folder"", ""My Folder"", ""{5738BD21-E021-4D0F-B391-0448D074302F}""
+	ProjectSection(SolutionItems) = preProject
+		item1.log = item1.log
+		item2.txt = item2.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6AB957CD-4591-40A5-B117-A7839E367EC2}
+	EndGlobalSection
+EndGlobal
+";
+            Assert.Equal(expected, w.WriteAsString(sln.Result.Map));
+        }
 
-            string result = w.WriteAsString(sln.Result.Map);
-            w.Dispose();
+        [Fact]
+        public void MergeTest2()
+        {
+            using Sln sln = new(TestData.GetPathTo(@"SlnWriter\L-13\src_d.sln"), SlnItems.AllNoLoad);
 
+            ConfigSln[] slnConfs = [ new("Debug", "x64") ];
 
+            IConfPlatformPrj[] prjConfs =
+            [
+                new ConfigPrj("Debug", "x64", "{8F92E183-0B6A-406D-8ABB-77930F0F494D}", build: true, slnConfs[0])
+            ];
+
+            Dictionary<Type, HandlerValue> whandlers = new()
+            {
+                [typeof(LVisualStudioVersion)] = new(new WVisualStudioVersion(new SlnHeader("12.0"))),
+                [typeof(LProjectConfigurationPlatforms)] = new(new WProjectConfigurationPlatforms(prjConfs)),
+                [typeof(LSolutionConfigurationPlatforms)] = new(new WSolutionConfigurationPlatforms(slnConfs)),
+            };
+
+            string expected =
+@"Microsoft Visual Studio Solution File, Format Version 12.00
+Global
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8F92E183-0B6A-406D-8ABB-77930F0F494D}.Debug|x64.ActiveCfg = Debug|x64
+		{8F92E183-0B6A-406D-8ABB-77930F0F494D}.Debug|x64.Build.0 = Debug|x64
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+EndGlobal
+";
+            using SlnWriter w = new(whandlers);
+            Assert.Equal(expected, w.WriteAsString([
+                new Section(new LVisualStudioVersion(), null),
+                new Section(new LProjectConfigurationPlatforms(), null),
+                new Section(new LSolutionConfigurationPlatforms(), null),
+            ]));
         }
     }
 }
