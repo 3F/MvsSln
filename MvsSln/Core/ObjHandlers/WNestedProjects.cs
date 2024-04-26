@@ -20,8 +20,9 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         public override string Extract(object data)
         {
-            lbuilder.Clear();
+            if(folders == null && pItems == null) return null;
 
+            lbuilder.Clear();
             lbuilder.AppendLv1Line(NestedProjectsPreSolution);
             bool hasDep = false;
 
@@ -43,21 +44,21 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
                 }
             });
 
-            if(!hasDep) return string.Empty;
+            if(!hasDep) return null;
 
             return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
         /// <inheritdoc cref="WNestedProjects(IEnumerable{SolutionFolder}, IEnumerable{ProjectItem})"/>
         public WNestedProjects(IEnumerable<SolutionFolder> folders)
-            : this(folders, null)
+            : this(folders, pItems: null)
         {
 
         }
 
         /// <inheritdoc cref="WNestedProjects(IEnumerable{SolutionFolder}, IEnumerable{ProjectItem})"/>
         public WNestedProjects(IEnumerable<ProjectItem> pItems)
-            : this(null, pItems)
+            : this(folders: null, pItems)
         {
 
         }
@@ -69,5 +70,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
             this.folders    = folders;
             this.pItems     = pItems;
         }
+
+        public WNestedProjects() { }
     }
 }

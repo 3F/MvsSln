@@ -10,9 +10,9 @@ namespace MvsSlnTest.Core.ObjHandlers
         [Fact]
         public void ExtractTest1()
         {
-            var target = new WExtensibilityGlobals(null).Extract(null);
-
-            Assert.Equal(String.Empty, target);
+            Assert.Null(new WExtensibilityGlobals(items: null).Extract(null));
+            Assert.Null(new WExtensibilityGlobals().Extract(null));
+            Assert.NotNull(new WExtensibilityGlobals(new Dictionary<string, string>()).Extract(null));
         }
 
         [Fact]

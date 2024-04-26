@@ -5,24 +5,19 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
-using net.r_eg.MvsSln.Extensions;
-
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
     using static net.r_eg.MvsSln.Core.Keywords;
 
-    public class WVisualStudioVersion(SlnHeader header): WAbstract, IObjHandler
+    public class WVisualStudioVersion: WAbstract, IObjHandler
     {
-        /// <summary>
-        /// Header information.
-        /// </summary>
-        protected SlnHeader header = header ?? throw new ArgumentNullException(MsgR._0_IsRequired.Format(nameof(header.FormatVersion)));
+        protected SlnHeader header;
 
         public override string Extract(object data)
         {
-            lbuilder.Clear();
+            if(header == null) return null;
 
+            lbuilder.Clear();
             lbuilder.AppendLine($"Microsoft Visual Studio Solution File, Format Version {header.FormatVersionMajorMinor}");
 
             if(header.ProgramVersion != null)
@@ -42,5 +37,12 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
             return lbuilder.ToString(noLastNewLine: true);
         }
+
+        public WVisualStudioVersion(SlnHeader header)
+        {
+            this.header = header;
+        }
+
+        public WVisualStudioVersion() { }
     }
 }

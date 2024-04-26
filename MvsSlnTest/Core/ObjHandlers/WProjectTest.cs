@@ -23,6 +23,14 @@ namespace MvsSlnTest.Core.ObjHandlers
 #endif
         }
 
+        [Fact]
+        public void ExtractTest2()
+        {
+            Assert.Null(new WProject().Extract(null));
+            Assert.Null(new WProject(pItems: null).Extract(null));
+            Assert.NotNull(new WProject(pItems: []).Extract(null));
+        }
+
         private class _WProjectTestData: ISlnProjectDependencies
         {
             public IList<ProjectItem> ProjectItems

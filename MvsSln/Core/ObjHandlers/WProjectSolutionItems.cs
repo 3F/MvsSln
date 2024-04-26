@@ -5,7 +5,6 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
 using net.r_eg.MvsSln.Extensions;
 
@@ -22,8 +21,9 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         public override string Extract(object data)
         {
-            lbuilder.Clear();
+            if(folders == null) return null;
 
+            lbuilder.Clear();
             foreach(SolutionFolder folder in folders)
             {
                 ProjectItem prj = folder.header;
@@ -31,14 +31,19 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
                 lbuilder.AppendLine
                 (
                     $"{Project_}\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
-                )
-                .AppendLv1Line(SolutionItemsPreProject);
+                );
 
+                LineBuilder fItems = new();
+                folder.items?.ForEach(t => fItems.AppendLv2Line($"{t} = {t}"));
+
+                if(fItems.Length > 0)
                 {
-                    folder.items.ForEach(item => lbuilder.AppendLv2Line($"{item} = {item}"));
+                    lbuilder.AppendLv1Line(SolutionItemsPreProject)
+                            .Append(fItems.ToString())
+                            .AppendLv1Line(EndProjectSection);
                 }
 
-                lbuilder.AppendLv1Line(EndProjectSection).AppendLine(EndProject);
+                lbuilder.AppendLine(EndProject);
             }
 
             return lbuilder.ToString(noLastNewLine: true);
@@ -47,7 +52,9 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// <param name="folders">List of solution folders.</param>
         public WProjectSolutionItems(IEnumerable<SolutionFolder> folders)
         {
-            this.folders = folders ?? throw new ArgumentNullException(nameof(folders));
+            this.folders = folders;
         }
+
+        public WProjectSolutionItems() { }
     }
 }

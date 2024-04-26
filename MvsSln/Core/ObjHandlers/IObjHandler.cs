@@ -19,7 +19,10 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// To extract prepared raw-data.
         /// </summary>
         /// <param name="data">Any object data which is ready for this <see cref="IObjHandler"/>.</param>
-        /// <returns>Final part of sln data.</returns>
+        /// <returns>
+        /// A piece of final data from the current <see cref="IObjHandler"/> implementation. <br/>
+        /// null should be considered as non-processed or ignored result.
+        /// </returns>
         string Extract(object data);
     }
 }

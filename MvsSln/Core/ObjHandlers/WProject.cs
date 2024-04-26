@@ -5,7 +5,6 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
 using net.r_eg.MvsSln.Extensions;
 
@@ -27,8 +26,9 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         public override string Extract(object data)
         {
-            lbuilder.Clear();
+            if(projectItems == null) return null;
 
+            lbuilder.Clear();
             foreach(ProjectItem prj in projectItems)
             {
                 lbuilder.AppendLine
@@ -36,8 +36,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
                     $"{Project_}\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
                 );
 
-                if(projectDependencies.Dependencies.ContainsKey(prj.pGuid) 
-                    && projectDependencies.Dependencies[prj.pGuid].Count > 0)
+                if(projectDependencies?.Dependencies.GetOrDefault(prj.pGuid)?.Count > 0)
                 {
                     lbuilder.AppendLv1Line(ProjectDependenciesPostProject);
 
@@ -59,8 +58,16 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// <param name="deps">Solution Project Dependencies.</param>
         public WProject(IEnumerable<ProjectItem> pItems, ISlnProjectDependencies deps)
         {
-            projectItems        = pItems ?? throw new ArgumentNullException(nameof(pItems));
-            projectDependencies = deps ?? throw new ArgumentNullException(nameof(deps));
+            projectItems        = pItems;
+            projectDependencies = deps;
         }
+
+        public WProject(IEnumerable<ProjectItem> pItems)
+            : this(pItems, deps: null)
+        {
+
+        }
+
+        public WProject() { }
     }
 }

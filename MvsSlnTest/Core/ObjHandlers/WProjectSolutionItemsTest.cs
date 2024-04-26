@@ -47,5 +47,13 @@ namespace MvsSlnTest.Core.ObjHandlers
 
             Assert.Equal(SlnSamplesResource.Section_Sln_Items, target);
         }
+
+        [Fact]
+        public void ExtractTest2()
+        {
+            Assert.Null(new WProjectSolutionItems().Extract(null));
+            Assert.Null(new WProjectSolutionItems(folders: null).Extract(null));
+            Assert.NotNull(new WProjectSolutionItems(folders: []).Extract(null));
+        }
     }
 }

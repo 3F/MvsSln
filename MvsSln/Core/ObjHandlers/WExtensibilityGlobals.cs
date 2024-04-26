@@ -18,7 +18,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         public override string Extract(object data)
         {
-            if(items == null) return string.Empty;
+            if(items == null) return null;
 
             lbuilder.Clear();
             lbuilder.AppendLv1Line(ExtensibilityGlobalsPostSolution);
@@ -35,5 +35,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         {
             this.items = items;
         }
+
+        public WExtensibilityGlobals() { }
     }
 }

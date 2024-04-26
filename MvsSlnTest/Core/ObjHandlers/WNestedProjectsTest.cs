@@ -27,10 +27,15 @@ namespace MvsSlnTest.Core.ObjHandlers
         [Fact]
         public void ExtractTest1()
         {
-            IEnumerable<SolutionFolder> sf = null;
-            var target = (new WNestedProjects(sf)).Extract(null);
+            Assert.Null(new WNestedProjects(folders: null).Extract(null));
+            Assert.Null(new WNestedProjects(pItems: null).Extract(null));
+            Assert.Null(new WNestedProjects(folders: null, pItems: null).Extract(null));
 
-            Assert.Equal(String.Empty, target);
+            Assert.Null(new WNestedProjects(folders: []).Extract(null));
+            Assert.Null(new WNestedProjects(pItems: []).Extract(null));
+            Assert.Null(new WNestedProjects(folders: [], pItems: []).Extract(null));
+
+            Assert.Null(new WNestedProjects().Extract(null));
         }
 
         [Fact]

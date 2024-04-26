@@ -5,7 +5,6 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
 using net.r_eg.MvsSln.Extensions;
 
@@ -22,8 +21,9 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         public override string Extract(object data)
         {
-            lbuilder.Clear();
+            if(configs == null) return null;
 
+            lbuilder.Clear();
             lbuilder.AppendLv1Line(SolutionConfigurationPlatformsPreSolution);
 
             configs.ForEach(cfg => lbuilder.AppendLv2Line($"{cfg} = {cfg}"));
@@ -34,7 +34,9 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// <param name="configs">Solution configurations with platforms.</param>
         public WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
         {
-            this.configs = configs ?? throw new ArgumentNullException(nameof(configs));
+            this.configs = configs;
         }
+
+        public WSolutionConfigurationPlatforms() { }
     }
 }

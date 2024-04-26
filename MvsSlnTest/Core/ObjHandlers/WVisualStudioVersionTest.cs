@@ -31,5 +31,12 @@ namespace MvsSlnTest.Core.ObjHandlers
                 new WVisualStudioVersion(new SlnHeader("12.0")).Extract(data: null)
             );
         }
+
+        [Fact]
+        public void ExtractTest3()
+        {
+            Assert.Null(new WVisualStudioVersion().Extract(null));
+            Assert.Null(new WVisualStudioVersion(header: null).Extract(null));
+        }
     }
 }

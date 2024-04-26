@@ -26,5 +26,13 @@ namespace MvsSlnTest.Core.ObjHandlers
 
             Assert.Equal(SlnSamplesResource.Section_Sln_Config, target);
         }
+
+        [Fact]
+        public void ExtractTest2()
+        {
+            Assert.Null(new WSolutionConfigurationPlatforms().Extract(null));
+            Assert.Null(new WSolutionConfigurationPlatforms(configs: null).Extract(null));
+            Assert.NotNull(new WSolutionConfigurationPlatforms(configs: []).Extract(null));
+        }
     }
 }
