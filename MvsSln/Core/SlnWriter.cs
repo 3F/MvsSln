@@ -232,6 +232,47 @@ namespace net.r_eg.MvsSln.Core
             reader = new(() => new(stream.BaseStream, stream.Encoding));
         }
 
+        /// <inheritdoc cref="SlnWriter(string, ISlnWhData, Encoding)"/>
+        public SlnWriter(string sln, ISlnWhData data)
+            : this(sln, data, Encoding.UTF8)
+        {
+
+        }
+
+        /// <param name="sln">Destination file.</param>
+        /// <param name="data">Data for preparing handlers <see cref="ISlnHandler"/> / <see cref="IObjHandler"/> using <see cref="DefaultHandlers"/>.</param>
+        /// <param name="enc">Text encoding for result data.</param>
+        public SlnWriter(string sln, ISlnWhData data, Encoding enc)
+            : this(sln, DefaultHandlers.MakeFrom(data), enc)
+        {
+
+        }
+
+        /// <inheritdoc cref="SlnWriter(ISlnWhData, Encoding)"/>
+        public SlnWriter(ISlnWhData data)
+            : this(data, Encoding.UTF8)
+        {
+
+        }
+
+        /// <summary>
+        /// Initialize using <see cref="MemoryStream"/>.
+        /// </summary>
+        /// <param name="data">Data for preparing handlers <see cref="ISlnHandler"/> / <see cref="IObjHandler"/> using <see cref="DefaultHandlers"/>.</param>
+        /// <param name="enc">Text encoding for result data.</param>
+        public SlnWriter(ISlnWhData data, Encoding enc)
+            : this(DefaultHandlers.MakeFrom(data), enc)
+        {
+
+        }
+
+        /// <inheritdoc cref="SlnWriter(string, ISlnWhData, Encoding)"/>
+        public SlnWriter(StreamWriter writer, ISlnWhData data)
+            : this(writer, DefaultHandlers.MakeFrom(data))
+        {
+
+        }
+
         /// <summary>
         /// Custom stream implementation using <see cref="SlnWriter"/> logic.
         /// </summary>

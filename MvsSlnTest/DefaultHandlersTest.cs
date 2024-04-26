@@ -14,8 +14,13 @@ namespace MvsSlnTest
             string file = TestData.GetPathTo(@"SlnWriter\DefaultHandlers\src.sln");
             using Sln sln = new(file, SlnItems.AllNoLoad);
 
+            string exp = File.ReadAllText(file);
+
             using SlnWriter w = new(DefaultHandlers.MakeFrom(sln.Result));
-            Assert.Equal(File.ReadAllText(file), w.WriteAsString(sln.Result.Map));
+            Assert.Equal(exp, w.WriteAsString(sln.Result.Map));
+
+            using SlnWriter w2 = new(sln.Result);
+            Assert.Equal(exp, w2.WriteAsString(sln.Result.Map));
         }
 
         [Fact]

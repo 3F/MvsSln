@@ -10,7 +10,7 @@ using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.MvsSln.Core
 {
-    public interface ISlnResult
+    public interface ISlnResult: ISlnWhData
     {
         /// <summary>
         /// Full path to root solution directory.
@@ -28,39 +28,14 @@ namespace net.r_eg.MvsSln.Core
         SlnItems ResultType { get; }
 
         /// <summary>
-        /// Header information.
-        /// </summary>
-        SlnHeader Header { get; }
-
-        /// <summary>
-        /// Solution configurations with platforms.
-        /// </summary>
-        IEnumerable<IConfPlatform> SolutionConfigs { get; }
-
-        /// <summary>
-        /// Project configurations with platforms.
-        /// </summary>
-        IEnumerable<IConfPlatformPrj> ProjectConfigs { get; }
-
-        /// <summary>
         /// Alias of the relation of solution configuration to project configurations.
         /// </summary>
         RoProperties<IConfPlatform, IConfPlatformPrj[]> ProjectConfigurationPlatforms { get; }
 
         /// <summary>
-        /// All found projects in solution.
-        /// </summary>
-        IEnumerable<ProjectItem> ProjectItems { get; }
-
-        /// <summary>
         /// Alias for ProjectItems and its configurations.
         /// </summary>
         IEnumerable<ProjectItemCfg> ProjectItemsConfigs { get; }
-
-        /// <summary>
-        /// List of solution folders.
-        /// </summary>
-        IEnumerable<SolutionFolder> SolutionFolders { get; }
 
         /// <summary>
         /// Default Configuration and Platform for current solution.
@@ -72,19 +47,6 @@ namespace net.r_eg.MvsSln.Core
         /// Use optional {PropertyNames} to access to popular properties.
         /// </summary>
         RoProperties Properties { get; }
-
-        /// <summary>
-        /// Solution Project Dependencies.
-        /// </summary>
-        ISlnPDManager ProjectDependencies { get; }
-
-        /// <summary>
-        /// Optional Key[-Value] records like `SolutionGuid` and so on
-        /// that can be presented inside an ExtensibilityGlobals section.
-        /// 
-        /// ie. Flags/Key-only records are possible too (values will contain null).
-        /// </summary>
-        IDictionary<string, string> ExtItems { get; set; }
 
         /// <summary>
         /// Environment for current data.

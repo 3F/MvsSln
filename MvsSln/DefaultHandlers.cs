@@ -15,46 +15,46 @@ namespace net.r_eg.MvsSln
 {
     public static class DefaultHandlers
     {
-        public static Dictionary<Type, HandlerValue> MakeFrom(ISlnResult sr)
+        public static Dictionary<Type, HandlerValue> MakeFrom(ISlnWhData data)
         {
-            if(sr == null) throw new ArgumentNullException(nameof(sr));
+            if(data == null) throw new ArgumentNullException(nameof(data));
             Dictionary<Type, HandlerValue> ret = [];
 
-            if(sr.Header != null)
+            if(data.Header != null)
             {
-                ret[typeof(LVisualStudioVersion)] = new(new WVisualStudioVersion(sr.Header));
+                ret[typeof(LVisualStudioVersion)] = new(new WVisualStudioVersion(data.Header));
             }
 
-            if(sr.ProjectItems != null)
+            if(data.ProjectItems != null)
             {
-                ret[typeof(LProject)] = new(new WProject(sr.ProjectItems, sr.ProjectDependencies));
+                ret[typeof(LProject)] = new(new WProject(data.ProjectItems, data.ProjectDependencies));
             }
 
             //[typeof(LProjectDependencies)] = // part of LProject, see CoHandlers
 
-            if(sr.SolutionFolders != null)
+            if(data.SolutionFolders != null)
             {
-                ret[typeof(LProjectSolutionItems)] = new(new WProjectSolutionItems(sr.SolutionFolders));
+                ret[typeof(LProjectSolutionItems)] = new(new WProjectSolutionItems(data.SolutionFolders));
             }
 
-            if(sr.SolutionConfigs != null)
+            if(data.SolutionConfigs != null)
             {
-                ret[typeof(LSolutionConfigurationPlatforms)] = new(new WSolutionConfigurationPlatforms(sr.SolutionConfigs));
+                ret[typeof(LSolutionConfigurationPlatforms)] = new(new WSolutionConfigurationPlatforms(data.SolutionConfigs));
             }
 
-            if(sr.ProjectConfigs != null)
+            if(data.ProjectConfigs != null)
             {
-                ret[typeof(LProjectConfigurationPlatforms)] = new(new WProjectConfigurationPlatforms(sr.ProjectConfigs));
+                ret[typeof(LProjectConfigurationPlatforms)] = new(new WProjectConfigurationPlatforms(data.ProjectConfigs));
             }
 
-            if(sr.SolutionFolders != null || sr.ProjectItems != null)
+            if(data.SolutionFolders != null || data.ProjectItems != null)
             {
-                ret[typeof(LNestedProjects)] = new(new WNestedProjects(sr.SolutionFolders, sr.ProjectItems));
+                ret[typeof(LNestedProjects)] = new(new WNestedProjects(data.SolutionFolders, data.ProjectItems));
             }
 
-            if(sr.ExtItems != null)
+            if(data.ExtItems != null)
             {
-                ret[typeof(LExtensibilityGlobals)] = new(new WExtensibilityGlobals(sr.ExtItems));
+                ret[typeof(LExtensibilityGlobals)] = new(new WExtensibilityGlobals(data.ExtItems));
             }
 
             return ret;
