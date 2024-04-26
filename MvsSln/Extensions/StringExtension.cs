@@ -221,6 +221,50 @@ namespace net.r_eg.MvsSln.Extensions
             return new MemoryStream((enc ?? Encoding.UTF8).GetBytes(str ?? string.Empty));
         }
 
+        /// <param name="path">path to file</param>
+        /// <returns>Platform independent file name without extension using `\` and `/` as a separator.</returns>
+        internal static string GetFileNameWithoutExtension(this string path)
+        {
+            int a = path.IndexOfAny(['\\', '/']);
+            int b = path.LastIndexOf('.');
+
+            if(b <= a) b = path.Length;
+
+            return path.Substring(++a, b - a);
+        }
+
+        /// <param name="path">path to file; null is possible</param>
+        /// <returns>Either name from file (without extension) or its directory; trimmed; null is possible</returns>
+        internal static string GetDirNameOrFileName(this string path)
+        {
+            //NOTE: Since `\`(backslash) is valid name for directories on Linux,
+            //      Path.GetDirectoryName() will return wrong (for this case) empty string when "a\\b.c"; same to "\\ name" for Path.GetFileNameWithoutExtension()
+            //      That's why we don't use System.IO.Path implementation here >_<
+
+            if(string.IsNullOrEmpty(path)) return path;
+            char[] sp = ['\\', '/'];
+
+            int pos = path.LastIndexOfAny(sp);
+            if(pos == -1) return path.GetFileNameWithoutExtension();
+
+            // prevent possible double \\ triple \\\ ...
+            int dirR = pos;
+            while(dirR >= 0 && (path[dirR] == '\\' || path[dirR] == '/')) --dirR;
+
+            if(dirR == -1) return path.Substring(pos).GetFileNameWithoutExtension();
+
+            int dirL = path.LastIndexOfAny(sp, dirR);
+            if(dirL == -1) return path.Substring(0, dirR + 1);
+
+            return path.Substring(dirL + 1, dirR - dirL);
+        }
+
+        internal static string GetDirNameOrFileName(this string path, bool trim)
+        {
+            path = path.GetDirNameOrFileName();
+            return trim ? path?.Trim() : path;
+        }
+
         /// <summary>
         /// Adapt the path format to the current platform.
         /// </summary>

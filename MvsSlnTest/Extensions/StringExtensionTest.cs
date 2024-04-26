@@ -185,5 +185,66 @@ namespace MvsSlnTest.Extensions
             Assert.NotNull(" ".NullIfEmpty());
             Assert.Null(((string)null).NullIfEmpty());
         }
+
+#if !NET40
+        [Theory]
+        [InlineData(@"aaa\bbbb\ TestProject 1\src.csproj", " TestProject 1")]
+        [InlineData(@" TestProject 1\src.csproj", " TestProject 1")]
+        [InlineData(@"\ src.csproj", " src")]
+        [InlineData(@"\src.csproj", "src")]
+        [InlineData(@"\\src.csproj", "src")]
+        [InlineData(@"\\ src.csproj", " src")]
+        [InlineData(@"src.csproj", "src")]
+        [InlineData(@" src.csproj", " src")]
+        [InlineData(@"/src.csproj", "src")]
+        [InlineData(@"/ src.csproj", " src")]
+        [InlineData(@"dir1/src.csproj", "dir1")]
+        [InlineData(@"/dir1/src.csproj", "dir1")]
+        [InlineData(@"\dir1\\src.csproj", "dir1")]
+        [InlineData(@"\\dir1\\src.csproj", "dir1")]
+        [InlineData(@"\ src", " src")]
+        [InlineData(@"\src", "src")]
+        [InlineData(@"\\src", "src")]
+        [InlineData(@"\\ src", " src")]
+        [InlineData(@"src", "src")]
+        [InlineData(@" src", " src")]
+        [InlineData(@"/src", "src")]
+        [InlineData(@"/ src", " src")]
+        [InlineData(@"aaa\bbbb\ TestProject 1\\src.csproj", " TestProject 1")]
+        [InlineData(@"aaa\bbbb\ TestProject 1\\src", " TestProject 1")]
+        [InlineData(@"", "")]
+        [InlineData(@" ", " ")]
+        [InlineData(null, null)]
+        public void GetDirNameOrFileNameTest1(string input, string name)
+        {
+            Assert.Equal(name, input.GetDirNameOrFileName());
+            Assert.Equal(name, input.GetDirNameOrFileName(trim: false));
+            if(name != null)
+            {
+                Assert.Equal(name.Trim(), input.GetDirNameOrFileName(trim: true));
+            }
+        }
+#else
+        [Fact]
+        public void GetDirNameOrFileNameTest1()
+        {
+            Assert.Equal("TestProject 1", @"aaa\bbbb\TestProject 1\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("TestProject 1", @"TestProject 1\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"\\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"\src".GetDirNameOrFileName());
+            Assert.Equal("src", @"\\src".GetDirNameOrFileName());
+            Assert.Equal("src", @"src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"/src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"src".GetDirNameOrFileName());
+            Assert.Equal("src", @"/src".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"dir1/src.csproj".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"/dir1/src.csproj".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"\dir1\\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"\dir1\\src".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"\\dir1\\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("TestProject 1", @"aaa\bbbb\TestProject 1\\src.csproj".GetDirNameOrFileName());
+        }
+#endif
     }
 }

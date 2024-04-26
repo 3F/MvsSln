@@ -112,6 +112,18 @@ namespace net.r_eg.MvsSln.Core
 
         }
 
+        public ProjectItem(ProjectType pType, string path, SolutionFolder? parent = null, string slnDir = null)
+            : this(path.GetDirNameOrFileName(), pType, path, parent, slnDir)
+        {
+
+        }
+
+        public ProjectItem(ProjectType pType, string path, string pGuid, SolutionFolder? parent = null, string slnDir = null)
+            : this(pGuid, path.GetDirNameOrFileName(), pType, path, parent, slnDir)
+        {
+
+        }
+
         /// <inheritdoc cref="ProjectItem(string, string, ProjectType, string, SolutionFolder?, string)"/>
         public ProjectItem(string pGuid, string name, ProjectType pType, SolutionFolder? parent = null)
             : this(pGuid, name, pType, name, parent)

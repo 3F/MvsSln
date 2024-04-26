@@ -227,6 +227,25 @@ namespace MvsSlnTest.Core
 #endif
 
         [Fact]
+        public void CtorTest5()
+        {
+            ProjectItem p = new
+            (
+                ProjectType.CsSdk,
+                @"ProjectDir\src.csproj",
+                slnDir: @"C:\path\prj path".AdaptWinPath()
+            );
+
+            Assert.Equal("ProjectDir", p.name);
+            Assert.Equal(ProjectType.CsSdk, p.EpType);
+            Assert.Equal(Guids.PROJECT_CS_SDK, p.pType);
+            Assert.Equal(@"C:\path\prj path\ProjectDir\src.csproj".AdaptWinPath(), p.fullPath);
+
+            ProjectItem p2 = new(ProjectType.CsSdk, "src.csproj", slnDir: @"C:\path\prj path".AdaptWinPath());
+            Assert.Equal("src", p2.name);
+        }
+
+        [Fact]
         public void EqTest1()
         {
             var project1 = new ProjectItem()
