@@ -12,7 +12,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
     using static net.r_eg.MvsSln.Core.Keywords;
 
-    public class WProject: WAbstract, IObjHandler
+    public class WProject: WAbstract, IObjHandler, IProjectItemsHandler
     {
         /// <summary>
         /// All found projects in solution.
@@ -23,6 +23,8 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// Solution Project Dependencies.
         /// </summary>
         protected ISlnProjectDependencies projectDependencies;
+
+        public IEnumerable<ProjectItem> Projects => projectItems;
 
         public override string Extract(object data)
         {

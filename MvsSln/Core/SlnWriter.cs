@@ -16,6 +16,7 @@ using net.r_eg.MvsSln.Core.ObjHandlers;
 using net.r_eg.MvsSln.Core.SlnHandlers;
 using net.r_eg.MvsSln.Exceptions;
 using net.r_eg.MvsSln.Extensions;
+using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.MvsSln.Core
 {
@@ -29,6 +30,8 @@ namespace net.r_eg.MvsSln.Core
 
         private readonly Lazy<StreamReader> reader;
 
+        private IProjectsToucher toucher;
+
         protected readonly StreamWriter stream;
 
         /// <summary>
@@ -36,7 +39,11 @@ namespace net.r_eg.MvsSln.Core
         /// </summary>
         public IDictionary<Type, HandlerValue> Handlers { get; protected set; }
 
+        public SlnWriterOptions Options { get; set; }
+
         public List<ISection> Skeleton => skeleton.Value;
+
+        protected IProjectsToucher Toucher => toucher ??= new EmptyProjWriter(stream.Encoding);
 
 #if !NET40
 
@@ -179,6 +186,8 @@ namespace net.r_eg.MvsSln.Core
         /// <inheritdoc cref="WriteAsString(IEnumerable{ISection})"/>
         /// <remarks>*default sections using <see cref="Skeleton"/></remarks>
         public string WriteAsString() => WriteAsString(Skeleton);
+
+        public void SetToucher(IProjectsToucher toucher) => this.toucher = toucher;
 
         /// <inheritdoc cref="SlnWriter(string, IDictionary{Type, HandlerValue}, Encoding)"/>
         public SlnWriter(string sln, IDictionary<Type, HandlerValue> handlers)
@@ -341,7 +350,7 @@ namespace net.r_eg.MvsSln.Core
         }
 
         protected string GetHandlerValueOrRaw(Type tid, ISection section)
-            => Handlers.GetOrDefault(tid).handler?.Extract(Handlers[tid].value)
+            => TouchProjectItems(Handlers.GetOrDefault(tid).handler)?.Extract(Handlers[tid].value)
             ?? section.Raw.data;
 
         protected string PrepareSection(ISection section)
@@ -429,6 +438,20 @@ namespace net.r_eg.MvsSln.Core
             }
 
             return final;
+        }
+
+        protected virtual IObjHandler TouchProjectItems(IObjHandler input)
+        {
+            if(input == null || !Options.HasFlag(SlnWriterOptions.CreateProjectsIfNotExist))
+            {
+                return input;
+            }
+
+            if(input is IProjectItemsHandler obj)
+            {
+                Toucher?.Touch(obj.Projects, Options.HasFlag(SlnWriterOptions.StrictTouch));
+            }
+            return input;
         }
 
         protected IEnumerable<ISection> GetWritableSections(IEnumerable<ISection> sections)

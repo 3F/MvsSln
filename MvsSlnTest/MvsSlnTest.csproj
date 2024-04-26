@@ -7,6 +7,7 @@
     <IsPackable>false</IsPackable>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\com.github.3F.test.snk</AssemblyOriginatorKeyFile>
+    <NoWarn>$(NoWarn);IDE1006</NoWarn>
   </PropertyGroup>
   
   <ItemGroup>
