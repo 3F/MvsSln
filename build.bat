@@ -1,6 +1,6 @@
 @echo off
 
-call .tools\hMSBuild -GetNuTool & (
+call .tools\hMSBuild ~x -GetNuTool & (
     if [%~1]==[#] exit /B 0
 )
 

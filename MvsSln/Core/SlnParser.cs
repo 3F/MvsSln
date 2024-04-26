@@ -31,7 +31,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// To use specific Encoding by default for some operations with data.
         /// </summary>
-        protected Encoding encoding = Encoding.Default;
+        protected Encoding encoding = Encoding.UTF8;
 
         private CoHandlers _coh;
 
