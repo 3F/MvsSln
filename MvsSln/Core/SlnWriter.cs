@@ -55,7 +55,10 @@ namespace net.r_eg.MvsSln.Core
 
             return await SyncAsync(async () =>
             {
-                await FlushAndReset().WriteNoLockAsync(sections);
+                await FlushAndResetAsync();
+                await WriteNoLockAsync(sections);
+
+                await FlushAndResetAsync();
                 return await GetReaderForString().ReadToEndAsync();
             });
         }
@@ -130,7 +133,7 @@ namespace net.r_eg.MvsSln.Core
         }
 
         /// <summary>
-        /// To write all not ignored sections with rules from handlers into the input string.
+        /// To write all not ignored sections with rules from handlers into the string.
         /// </summary>
         /// <param name="sections"></param>
         /// <returns>Processed sections as string data</returns>
@@ -142,7 +145,9 @@ namespace net.r_eg.MvsSln.Core
             return Sync(() =>
             {
                 FlushAndReset().WriteNoLock(sections);
-                return GetReaderForString().ReadToEnd();
+
+                return FlushAndReset()
+                        .GetReaderForString().ReadToEnd();
             });
         }
 
@@ -214,10 +219,7 @@ namespace net.r_eg.MvsSln.Core
         /// that will be disposed along with <see cref="SlnWriter"/>.
         /// </returns>
         protected virtual StreamReader GetReaderForString()
-        {
-            FlushAndReset();
-            return new StreamReader(stream.BaseStream, stream.Encoding);
-        }
+            => new(stream.BaseStream, stream.Encoding);
 
 #if !NET40
 
@@ -438,13 +440,26 @@ namespace net.r_eg.MvsSln.Core
             return last ?? GetTaskFromResult(false);
         }
 
+#else
+
+        private async Task<SlnWriter> FlushAndResetAsync()
+        {
+            await stream?.FlushAsync();
+            return Reset();
+        }
+
 #endif
 
         private SlnWriter FlushAndReset()
         {
+            stream?.Flush();
+            return Reset();
+        }
+
+        private SlnWriter Reset()
+        {
             if(stream?.BaseStream.Position > 0)
             {
-                stream.Flush();
                 stream.BaseStream.Position = 0;
             }
             return this;

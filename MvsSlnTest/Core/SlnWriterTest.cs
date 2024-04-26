@@ -237,5 +237,27 @@ EndGlobal
 ";
             Assert.Equal(expected, data);
         }
+
+        [Fact]
+        public void MergeTest1()
+        {
+            using Sln sln = new(TestData.GetPathTo(@"SlnWriter\L-13\src.sln"), SlnItems.AllNoLoad);
+
+            List<SolutionFolder> folders = [new SolutionFolder("My Folder", "item1.log", "item2.txt")];
+
+            //string output = sln.Result.SolutionFile + "_modified.sln";
+            using SlnWriter w = new(new Dictionary<Type, HandlerValue>()
+            {
+                [typeof(LNestedProjects)] = new(new WNestedProjects(folders, sln.Result.ProjectItems)),
+                [typeof(LProjectSolutionItems)] = new(new WProjectSolutionItems(folders)),
+            });
+
+            //w.Write(sln.Result.Map);
+
+            string result = w.WriteAsString(sln.Result.Map);
+            w.Dispose();
+
+
+        }
     }
 }
