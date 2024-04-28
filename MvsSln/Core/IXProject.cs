@@ -241,12 +241,23 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         string GetFullPath(string relative);
 
+        /// <inheritdoc cref="AddReference(string, string, AddReferenceOptions)"/>
+        bool AddReference(string inc, AddReferenceOptions options = AddReferenceOptions.Default);
+
+        /// <summary>
+        /// Adds 'Reference' item using <see cref="Assembly"/> information.
+        /// </summary>
+        /// <inheritdoc cref="AddReference(string, string, AddReferenceOptions)"/>
+        bool AddReference(Assembly asm, AddReferenceOptions options = AddReferenceOptions.DefaultAsm);
+
         /// <summary>
         /// Adds 'Reference' item.
         /// </summary>
         /// <param name="inc">Include attribute.</param>
+        /// <param name="path">Path to module for meta 'HintPath' or related.</param>
+        /// <param name="options">Options to control Include or Meta values.</param>
         /// <returns></returns>
-        bool AddReference(string inc);
+        bool AddReference(string inc, string path, AddReferenceOptions options = AddReferenceOptions.Default);
 
         /// <summary>
         /// Adds 'Reference' item.
@@ -256,6 +267,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
         /// <param name="spec">Meta 'SpecificVersion'.</param>
         /// <returns></returns>
+        [Obsolete("Use modern AddReference() with AddReferenceOptions instead. Scheduled to be removed in future versions.")]
         bool AddReference(Assembly asm, bool local, bool? embed = null, bool? spec = null);
 
         /// <summary>
@@ -266,6 +278,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
         /// <param name="spec">Meta 'SpecificVersion'.</param>
         /// <returns></returns>
+        [Obsolete("Use modern AddReference() with AddReferenceOptions instead. Scheduled to be removed in future versions.")]
         bool AddReference(string fullpath, bool local, bool? embed = null, bool? spec = null);
 
         /// <summary>
@@ -277,6 +290,7 @@ namespace net.r_eg.MvsSln.Core
         /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
         /// <param name="spec">Meta 'SpecificVersion'.</param>
         /// <returns></returns>
+        [Obsolete("Use modern AddReference() with AddReferenceOptions instead. Scheduled to be removed in future versions.")]
         bool AddReference(string inc, string path, bool local, bool? embed = null, bool? spec = null);
 
         /// <summary>

@@ -451,66 +451,85 @@ namespace net.r_eg.MvsSln.Core
         /// <returns></returns>
         public string GetFullPath(string relative) => Path.GetFullPath(Path.Combine(RootPath, relative));
 
-        /// <summary>
-        /// Adds 'Reference' item.
-        /// </summary>
-        /// <param name="inc">Include attribute.</param>
-        /// <returns></returns>
-        public bool AddReference(string inc) => AddItem(ITEM_REF, inc);
-
-        /// <summary>
-        /// Adds 'Reference' item.
-        /// </summary>
-        /// <param name="asm">Assembly for adding.</param>
-        /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
-        /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
-        /// <param name="spec">Meta 'SpecificVersion'.</param>
-        /// <returns></returns>
-        public bool AddReference(Assembly asm, bool local, bool? embed = null, bool? spec = null)
+        public bool AddReference(string inc, AddReferenceOptions options = AddReferenceOptions.Default)
         {
-            return AddReference(asm.ToString(), GetRelativePath(asm.Location), local, embed, spec);
+            if(inc == null) throw new ArgumentNullException(nameof(inc));
+            return AddReference(inc, path: null, options);
         }
 
-        /// <summary>
-        /// Adds 'Reference' item.
-        /// </summary>
-        /// <param name="fullpath">Full path to binary file.</param>
-        /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
-        /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
-        /// <param name="spec">Meta 'SpecificVersion'.</param>
-        /// <returns></returns>
+        public bool AddReference(Assembly asm, AddReferenceOptions options = AddReferenceOptions.DefaultAsm)
+        {
+            if(asm == null) throw new ArgumentNullException(nameof(asm));
+            return AddReference(asm.FullName, asm.Location, options | AddReferenceOptions.ResolveAssemblyName);
+        }
+
+        public bool AddReference(string inc, string path, AddReferenceOptions options = AddReferenceOptions.Default)
+        {
+            Dictionary<string, string> meta = [];
+
+            if(!options.HasFlag(AddReferenceOptions.HidePrivate))
+            {
+                meta["Private"] = options.HasFlag(AddReferenceOptions.Private).ToString();
+            }
+
+            if(!options.HasFlag(AddReferenceOptions.HideEmbedInteropTypes))
+            {
+                meta["EmbedInteropTypes"] = options.HasFlag(AddReferenceOptions.EmbedInteropTypes).ToString();
+            }
+
+            if(!options.HasFlag(AddReferenceOptions.HideSpecificVersion))
+            {
+                meta["SpecificVersion"] = options.HasFlag(AddReferenceOptions.SpecificVersion).ToString();
+            }
+
+            if((options & (AddReferenceOptions.EvaluatePath | AddReferenceOptions.EvaluatedHintPath)) != 0)
+            {
+                throw new NotImplementedException
+                (
+                    "Planned to review together with ~Evaluate() methods in future releases. Alternatively, see implementation from https://github.com/3F/vsSolutionBuildEvent"
+                );
+            }
+
+            if(path != null && !options.HasFlag(AddReferenceOptions.HideHintPath))
+            {
+                meta["HintPath"] = options.HasFlag(AddReferenceOptions.MakeRelativePath)
+                                        ? GetRelativePath(path) : path;
+            }
+
+            if(options.HasFlag(AddReferenceOptions.ResolveAssemblyName))
+            {
+                inc = GetAssemblyDisplayName(AssemblyName.GetAssemblyName(path ?? inc), options);
+            }
+
+            return AddItem(ITEM_REF, inc, meta);
+        }
+
+        [Obsolete("Use modern AddReference() with AddReferenceOptions instead. Scheduled to be removed in future versions.")]
+        public bool AddReference(Assembly asm, bool local, bool? embed = null, bool? spec = null)
+        {
+            return AddReference(asm?.ToString(), GetRelativePath(asm?.Location), local, embed, spec);
+        }
+
+        [Obsolete("Use modern AddReference() with AddReferenceOptions instead. Scheduled to be removed in future versions.")]
         public bool AddReference(string fullpath, bool local, bool? embed = null, bool? spec = null)
         {
-            //TODO: fullpath may contain unevaluated properties, e.g.: metalib\$(namespace)\$(libname)
             string inc = AssemblyName.GetAssemblyName(fullpath).FullName;
             return AddReference(inc, GetRelativePath(fullpath), local, embed, spec);
         }
 
-        /// <summary>
-        /// Adds 'Reference' item.
-        /// </summary>
-        /// <param name="inc">Include attribute.</param>
-        /// <param name="path">Meta 'HintPath'.</param>
-        /// <param name="local">Meta 'Private' - i.e. Copy Local.</param>
-        /// <param name="embed">Meta 'EmbedInteropTypes'.</param>
-        /// <param name="spec">Meta 'SpecificVersion'.</param>
-        /// <returns></returns>
+        [Obsolete("Use modern AddReference() with AddReferenceOptions instead. Scheduled to be removed in future versions.")]
         public bool AddReference(string inc, string path, bool local, bool? embed = null, bool? spec = null)
         {
-            var meta = new Dictionary<string, string>() {
-                { "HintPath", path },
-                { "Private", local.ToString() }
-            };
+            AddReferenceOptions options = AddReferenceOptions.None;
+            if(local) options |= AddReferenceOptions.Private;
 
-            if(embed != null) {
-                meta["EmbedInteropTypes"] = embed.ToString();
-            }
+            if(embed == true) options |= AddReferenceOptions.EmbedInteropTypes;
+            else if(embed == null) options |= AddReferenceOptions.HideEmbedInteropTypes;
 
-            if(spec != null) {
-                meta["SpecificVersion"] = spec.ToString();
-            }
+            if(spec == true) options |= AddReferenceOptions.SpecificVersion;
+            else if(spec == null) options |= AddReferenceOptions.HideSpecificVersion;
 
-            return AddItem(ITEM_REF, inc, meta);
+            return AddReference(inc, path, options);
         }
 
         /// <summary>
@@ -783,6 +802,66 @@ namespace net.r_eg.MvsSln.Core
             }
 
             return true;
+        }
+
+        protected string GetAssemblyDisplayName(AssemblyName asm, AddReferenceOptions options)
+        {
+            if(asm == null) throw new ArgumentNullException(nameof(asm));
+
+            bool _No(AddReferenceOptions input) => (options & input) == 0;
+
+            if(_No(AddReferenceOptions.ResolveAssemblyName)) throw new ArgumentOutOfRangeException(nameof(options));
+
+            // MvsSln, Version=2.6.1.0, Culture=neutral, PublicKeyToken=4bbd2ef743db151e
+            // DllExport, Version=1.5.1.35977, Culture=neutral, PublicKeyToken=8337224c9ad9e356, processorArchitecture=MSIL
+
+            options &= ~AddReferenceOptions.ResolveAssemblyName; // note, this is necessary because of the logic below
+
+            if(_No(AddReferenceOptions.OmitVersion
+                    | AddReferenceOptions.OmitPublicKeyTokenNull
+                    | AddReferenceOptions.OmitPublicKeyToken
+                    | AddReferenceOptions.OmitCultureNeutral
+                    | AddReferenceOptions.OmitCulture
+                    | AddReferenceOptions.OmitArchitecture))
+            {
+                return asm.FullName;
+            }
+
+            StringBuilder sb = new(asm.Name);
+
+            if(_No(AddReferenceOptions.OmitVersion)) sb.Append($", Version={asm.Version}");
+
+            if(_No(AddReferenceOptions.OmitCulture))
+            {
+                if(!string.IsNullOrEmpty(asm.CultureInfo?.Name))
+                {
+                    sb.Append($", Culture={asm.CultureInfo?.Name}");
+                }
+                else if(_No(AddReferenceOptions.OmitCultureNeutral))
+                {
+                    sb.Append($", Culture=neutral");
+                }
+            }
+
+            if(_No(AddReferenceOptions.OmitPublicKeyToken))
+            {
+                byte[] token = asm.GetPublicKeyToken();
+                if(token.Length > 0)
+                {
+                    sb.Append($", PublicKeyToken={token.ToHexString()}");
+                }
+                else if(_No(AddReferenceOptions.OmitPublicKeyTokenNull))
+                {
+                    sb.Append($", PublicKeyToken=null");
+                }
+            }
+
+            if(_No(AddReferenceOptions.OmitArchitecture))
+            {
+                sb.Append($", processorArchitecture={asm.ProcessorArchitecture}");
+            }
+
+            return sb.ToString();
         }
 
         private string FindGuid(Project eProject) => eProject?.GetProjectGuid().NullIfEmpty() ?? ProjectItem.project.pGuid;
