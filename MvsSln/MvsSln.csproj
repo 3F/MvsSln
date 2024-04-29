@@ -3,7 +3,7 @@
   <Import Project="..\common.props" />
 
   <PropertyGroup>
-    <Version>2.6.2</Version>
+    <Version>2.7.0</Version>
     <BuildInfoVSSBE></BuildInfoVSSBE>
   </PropertyGroup>
 
@@ -18,7 +18,7 @@
     <Title>[ MvsSln ] Customizable VisualStudio .sln parser, projects, r/w handlers at runtime</Title>
     <PackageIcon>MvsSln_v1_96px.png</PackageIcon>
     <IconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</IconUrl>
-    <Description>Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more …
+    <Description>Customizable VisualStudio .sln parser with project support (.vcxproj, .csproj., …). Pluggable lightweight r/w handlers at runtime, and more …
 
         🌌 The most convenient work with projects, dependencies, their lazy loading, any folders, any items, references and much more in these different worlds;
 
@@ -34,8 +34,8 @@
         🎈
         Source code and details: https://github.com/3F/MvsSln
 
-    =======================================
-    gnt /p:ngpackages="MvsSln/$(Version)"
+    ======================
+    gnt MvsSln/$(Version)
     ================== https://github.com/3F/GetNuTool
 
     $(BuildInfoVSSBE)

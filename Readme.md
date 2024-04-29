@@ -1,6 +1,6 @@
 [![](https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png)](https://github.com/3F/MvsSln) [**MvsSln**](https://github.com/3F/MvsSln)
 
-Customizable VisualStudio .sln parser, Complex support of the projects (.vcxproj, .csproj., …), Pluginable lightweight r/w handlers at runtime, and more … 🧩
+Customizable VisualStudio .sln parser with project support (.vcxproj, .csproj., …). Pluggable lightweight r/w handlers at runtime, and more … 🧩
 
 ```r
 Copyright (c) 2013-2024  Denis Kuzmin <x-3F@outlook.com> github/3F
@@ -10,7 +10,7 @@ Copyright (c) 2013-2024  Denis Kuzmin <x-3F@outlook.com> github/3F
 
 MvsSln contributors https://github.com/3F/MvsSln/graphs/contributors
 
-We're waiting for your awesome contributions!
+[*MvsSln*](https://github.com/3F/MvsSln) is waiting for your awesome contributions!
 
 <table><tr><td>
 
@@ -25,7 +25,7 @@ We're waiting for your awesome contributions!
 
 </td></tr></table>
 
-## Why MvsSln ?
+## Why MvsSln
 
 MvsSln provides the easiest way to complex work with Visual Studio .sln files and referenced projects (.vcxproj, .csproj., ...). Merge, Manage, Attach custom handlers and more. Because it's free, because it's open.
 
@@ -44,9 +44,9 @@ Safely compare anything,
 ```csharp
 if(new ProjectItem(...) == new ProjectItem(...)) { ... }
 if(new SolutionFolder(...) == new SolutionFolder(...)) { ... }
-if(new RawText(...) == new RawText(...)) { ... }
 if(new ConfigItem(...) == new ConfigItem(...)) { ... }
 if(new PackageInfo(...) == new PackageInfo(...)) { ... }
+...
 ````
 
 
@@ -129,6 +129,34 @@ IPackageInfo found = l.Result.PackagesConfigs
 // found.MetaTFM ...
 
 Version v = l.Result.PackagesConfigs.First().GetPackage("LX4Cnh")?.VersionParsed;
+```
+
+Easily create files [from scratch](https://github.com/3F/MvsSln/issues/61#issuecomment-2079155362),
+
+```csharp
+// 2.7+
+LhDataHelper hdata = new();
+hdata.SetHeader(SlnHeader.MakeDefault())
+        .SetProjects(projects)
+        .SetProjectConfigs(prjConfs)
+        .SetSolutionConfigs(slnConf);
+
+using(SlnWriter w = new(solutionFile, hdata))
+{
+    w.Options = SlnWriterOptions.CreateProjectsIfNotExist;
+    w.Write();
+}
+
+using Sln sln = new(solutionFile, SlnItems.EnvWithMinimalProjects);
+IXProject xp = sln.Result.Env.Projects.First();
+
+xp.SetProperties(new Dictionary<string, string>()
+{
+    { "OutputType", "EXE" },
+    { "TargetFramework", "net8.0" },
+    { "Platforms", "x64" }
+});
+xp.Save();
 ```
 
 Everything at hand,
@@ -272,49 +300,34 @@ using(var w = new SlnWriter("<path_to>.sln", whandlers)) {
 }
 ```
 
-## Did you know 
-
-### Projects
-
-The 1 project instance means only the 1 project with specific configuration. That is, you should work with each instance separately if some project has 2 or more configurations:
-
-```
-First instance of project {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} with configuration 'Release_net45|Any CPU' that's related with solution cfg -> CI_Release_net45|Any CPU
-Second instance of project {4F8BB8CD-1116-4F07-9B8F-06D69FB8589B} with configuration 'Debug|Any CPU' that's related with solution cfg -> Debug|Any CPU
-...
-```
-
-For example, the [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) contains 10 projects and 8 solution configurations:
-
-```
-DBG_SDK10; DBG_SDK15; DCI_SDK10; DCI_SDK15; REL_SDK10; REL_SDK15; RCI_SDK10; RCI_SDK15
-```
-
-Maximum **possible** configurations for each projects above should be calculated as 10 * 8 = 80, ie. 80 instances that *can be* loaded as each different project. `EnvWithProjects` will try load all available, but in fact, mostly 2 or more project-configuration can be related to the same 1 solution-configuration, therefore it can be just 30 or even 20 in reality, and so on.
-
-However, if you need to work only with common data of specified project:
-* Just use any available configuration. That is, to load projects only with specific configuration, use for example `IEnvironment.LoadProjects`.
+## Projects. Adding References
 
 ```csharp
-// SlnItems.Env will initialize environment without loading projects.
-using(var sln = new Sln(@"vsSolutionBuildEvent.sln", SlnItems.Env))
-{
-    ISlnResult data         = sln.Result;
-    IConfPlatform slnCfg    = data.SolutionConfigs.FirstOrDefault(); // to get first available solution configuration
-    data.Env.LoadProjects(
-        // prepare final list of projects that should be loaded
-        data.ProjectItemsConfigs.Where(p => p.solutionConfig == slnCfg)
-    );    
-    //... data.Env.Projects will contain instances only for Where(p => p.solutionConfig == slnCfg) i.e. 8 in total
-}
+XProject.AddPackageReference("Conari", "1.5.0");
 ```
 
-**For modern versions** also available `IEnvironment.LoadMinimalProjects` or `EnvWithMinimalProjects` flag.
-
-### Adding Reference & Assembly name
+```csharp
+xp.AddProjectReference(projects.First());
+xp.AddProjectReference(new ProjectItem(ProjectType.Cs, @$"{projName}\src.csproj"));
+```
 
 ```csharp
-XProject.AddReference(lib, false);
+xp.AddReference(Assembly.GetExecutingAssembly());
+```
+
+```csharp
+XProject.AddReference("DllExport", lib, AddReferenceOptions.MakeRelativePath);
+```
+
+```csharp
+xp.AddReference(
+    pathToDll,
+    AddReferenceOptions.DefaultResolve | AddReferenceOptions.OmitVersion | AddReferenceOptions.HidePrivate
+);
+```
+
+```xml
+<Reference Include="MvsSln, PublicKeyToken=4bbd2ef743db151e" />
 ```
 
 ```xml
@@ -324,46 +337,29 @@ XProject.AddReference(lib, false);
 </Reference>
 ```
 
-```csharp
-XProject.AddReference("DllExport", lib, false);
-```
-
-```xml
-<Reference Include="DllExport">
-  <HintPath>..\packages\DllExport.1.6.4\gcache\metalib\DllExport.dll</HintPath>
-  <Private>False</Private>
-</Reference>
-```
-
-You can also specify it via `System.Reflection.Assembly` etc.
-
 ## Example of extending (your custom handlers)
 
 Example of `LProject` handler (**reader**):
 
 ```csharp
+using static net.r_eg.MvsSln.Core.Keywords;
+
 public class LProject: LAbstract, ISlnHandler
 {
+    public override ICollection<Type> CoHandlers { get; protected set; }
+        = [typeof(LProjectDependencies)];
+
     public override bool IsActivated(ISvc svc)
-    {
-        return ((svc.Sln.ResultType & SlnItems.Projects) == SlnItems.Projects);
-    }
+        => (svc.Sln.ResultType & SlnItems.Projects) == SlnItems.Projects;
 
     public override bool Condition(RawText line)
-    {
-        return line.trimmed.StartsWith("Project(", StringComparison.Ordinal);
-    }
+        => line.trimmed.StartsWith(Project_, StringComparison.Ordinal);
 
     public override bool Positioned(ISvc svc, RawText line)
     {
-        var pItem = GetProjectItem(line.trimmed, svc.Sln.SolutionDir);
-        if(pItem.pGuid == null) {
-            return false;
-        }
-
-        if(svc.Sln.ProjectItemList == null) {
-            svc.Sln.ProjectItemList = new List<ProjectItem>();
-        }
+        ProjectItem pItem = GetProjectItem(line.trimmed, svc.Sln.SolutionDir);
+        if(pItem.pGuid == null) return false;
+        if(svc.Sln.ProjectItemList == null) svc.Sln.ProjectItemList = [];
 
         svc.Sln.ProjectItemList.Add(pItem);
         return true;
@@ -374,31 +370,59 @@ public class LProject: LAbstract, ISlnHandler
 Example of `WSolutionConfigurationPlatforms` handler (**writer**):
 
 ```csharp
-public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
+using static net.r_eg.MvsSln.Core.Keywords;
+
+public class WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
+    : WAbstract, IObjHandler
 {
-    protected IEnumerable<IConfPlatform> configs;
+    protected IEnumerable<IConfPlatform> configs = configs;
 
     public override string Extract(object data)
     {
-        LineBuilder lb = new();
+        if(configs == null) return null;
 
-        lb.AppendLv1Line("GlobalSection(SolutionConfigurationPlatforms) = preSolution");
+        lbuilder.Clear();
+        lbuilder.AppendLv1Line(SolutionConfigurationPlatformsPreSolution);
 
-        configs.ForEach(cfg => lb.AppendLv2Line($"{cfg} = {cfg}"));
+        configs.ForEach(cfg => lbuilder.AppendLv2Line($"{cfg} = {cfg}"));
 
-        return lb.AppendLv1("EndGlobalSection").ToString();
-    }
-
-    public WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
-    {
-        this.configs = configs ?? throw new ArgumentNullException(nameof(configs));
+        return lbuilder.AppendLv1(EndGlobalSection).ToString();
     }
 }
 ```
 
-## How to get MvsSln
+## Download MvsSln
 
-* NuGet: [![NuGet package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/)
-* [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="MvsSln"` or **[gnt](https://3f.github.io/GetNuTool/releases/latest/gnt/)** /p:ngpackages="MvsSln"
-* [GitHub Releases](https://github.com/3F/MvsSln/releases) [ [latest](https://github.com/3F/MvsSln/releases/latest) ]
-* CI builds: [`CI /artifacts`](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history) ( [old CI](https://ci.appveyor.com/project/3Fs/mvssln/history) ) or find `🎲 CI build` on [GitHub Releases](https://github.com/3F/MvsSln/releases) page.
+NuGet | [GetNuTool](https://github.com/3F/GetNuTool)
+------|---------------------------------------------
+[![package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/) | [`gnt MvsSln`](https://3F.github.io/GetNuTool/releases/latest/gnt/)
+
+## Build MvsSln from source
+
+```bat
+git clone https://github.com/3F/MvsSln.git MvsSln
+cd MvsSln
+```
+
+### Windows. Visual Studio / MSBuild
+
+```bat
+build Release
+```
+or together with configured [netfx4sdk](https://github.com/3F/netfx4sdk)
+
+```bat
+build-CI Release
+```
+
+### Ubuntu 20.04
+
+```sh
+dotnet build -c Release
+```
+
+### run unit tests
+
+```sh
+dotnet test -c Release --no-build --no-restore
+```

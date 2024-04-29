@@ -2,13 +2,109 @@
 MvsSln - https://github.com/3F/MvsSln
 - - - - - - - - - - - - - - - - - - - 
 
-[v2.6.2] 2023.07.12
+[2.7] 2024.04.29
+
+    * NEW: Added default skeleton for SlnWriter in an attempt to make it easier to create from scratch.
+           Empty .Write() methods will use it by default or merge it with the actual Map.
+    
+    * NEW: Added asynchronous metods* for SlnWriter
+           *Both implementations including legacy netfx4.0 target platform, and async/await for modern.
+    
+    * NEW: Added SMap implementation to wrap ISlnResult.Map. More control over ISection and its handler.
+    
+    * NEW: Added LhDataHelper as an additional way to prepare default handlers from data (ISlnWhData).
+            ```
+            LhDataHelper hdata = new();
+            hdata.SetHeader(SlnHeader.MakeDefault())
+                    .SetProjects(projects)
+                    .SetProjectConfigs(prjConfs)
+                    .SetSolutionConfigs(slnConf);
+            
+            using SlnWriter w = new(solutionFile, hdata);
+            ```
+            See related issue #61 for details.
+    
+    * NEW: Implemented CreateProjectsIfNotExist option for SlnWriter.
+           ```
+           using SlnWriter w = new(solutionFile, hdata);
+           w.Options = SlnWriterOptions.CreateProjectsIfNotExist;
+           // it will write according ProjectType information (both legacy or sdk-style)
+           w.Write();
+           ```
+           Use +IProjectsToucher to override implementation.
+           You can find complete example in #61
+           
+    * NEW: New modern LineBuilder to make creating new handlers easier or control EOL. Related issue #57.
+    
+    * NEW: Added DefaultHandlers wrapper to prepare all default according to ISlnResult(ISlnWhData).
+    
+    * NEW: SlnWriter: + WriteAsString() & WriteAsStringAsync() to save the result as string instead of file.
+           ```
+           using SlnWriter w = new(handlers);
+           string data = await w.WriteAsStringAsync(sln.Result.Map);
+           ```
+           
+    * NEW: Added platform independent IObjHandler.NewLine to specify the EOL for used w\handlers.
+           +.UpdateNewLine() extension for a collection of handlers.
+           
+    * NEW: New modern IXProject.AddReference(.., AddReferenceOptions) to control everything for `Reference` nodes.
+           Old signatures has been marked as obsolete and scheduled to be removed in future versions.
+           ```
+           Default = HideEmbedInteropTypes | HideSpecificVersion,
+           DefaultResolve = Default | ResolveAssemblyName | OmitArchitecture | OmitCultureNeutral | ...
+           Mini = Default | HidePrivate,
+           MiniResolve = Mini | DefaultResolve | OmitCulture,
+           ```
+           See related issue #61 for details.
+           
+    * NEW: SlnWriter now supports ISlnResult -> +ISlnWhData data to preapre default handlers itself.
+    
+    * NEW: Implemented overriding of GetHashCode/Equals for ImportElement, RoProperties, Projects.Item.
+    
+    * NEW: +IConfPlatform.IsEqualPair(IConfPlatform)
+    
+    * NEW: ProjectItem adds ability to generate a project name from a specified input path:
+           slnDir\ProjectName\src.csproj -> ProjectName
+           slnDir\ProjectName.csproj -> ProjectName
+           ```
+           new ProjectItem(ProjectType.CsSdk, @$"{projName}\src.csproj", slnDir: baseDir)
+           ```
+    
+    * FIXED: Fixed bug with a disappearing `EndProject`. See related #56
+    
+    * FIXED: Fixed duplicated lines when disabling some features through SlnItems.
+    
+    * FIXED: Fixed lines being ignored when handlers are not prepared.
+    
+    * FIXED: If the handler is not initialized as object, the corresponding entry is lost.
+    
+    * FIXED: Fixed PackageInfo == Equals for null.
+    
+    * CHANGED: SlnParser has been switched to UTF8 by default.
+    
+    * CHANGED: SlnWriter now will ignore W\handler that will return null value at IObjHandler.Extract().
+    
+    * CHANGED: Removed comparing of parent project and origin item in PropertyItem.Equals.
+    
+    * CHANGED: SlnHeader is sealed now with new ctors and added SlnHeader.MakeDefault().
+    
+    * CHANGED: ConfigPrj: new ctors +protected internal set for IncludeInBuild and IncludeInDeploy properties.
+    
+    * CHANGED: Projects.Item and PropertyItem:
+               new ctors & renamed evaluatedValue, evaluatedInclude, unevaluatedValue, unevaluatedInclude
+               Old access still is available but marked as obsolete and scheduled to be removed in future versions.
+    
+    * CHANGED: Updated path \ / logic between Windows and unix-like systems.
+
+
+[2.6.2] 2023.07.12
 
     * FIXED: Fix issue with string builder removing too much raw sln data on Unix platforms.
              Related issue: https://github.com/3F/MvsSln/issues/57
              Related PR: https://github.com/3F/MvsSln/pull/58
 
-[v2.6.1] 2022.02.01
+
+[2.6.1] 2022.02.01
 
     * FIXED: Incorrect project instances for the active solution configuration in XProject Environment.
              Related issue: https://github.com/3F/vsSolutionBuildEvent/issues/71
@@ -22,7 +118,7 @@ MvsSln - https://github.com/3F/MvsSln
                Otherwise, same logic from v2.5.3 described here: https://github.com/3F/MvsSln/blob/0ec96021b7/MvsSln/Extensions/ProjectItemExtension.cs#L59-L77
                
 
-[v2.6] 2021.08.23
+[2.6] 2021.08.23
 
     * FIXED: Fixed CalculateHashCode() Extension.
              Internally affects many objects due to broken GetHashCode().
@@ -58,7 +154,7 @@ MvsSln - https://github.com/3F/MvsSln
                Use `ToString()` and `IConfPlatform.Formatted` instead.
     
 
-[v2.5.3] 2020.07.23
+[2.5.3] 2020.07.23
 
     * FIXED: Fixed XProjectEnv. Issue #29
              XProjectByFile() can destroy original properties that was prepared for solution.
@@ -78,7 +174,7 @@ MvsSln - https://github.com/3F/MvsSln
                     https://github.com/dotnet/project-system/blob/master/docs/opening-with-new-project-system.md
 
 
-[v2.5.2] 2020.05.05
+[2.5.2] 2020.05.05
 
     * NEW: Activating ProjectReferences for existing ProjectDependencies (shallow copy) through new flag.
            Issue #25.
@@ -116,7 +212,7 @@ MvsSln - https://github.com/3F/MvsSln
     * CHANGED: Updated Microsoft.Build 16.5.0 (Only for: netcoreapp2.1)
     
 
-[v2.5.1] 2020.01.30
+[2.5.1] 2020.01.30
 
     * FIXED: Fixed NullReferenceException when empty xml nodes in PropertyItem through ProjectProperty.
              This is possible for global or environment properties, for example:
@@ -147,7 +243,7 @@ MvsSln - https://github.com/3F/MvsSln
             https://twitter.com/GitHub3F/status/1219348325729816578
 
 
-[v2.5] 2019.10.17
+[2.5] 2019.10.17
 
     * FIXED: Fixed parallelism problems when using Sln wrapper.
     
@@ -184,7 +280,7 @@ MvsSln - https://github.com/3F/MvsSln
             https://github.com/3F/MvsSln/milestone/4
     
     
-[v2.4] 2019.08.10
+[2.4] 2019.08.10
 
     * FIXED: "The format ... of configuration is not supported". Issue #19.
     
@@ -281,7 +377,7 @@ MvsSln - https://github.com/3F/MvsSln
             Find any relevant use of the new features in that project.
             
 
-[v2.3] 2019.06.17
+[2.3] 2019.06.17
 
     * FIXED: Added support of `.` character in solution/project configuration name. 
              Issue #13.
@@ -311,7 +407,7 @@ MvsSln - https://github.com/3F/MvsSln
                Release notes:
                https://github.com/3F/hMSBuild/releases/tag/v2.1
 
-[v2.2] 2019.04.08
+[2.2] 2019.04.08
 
     * FIXED: Fixed possible error when loading all found projects: 
             'An equivalent project is already present in the project collection, ...'
@@ -366,7 +462,7 @@ MvsSln - https://github.com/3F/MvsSln
                 * https://github.com/3F/hMSBuild/releases/tag/v2.0
                 
 
-[v2.1] 2018.08.05
+[2.1] 2018.08.05
 
     * FIXED: Fixed bug 'The node is not parented by this object' 
              When IXProject.RemoveImport is used for `Import` elements inside `ImportGroup`.
@@ -387,7 +483,7 @@ MvsSln - https://github.com/3F/MvsSln
         * +`XProject(string file, IDictionary<string, string> properties)`
         * +`XProject(Project prj)`
 
-[v2.0] 2017.10.05
+[2.0] 2017.10.05
 
     * NEW: Updated architecture now provides 2 types of handlers - readers (ISlnHandler) and writers (IObjHandler).
             You also can use your custom reader or writer, just implement an `ISlnHandler` or `IObjHandler`:
@@ -458,7 +554,7 @@ MvsSln - https://github.com/3F/MvsSln
     * KNOWN_PROBLEM: C++ projects and their initialization for Visual Studio 2017. Issue #1.
     
     
-[v1.0.1] 2017.07.21
+[1.0.1] 2017.07.21
 
     * FIXED: Fixed possible bug with already loaded project in collection when initializing new instance of Sln.
     * FIXED: Fixed `IXProject.RemoveProperty(PropertyItem property)` & `IXProject.RemoveItem(Item item)` when selected items or properties does not exist.
@@ -502,7 +598,7 @@ MvsSln - https://github.com/3F/MvsSln
                It has been wrapped by `ImportElement` to avoid using MBE.
 
 
-[v1.0] 2017.07.07
+[1.0] 2017.07.07
 
     * Initial public release. Extracted from vsSolutionBuildEvent project: 
       https://github.com/3F/vsSolutionBuildEvent
