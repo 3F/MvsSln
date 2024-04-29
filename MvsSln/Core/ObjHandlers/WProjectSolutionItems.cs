@@ -5,13 +5,13 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WProjectSolutionItems: WAbstract, IObjHandler
     {
         /// <summary>
@@ -19,42 +19,42 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// </summary>
         protected IEnumerable<SolutionFolder> folders;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            if(folders == null) return null;
 
-            foreach(var folder in folders)
+            lbuilder.Clear();
+            foreach(SolutionFolder folder in folders)
             {
-                var prj = folder.header;
+                ProjectItem prj = folder.header;
 
-                sb.AppendLine(
-                    $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
+                lbuilder.AppendLine
+                (
+                    $"{Project_}\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
                 );
 
-                sb.AppendLine($"{SP}ProjectSection(SolutionItems) = preProject");
+                LineBuilder fItems = new();
+                folder.items?.ForEach(t => fItems.AppendLv2Line($"{t} = {t}"));
 
-                    folder.items.ForEach(item => sb.AppendLine($"{SP}{SP}{item} = {item}"));
+                if(fItems.Length > 0)
+                {
+                    lbuilder.AppendLv1Line(SolutionItemsPreProject)
+                            .Append(fItems.ToString())
+                            .AppendLv1Line(EndProjectSection);
+                }
 
-                sb.AppendLine($"{SP}EndProjectSection");
-
-                sb.AppendLine("EndProject");
+                lbuilder.AppendLine(EndProject);
             }
 
-            if(sb.Length > 1) {
-                return sb.ToString(0, sb.Length - Environment.NewLine.Length);
-            }
-            return String.Empty;
+            return lbuilder.ToString(noLastNewLine: true);
         }
 
         /// <param name="folders">List of solution folders.</param>
         public WProjectSolutionItems(IEnumerable<SolutionFolder> folders)
         {
-            this.folders = folders ?? throw new ArgumentNullException();
+            this.folders = folders;
         }
+
+        public WProjectSolutionItems() { }
     }
 }

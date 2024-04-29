@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Projects;
 using Xunit;
 
@@ -35,7 +36,7 @@ namespace MvsSlnTest.Projects
         [Fact]
         public void CtorTest2()
         {
-            XDocument xml   = XDocument.Load(TestData.ROOT + @"PackagesConfig\packages.2.txt");
+            XDocument xml   = XDocument.Load(TestData.GetPathTo(@"PackagesConfig\packages.2.txt"));
             PackageInfo pkg = new(xml.Element(PackagesConfig.ROOT).Elements().First());
 
             Assert.Equal("EnvDTE", pkg.Id);
@@ -75,6 +76,23 @@ namespace MvsSlnTest.Projects
 
             Assert.NotEqual(new PackageInfo(id, version, new Dictionary<string, string>() { { "m1", "v2" }, { "m2", "v1" } }), pkg);
             Assert.NotEqual(new PackageInfo(id, version, new Dictionary<string, string>() { { "m1", "v1" }, { "m2", "v2" }, { "m3", "v3" } }), pkg);
+        }
+
+        [Fact]
+        public void EqTest3()
+        {
+            PackageInfo pkg = new("LX4Cnh", "1.1.0");
+            PackageInfo a = null;
+            PackageInfo b = null;
+
+            Assert.True(a == b);
+            Assert.Equal(a, b);
+
+            Assert.True(a == null);
+            Assert.True(null == b);
+
+            Assert.NotEqual(pkg, a);
+            Assert.NotEqual(b, pkg);
         }
     }
 }

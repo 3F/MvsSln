@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 using System.Diagnostics;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Projects
 {
@@ -142,7 +143,8 @@ namespace net.r_eg.MvsSln.Projects
         {
             if(path == null) throw new ArgumentNullException(nameof(path));
 
-            file = options.HasFlag(PackagesConfigOptions.PathToStorage) ? path : Path.Combine(path, FNAME);
+            file = (options.HasFlag(PackagesConfigOptions.PathToStorage) ? path : Path.Combine(path, FNAME))
+                    .AdaptPath();
 
             if((options & (PackagesConfigOptions.Load | PackagesConfigOptions.LoadOrNew)) == 0)
             {

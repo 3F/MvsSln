@@ -1,7 +1,6 @@
 ﻿<Project>
 
-  <!-- Let's help to override something when it used as a submodule.
-       Or build with /p:OverrideMvsSlnTFM=... etc -->
+  <!-- redefine.props helps to override properties when it used as a submodule etc. -->
   <Import Project="..\redefine.props" Condition="Exists('..\redefine.props')" />
   <Import Project="..\..\redefine.props" Condition="Exists('..\..\redefine.props')" />
 
@@ -12,20 +11,34 @@
     <OsUnixLike>false</OsUnixLike>
     <OsUnixLike Condition="$([MSBuild]::IsOsUnixLike())">true</OsUnixLike>
 
+    <LangVersion>latest</LangVersion>
+    <TargetLatestRuntimePatch Condition="'$(TargetLatestRuntimePatch)'==''">true</TargetLatestRuntimePatch>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Supported TFMs">
+    <NetfxTFM>net40;net472</NetfxTFM>
+    <NetfxTFM Condition="'$(SuppressNetfxTFM)'=='true'"></NetfxTFM>
+
     <NetStdTFM>netstandard2.0</NetStdTFM>
-    <NetStdTFM Condition="'$(SuppressNetStdTFM)' == 'true'"></NetStdTFM>
+    <NetStdTFM Condition="'$(SuppressNetStdTFM)'=='true'"></NetStdTFM>
+    
+    <NetCoreTFM>netcoreapp2.1</NetCoreTFM>
+    <NetCoreTFM Condition="'$(SuppressNetCoreTFM)'=='true'"></NetCoreTFM>
+    
+    <DotNetTFM>net5;net6</DotNetTFM>
+    <DotNetTFM Condition="'$(SuppressDotNetTFM)'=='true'"></DotNetTFM>
+  </PropertyGroup>
 
-    <!-- .NET Core Support Policy: https://dotnet.microsoft.com/platform/support/policy/dotnet-core -->
-    <NetCoreTFM>netcoreapp3.1;net6</NetCoreTFM>
-
-    <MvsSlnTFM>net40;net472;$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
-    <MvsSlnTFM Condition="'$(OsUnixLike)'=='true'">$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
+  <PropertyGroup>
+    <MvsSlnTFM>$(NetfxTFM);$(DotNetTFM);$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
+    <MvsSlnTFM Condition="'$(OsUnixLike)'=='true'">$(DotNetTFM);$(NetCoreTFM);$(NetStdTFM)</MvsSlnTFM>
+    <MvsSlnTFM Condition="'$(BuildAndTestUsing)'!=''">$(BuildAndTestUsing)</MvsSlnTFM>
     <MvsSlnTFM Condition="'$(OverrideMvsSlnTFM)'!=''">$(OverrideMvsSlnTFM)</MvsSlnTFM>
 
-    <MvsSlnTestTFM>net472;$(NetCoreTFM)</MvsSlnTestTFM>
-    <MvsSlnTestTFM Condition="'$(OsUnixLike)'=='true'">$(NetCoreTFM)</MvsSlnTestTFM>
+    <MvsSlnTestTFM>$(NetfxTFM);$(DotNetTFM);$(NetCoreTFM)</MvsSlnTestTFM>
+    <MvsSlnTestTFM Condition="'$(OsUnixLike)'=='true'">$(DotNetTFM);$(NetCoreTFM)</MvsSlnTestTFM>
+    <MvsSlnTestTFM Condition="'$(BuildAndTestUsing)'!=''">$(BuildAndTestUsing)</MvsSlnTestTFM>
     <MvsSlnTestTFM Condition="'$(OverrideMvsSlnTestTFM)'!=''">$(OverrideMvsSlnTestTFM)</MvsSlnTestTFM>
-
   </PropertyGroup>
 
   <PropertyGroup>
@@ -56,15 +69,25 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
-  <ItemGroup>
+  <PropertyGroup>
+    <OverridedTFM Condition="$(MvsSlnTFM.Contains('$(TargetFramework)'))=='false'">true</OverridedTFM>
+    <MicrosoftBuildVersion Condition="'$(MicrosoftBuildVersion)'==''">17.3.2</MicrosoftBuildVersion>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(OverridedTFM)'!='true'">
     <!-- Microsoft.Build -->
     <PackageReference Version="15.9.20" Condition="'netstandard2.0'=='$(TargetFramework)'" Include="Microsoft.Build" />
-    <PackageReference Version="16.9.0" Condition="'netcoreapp3.1'=='$(TargetFramework)'" Include="Microsoft.Build" />
-    <PackageReference Version="17.0.0" Condition="'net6'=='$(TargetFramework)'" Include="Microsoft.Build" />
+    <PackageReference Version="16.9.0" Condition="'netcoreapp2.1'=='$(TargetFramework)'" Include="Microsoft.Build" />
+    <PackageReference Version="16.11.0" Condition="'net5'=='$(TargetFramework)'" Include="Microsoft.Build" />
+    <PackageReference Version="17.3.2" Condition="'net6'=='$(TargetFramework)'" Include="Microsoft.Build" />
 
     <!-- https://github.com/3F/MvsSln/wiki/Advanced-Features#how-to-use-modern-versions-of-msbuild-for-netfx -->
     <!-- <PackageReference Version="16.3.0" Condition=" 'net472' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
     <!-- <PackageReference Version="15.9.20" Condition=" 'net46' == '$(TargetFramework)' " Include="Microsoft.Build" /> -->
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(OverridedTFM)'=='true'">
+    <PackageReference Version="$(MicrosoftBuildVersion)" Include="Microsoft.Build"/>
   </ItemGroup>
 
 </Project>

@@ -8,21 +8,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core
 {
-    public sealed class RoProperties: RoProperties<string, string>
-    {
-        public RoProperties(IDictionary<string, string> data)
-            : base(data)
-        {
-
-        }
-    }
+    public sealed class RoProperties(IDictionary<string, string> data): RoProperties<string, string>(data) { }
 
     public class RoProperties<T, T2>: IDictionary<T, T2>
     {
-        private IDictionary<T, T2> dict;
+        private readonly IDictionary<T, T2> dict;
 
         public T2 this[T key] { get => dict[key]; set => throw new NotSupportedException(); }
 
@@ -51,9 +45,38 @@ namespace net.r_eg.MvsSln.Core
             return new RoProperties<T, T2>(dict);
         }
 
+        public static bool operator ==(RoProperties<T, T2> a, RoProperties<T, T2> b)
+        {
+            return a is null ? b is null : a.Equals(b);
+        }
+
+        public static bool operator !=(RoProperties<T, T2> a, RoProperties<T, T2> b) => !(a == b);
+
+        public override bool Equals(object obj)
+        {
+            if(obj is null || obj is not RoProperties<T, T2> b) return false;
+
+            if(Count != b.Count) return false;
+
+            using IEnumerator<T> ka = Keys.GetEnumerator();
+            using IEnumerator<T> kb = b.Keys.GetEnumerator();
+            while(ka.MoveNext())
+            {
+#if FEATURE_EXACT_ROP_ORDER_CMP
+                if(!kb.MoveNext() || !kb.Current.Equals(ka.Current)) return false;
+#else
+                if(!kb.MoveNext() || !ContainsKey(kb.Current)) return false;
+#endif
+                if(!b.dict[ka.Current].Equals(dict[ka.Current])) return false;
+            }
+            return true;
+        }
+
+        public override int GetHashCode() => Count.CalculateHashCode(Keys).CalculateHashCode(Values);
+
         public RoProperties(IDictionary<T, T2> data)
         {
-            dict = data ?? throw new ArgumentNullException(nameof(data), MsgResource.ValueNoEmptyOrNull);
+            dict = data ?? throw new ArgumentNullException(nameof(data), MsgR.ValueNoEmptyOrNull);
         }
 
         #region ExplicitImpl

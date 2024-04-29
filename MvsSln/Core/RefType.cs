@@ -24,10 +24,7 @@ namespace net.r_eg.MvsSln.Core
 
         public static bool operator ==(RefType<T> a, RefType<T> b)
         {
-            bool _EqNull(RefType<T> x)
-            {
-                return x is null || ReferenceEquals(x.Value, null);
-            }
+            static bool _EqNull(RefType<T> x) => x is null || x.Value is null;
             return _EqNull(a) ? _EqNull(b) : a.Equals(b);
         }
 
@@ -35,9 +32,7 @@ namespace net.r_eg.MvsSln.Core
 
         public override bool Equals(object obj)
         {
-            if(obj is null || !(obj is RefType<T>)) {
-                return false;
-            }
+            if(obj is null || obj is not RefType<T>) return false;
             return Value.Equals(((RefType<T>)obj).Value);
         }
 

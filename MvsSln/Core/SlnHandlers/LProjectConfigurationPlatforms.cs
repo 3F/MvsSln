@@ -12,6 +12,8 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class LProjectConfigurationPlatforms: LAbstract, ISlnHandler
     {
         protected enum LineAttr
@@ -40,41 +42,22 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 return a.pGuid == b.pGuid && a.csln == b.csln && a.cprj == b.cprj;
             }
 
-            public int GetHashCode(Cortege x)
-            {
-                return 0.CalculateHashCode
-                (
-                    x.pGuid, x.csln, x.cprj
-                );
-            }
+            public int GetHashCode(Cortege x) => 0.CalculateHashCode
+            (
+                x.pGuid, x.csln, x.cprj
+            );
         }
 
-        /// <summary>
-        /// Checks the readiness to process data.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <returns>True value if it's ready at current time.</returns>
         public override bool IsActivated(ISvc svc)
         {
-            return ((svc.Sln.ResultType & SlnItems.ProjectConfPlatforms) == SlnItems.ProjectConfPlatforms);
+            return (svc.Sln.ResultType & SlnItems.ProjectConfPlatforms) == SlnItems.ProjectConfPlatforms;
         }
 
-        /// <summary>
-        /// Condition for line to continue processing.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns>true value to continue.</returns>
         public override bool Condition(RawText line)
         {
-            return line.trimmed.StartsWith("GlobalSection(ProjectConfigurationPlatforms)", StringComparison.Ordinal);
+            return line.trimmed.StartsWith(ProjectConfigurationPlatforms, StringComparison.Ordinal);
         }
 
-        /// <summary>
-        /// New position in stream.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <param name="line">Received line.</param>
-        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
         public override bool Positioned(ISvc svc, RawText line)
         {
             if(svc.Sln.ProjectConfigList == null) {
@@ -84,7 +67,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             var records = new Dictionary<Cortege, ConfigPrj>(new EqCortegeComparer());
 
             string _line;
-            while((_line = svc.ReadLine(this)) != null && _line.Trim() != "EndGlobalSection")
+            while((_line = svc.ReadLine(this)) != null && _line.Trim() != EndGlobalSection)
             {
                 var v = Parse(ref _line, out LineAttr ltype);
 
@@ -148,7 +131,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
             if(splitter == -1)
             {
                 ltype = LineAttr.InvalidOrUnknown;
-                return default(Cortege);
+                return default;
             }
 
             string cprj = raw.Substring(splitter + 1);

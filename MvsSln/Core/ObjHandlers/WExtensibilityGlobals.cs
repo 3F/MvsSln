@@ -5,37 +5,29 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WExtensibilityGlobals: WAbstract, IObjHandler
     {
         protected IDictionary<string, string> items;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            if(items == null) {
-                return String.Empty;
-            }
+            if(items == null) return null;
 
-            var sb = new StringBuilder();
-            sb.AppendLine($"{SP}GlobalSection(ExtensibilityGlobals) = postSolution");
+            lbuilder.Clear();
+            lbuilder.AppendLv1Line(ExtensibilityGlobalsPostSolution);
 
             items.ForEach(i =>
-                sb.AppendLine($"{SP}{SP}{i.Key}" + (i.Value != null ? $" = {i.Value}" : String.Empty))
+                lbuilder.AppendLv2Line($"{i.Key}" + (i.Value != null ? $" = {i.Value}" : string.Empty))
             );
 
-            sb.Append($"{SP}EndGlobalSection");
-            return sb.ToString();
+            return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
         /// <param name="items">Extensible Key[-Value] records like `SolutionGuid` and so on.</param>
@@ -43,5 +35,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         {
             this.items = items;
         }
+
+        public WExtensibilityGlobals() { }
     }
 }

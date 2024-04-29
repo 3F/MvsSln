@@ -61,7 +61,7 @@ namespace net.r_eg.MvsSln.Core
 
         public TransactTracking(TCore core)
         {
-            this.core = core ?? throw new ArgumentNullException();
+            this.core = core ?? throw new ArgumentNullException(nameof(core));
         }
 
         private void Reset()

@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Projects
 {
@@ -25,12 +26,12 @@ namespace net.r_eg.MvsSln.Projects
         /// <summary>
         /// The unevaluated value of the Include attribute.
         /// </summary>
-        public string unevaluatedInclude;
+        public string unevaluated;
 
         /// <summary>
         /// The evaluated value of the Include attribute.
         /// </summary>
-        public string evaluatedInclude;
+        public string evaluated;
 
         /// <summary>
         /// True if this item originates from an imported file.
@@ -42,22 +43,42 @@ namespace net.r_eg.MvsSln.Projects
         /// </summary>
         public RoProperties<string, Metadata> meta;
 
-        public struct Metadata
+        public readonly struct Metadata(string name, string evaluated, string unevaluated)
         {
             /// <summary>
             /// The name of the metadata.
             /// </summary>
-            public string name;
+            public readonly string name = name;
 
             /// <summary>
             /// The evaluated metadata value.
             /// </summary>
-            public string evaluated;
+            public readonly string evaluated = evaluated;
 
             /// <summary>
             /// The unevaluated metadata value.
             /// </summary>
-            public string unevaluated;
+            public readonly string unevaluated = unevaluated;
+
+            public static bool operator ==(Metadata a, Metadata b) => a.Equals(b);
+
+            public static bool operator !=(Metadata a, Metadata b) => !(a == b);
+
+            public override readonly bool Equals(object obj)
+            {
+                if(obj is null || obj is not Metadata b) return false;
+
+                return name == b.name
+                    && evaluated == b.evaluated
+                    && unevaluated == b.unevaluated;
+            }
+
+            public override readonly int GetHashCode() => 0.CalculateHashCode
+            (
+                name,
+                evaluated,
+                unevaluated
+            );
         }
 
         /// <summary>
@@ -76,81 +97,110 @@ namespace net.r_eg.MvsSln.Projects
         /// Include="System.Core"
         /// ...
         /// </summary>
-        public AsmData Assembly
+        public readonly AsmData Assembly => MakeAssemblyInfo(evaluated ?? unevaluated);
+
+        public sealed class AsmData(AssemblyName asm = null)
         {
-            get
-            {
-                string name = evaluatedInclude ?? unevaluatedInclude;
-                if(String.IsNullOrWhiteSpace(name) || name.IndexOfAny(new[] { '\\', '/' }) != -1) {
-                    return default(AsmData);
-                }
-                return new AsmData(new AssemblyName(name));
-            }
+            public AssemblyName Info { get; } = asm;
+
+            public string PublicKeyToken { get; } = asm?.GetPublicKeyToken().ToHexString();
         }
 
-        public struct AsmData
+        public static bool operator ==(Item a, Item b) => a.Equals(b);
+
+        public static bool operator !=(Item a, Item b) => !(a == b);
+
+        public override readonly bool Equals(object obj)
         {
-            public AssemblyName Info
-            {
-                get;
-                private set;
-            }
+            if(obj is null || obj is not Item b) return false;
 
-            public string PublicKeyToken
-            {
-                get;
-                private set;
-            }
-
-            public AsmData(AssemblyName asm)
-                : this()
-            {
-                Info = asm;
-
-                byte[] data = asm?.GetPublicKeyToken();
-                if(data == null || data.Length < 1) {
-                    return;
-                }
-
-                PublicKeyToken = String.Empty;
-                foreach(var b in data) {
-                    PublicKeyToken += b.ToString("x");
-                }
-            }
+            return type == b.type
+                && unevaluated == b.unevaluated
+                && evaluated == b.evaluated
+                && isImported == b.isImported
+                && meta == b.meta;
         }
 
-        /// <param name="eItem"></param>
+        public override readonly int GetHashCode() => 0.CalculateHashCode
+        (
+            type,
+            unevaluated,
+            evaluated,
+            isImported,
+            meta,
+            parentItem,
+            parentProject
+        );
+
+        public Item(string evaluated, RoProperties<string, Metadata> meta = null, IXProject parentProject = null)
+            : this(evaluated, evaluated, meta, parentProject)
+        {
+
+        }
+
+        public Item(string unevaluated, string evaluated, string type, RoProperties<string, Metadata> meta = null, IXProject parentProject = null)
+        {
+            this.unevaluated = unevaluated;
+            this.evaluated = evaluated;
+            this.type = type;
+            this.meta = meta;
+            this.parentProject = parentProject;
+        }
+
+        public Item(string unevaluated, string evaluated, RoProperties<string, Metadata> meta = null, IXProject parentProject = null)
+            : this(unevaluated, evaluated, type: null, meta, parentProject)
+        {
+            
+        }
+
+        public Item(Microsoft.Build.Evaluation.ProjectItem eItem, IXProject parentProject)
+            : this(eItem)
+        {
+            this.parentProject = parentProject ?? throw new ArgumentNullException(nameof(parentProject));
+        }
+
         public Item(Microsoft.Build.Evaluation.ProjectItem eItem)
             : this()
         {
-            if(eItem == null) {
-                throw new ArgumentNullException(nameof(eItem));
-            }
-
-            type                = eItem.ItemType;
-            unevaluatedInclude  = eItem.UnevaluatedInclude;
-            evaluatedInclude    = eItem.EvaluatedInclude;
-            isImported          = eItem.IsImported;
-            parentItem          = eItem;
+            parentItem      = eItem ?? throw new ArgumentNullException(nameof(eItem));
+            type            = eItem.ItemType;
+            unevaluated     = eItem.UnevaluatedInclude;
+            evaluated       = eItem.EvaluatedInclude;
+            isImported      = eItem.IsImported;
 
             meta = eItem.DirectMetadata.Select(m => new KeyValuePair<string, Metadata>
             (
                 m.Name,
-                new Metadata() 
-                {
-                    name = m.Name,
-                    unevaluated = m.UnevaluatedValue,
-                    evaluated = m.EvaluatedValue
-                }
-            )).ToDictionary(m => m.Key, m => m.Value, StringComparer.OrdinalIgnoreCase);
+                new Metadata(m.Name, m.EvaluatedValue, m.UnevaluatedValue) 
+            ))
+            .ToDictionary(m => m.Key, m => m.Value, StringComparer.OrdinalIgnoreCase);
         }
+
+        private static AsmData MakeAssemblyInfo(string name)
+        {
+            if(string.IsNullOrWhiteSpace(name) || name.IndexOfAny(['\\', '/']) != -1)
+            {
+                return new();
+            }
+            return new AsmData(new AssemblyName(name));
+        }
+
+        #region Obsolete fields
+        #pragma warning disable IDE1006
+
+        [Obsolete("Renamed as " + nameof(unevaluated))]
+        public readonly string unevaluatedValue => unevaluated;
+
+        [Obsolete("Renamed as " + nameof(evaluated))]
+        public readonly string evaluatedValue => evaluated;
+
+        #pragma warning restore IDE1006
+        #endregion
 
         #region DebuggerDisplay
 
-        private string DbgDisplay
-        {
-            get => $"{type} = {evaluatedInclude} [{unevaluatedInclude}]";
-        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly string DbgDisplay => $"{type} = {evaluated} [{unevaluated}]";
 
         #endregion
     }

@@ -31,7 +31,7 @@ namespace net.r_eg.MvsSln.Core
         /// <summary>
         /// To use specific Encoding by default for some operations with data.
         /// </summary>
-        protected Encoding encoding = Encoding.Default;
+        protected Encoding encoding = Encoding.UTF8;
 
         private CoHandlers _coh;
 
@@ -82,10 +82,10 @@ namespace net.r_eg.MvsSln.Core
         public ISlnResult Parse(string sln, SlnItems type)
         {
             if(string.IsNullOrWhiteSpace(sln)) {
-                throw new ArgumentNullException(nameof(sln), MsgResource.ValueNoEmptyOrNull);
+                throw new ArgumentNullException(nameof(sln), MsgR.ValueNoEmptyOrNull);
             }
 
-            using var reader = new StreamReader(sln, encoding);
+            using StreamReader reader = new(sln.AdaptPath(), encoding);
             return Parse(reader, type);
         }
 
@@ -98,7 +98,7 @@ namespace net.r_eg.MvsSln.Core
         public ISlnResult Parse(StreamReader reader, SlnItems type)
         {
             if(reader == null) {
-                throw new ArgumentNullException(nameof(reader), MsgResource.ValueNoEmptyOrNull);
+                throw new ArgumentNullException(nameof(reader), MsgR.ValueNoEmptyOrNull);
             }
 
             string sln = (reader.BaseStream is FileStream stream) ? stream.Name : MEM_FILE;

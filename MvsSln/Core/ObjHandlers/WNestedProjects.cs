@@ -5,36 +5,32 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WNestedProjects: WAbstract, IObjHandler
     {
         protected IEnumerable<SolutionFolder> folders;
 
         protected IEnumerable<ProjectItem> pItems;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            if(folders == null && pItems == null) return null;
 
-            sb.AppendLine($"{SP}GlobalSection(NestedProjects) = preSolution");
+            lbuilder.Clear();
+            lbuilder.AppendLv1Line(NestedProjectsPreSolution);
             bool hasDep = false;
 
             folders?.ForEach(p =>
             {
                 if(p.header.parent?.Value != null)
                 {
-                    sb.AppendLine($"{SP}{SP}{p.header.pGuid} = {p.header.parent.Value?.header.pGuid}");
+                    lbuilder.AppendLv2Line($"{p.header.pGuid} = {p.header.parent.Value?.header.pGuid}");
                     hasDep = true;
                 }
             });
@@ -43,29 +39,26 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
             {
                 if(p.parent?.Value != null)
                 {
-                    sb.AppendLine($"{SP}{SP}{p.pGuid} = {p.parent.Value?.header.pGuid}");
+                    lbuilder.AppendLv2Line($"{p.pGuid} = {p.parent.Value?.header.pGuid}");
                     hasDep = true;
                 }
             });
 
-            if(!hasDep) {
-                return String.Empty;
-            }
+            if(!hasDep) return null;
 
-            sb.Append($"{SP}EndGlobalSection");
-            return sb.ToString();
+            return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
-        /// <param name="folders">Information about folders.</param>
+        /// <inheritdoc cref="WNestedProjects(IEnumerable{SolutionFolder}, IEnumerable{ProjectItem})"/>
         public WNestedProjects(IEnumerable<SolutionFolder> folders)
-            : this(folders, null)
+            : this(folders, pItems: null)
         {
 
         }
 
-        /// <param name="pItems">Information about project items.</param>
+        /// <inheritdoc cref="WNestedProjects(IEnumerable{SolutionFolder}, IEnumerable{ProjectItem})"/>
         public WNestedProjects(IEnumerable<ProjectItem> pItems)
-            : this(null, pItems)
+            : this(folders: null, pItems)
         {
 
         }
@@ -77,5 +70,7 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
             this.folders    = folders;
             this.pItems     = pItems;
         }
+
+        public WNestedProjects() { }
     }
 }

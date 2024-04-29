@@ -5,6 +5,7 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
+using System;
 using System.Diagnostics;
 
 namespace net.r_eg.MvsSln.Core
@@ -15,54 +16,58 @@ namespace net.r_eg.MvsSln.Core
     [DebuggerDisplay("{DbgDisplay}")]
     public class ConfigPrj: ConfigItem, IConfPlatform, IConfPlatformPrj
     {
-        /// <summary>
-        /// Project Guid.
-        /// </summary>
-        public string PGuid
+        public string PGuid { get; protected set; }
+
+        public bool IncludeInBuild { get; protected internal set; }
+
+        public bool IncludeInDeploy { get; protected internal set; }
+
+        public IConfPlatform Sln { get; protected set; }
+
+        public ConfigPrj(IConfPlatform prj, string pGuid, bool build = true, bool deploy = false)
+            : this
+            (
+                  prj?.Configuration ?? throw new ArgumentNullException(nameof(prj)),
+                  prj.Platform,
+                  pGuid,
+                  build,
+                  deploy,
+                  new(prj.Configuration, prj.Platform)
+            )
         {
-            get;
-            protected set;
+
         }
 
-        /// <summary>
-        /// Existence of `.Build.0` to activate project for build:
-        /// {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Build.0 = Release|Any CPU
-        /// </summary>
-        public bool IncludeInBuild
+        public ConfigPrj(IConfPlatform prj, string pGuid, bool build, ConfigSln sln)
+            : this(prj, pGuid, build, deploy: false, sln)
         {
-            get;
-            internal set;
+
         }
 
-        /// <summary>
-        /// Existence of `.Deploy.0` to activate project for deployment:
-        /// {A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}.CI_Release|Any CPU.Deploy.0 = Release|Any CPU
-        /// </summary>
-        public bool IncludeInDeploy
+        public ConfigPrj(IConfPlatform prj, string pGuid, bool build, bool deploy, ConfigSln sln)
+            : this
+            (
+                  prj?.Configuration ?? throw new ArgumentNullException(nameof(prj)),
+                  prj.Platform,
+                  pGuid,
+                  build,
+                  deploy,
+                  sln
+            )
         {
-            get;
-            internal set;
-        }
 
-        /// <summary>
-        /// Link to solution configuration.
-        /// </summary>
-        public IConfPlatform Sln
-        {
-            get;
-            protected set;
         }
 
         public ConfigPrj(string name, string platform, string pGuid, bool build, ConfigSln sln)
             : base(name, platform)
         {
-            Set(pGuid, build, false, sln);
+            Set(pGuid, build, deploy: false, sln);
         }
 
         public ConfigPrj(string formatted, string pGuid, bool build, ConfigSln sln)
             : base(formatted)
         {
-            Set(pGuid, build, false, sln);
+            Set(pGuid, build, deploy: false, sln);
         }
 
         public ConfigPrj(string name, string platform, string pGuid, bool build, bool deploy, ConfigSln sln)
@@ -88,10 +93,7 @@ namespace net.r_eg.MvsSln.Core
         #region DebuggerDisplay
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private string DbgDisplay
-        {
-            get => $"{ToString()} -> {Sln} : [{PGuid}]";
-        }
+        private string DbgDisplay => $"{ToString()} -> {Sln} : [{PGuid}]";
 
         #endregion
     }

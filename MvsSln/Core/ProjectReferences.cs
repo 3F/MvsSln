@@ -105,7 +105,7 @@ namespace net.r_eg.MvsSln.Core
             if(item.meta.ContainsKey(_PK)) return item.meta[_PK].evaluated;
 
             return XProjects.FirstOrDefault( 
-               p => p.ProjectItem.project.fullPath == p.GetFullPath(item.evaluatedInclude)
+               p => p.ProjectItem.project.fullPath == p.GetFullPath(item.evaluated)
             )?
             .ProjectGuid;
         }

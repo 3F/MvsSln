@@ -45,7 +45,10 @@ namespace net.r_eg.MvsSln.Projects
             return packagesConfig;
         }
 
-        public static bool operator ==(PackageInfo a, PackageInfo b) => a.Equals(b);
+        public static bool operator ==(PackageInfo a, PackageInfo b)
+        {
+            return a is null ? b is null : a.Equals(b);
+        }
 
         public static bool operator !=(PackageInfo a, PackageInfo b) => !(a == b);
 

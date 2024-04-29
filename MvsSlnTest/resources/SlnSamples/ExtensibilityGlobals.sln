@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{20FD5406-C998-4926-956F-5779766D7C31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{3D3E87AF-22F7-4E26-937F-AA430BCA2942}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary2", "ClassLibrary2\ClassLibrary2.csproj", "{59DBA902-B8F1-4345-A09E-3F63D1A52269}"
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20FD5406-C998-4926-956F-5779766D7C31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20FD5406-C998-4926-956F-5779766D7C31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B3244B90-20DE-4D69-8692-EBC686503F90}
+		SomeOtherEmptyData =     
+		SomeNullData
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin
+	EndGlobalSection
+EndGlobal

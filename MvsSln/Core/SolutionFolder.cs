@@ -31,37 +31,29 @@ namespace net.r_eg.MvsSln.Core
         public static bool operator !=(SolutionFolder a, SolutionFolder b) => !(a == b);
 
         /// <summary>
-        /// Elements will not compared.
+        /// Elements will not be compared.
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
-            if(obj is null || !(obj is SolutionFolder)) {
-                return false;
-            }
+            if(obj is null || obj is not SolutionFolder x) return false;
 
-            return header == ((SolutionFolder)obj).header;
+            return header == x.header;
         }
 
-        public override int GetHashCode()
-        {
-            return header.GetHashCode();
-        }
+        public override readonly int GetHashCode()
+            => items == null ? header.GetHashCode()
+                             : header.GetHashCode().CalculateHashCode(items);
 
-        /// <param name="fGuid">Not null Folder GUID.</param>
-        /// <param name="name">Not null Solution folder name.</param>
-        /// <param name="items">Optional items inside.</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <inheritdoc cref="SolutionFolder(string, string, SolutionFolder, RawText[])"/>
         public SolutionFolder(string fGuid, string name, IEnumerable<RawText> items)
             : this(fGuid, name, null, items)
         {
 
         }
 
-        /// <param name="fGuid">Not null Folder GUID.</param>
-        /// <param name="name">Not null Solution folder name.</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <inheritdoc cref="SolutionFolder(string, string, SolutionFolder, RawText[])"/>
         public SolutionFolder(Guid fGuid, string name)
             : this(fGuid.SlnFormat(), name, null, null)
         {
@@ -79,17 +71,13 @@ namespace net.r_eg.MvsSln.Core
 
         }
 
-        /// <param name="fGuid">Not null Folder GUID.</param>
-        /// <param name="name">Not null Solution folder name.</param>
-        /// <param name="parent">Parent folder.</param>
-        /// <param name="items">Optional items inside.</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <inheritdoc cref="SolutionFolder(string, string, SolutionFolder, RawText[])"/>
         public SolutionFolder(string fGuid, string name, SolutionFolder? parent, IEnumerable<RawText> items)
             : this
             (   new ProjectItem
                 (
-                    fGuid ?? throw new ArgumentNullException(), 
-                    name ?? throw new ArgumentNullException(), 
+                    fGuid ?? throw new ArgumentNullException(nameof(fGuid)), 
+                    name ?? throw new ArgumentNullException(nameof(name)), 
                     ProjectType.SlnFolder, 
                     parent
                 ),
@@ -99,23 +87,19 @@ namespace net.r_eg.MvsSln.Core
 
         }
 
-        /// <param name="name">Not null Solution folder name.</param>
-        /// <param name="items">Optional items inside.</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <inheritdoc cref="SolutionFolder(string, string, SolutionFolder, RawText[])"/>
         public SolutionFolder(string name, params RawText[] items)
             : this(name, items?.AsEnumerable())
         {
 
         }
 
-        /// <param name="name">Not null Solution folder name.</param>
-        /// <param name="items">Optional items inside.</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <inheritdoc cref="SolutionFolder(string, string, SolutionFolder, RawText[])"/>
         public SolutionFolder(string name, IEnumerable<RawText> items)
             : this
             (   new ProjectItem
                 (
-                    name ?? throw new ArgumentNullException(), 
+                    name ?? throw new ArgumentNullException(nameof(name)), 
                     ProjectType.SlnFolder
                 ), 
                 items
@@ -124,25 +108,19 @@ namespace net.r_eg.MvsSln.Core
 
         }
 
-        /// <param name="name">Not null Solution folder name.</param>
-        /// <param name="parent">Parent folder.</param>
-        /// <param name="items">Optional items inside.</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <inheritdoc cref="SolutionFolder(string, string, SolutionFolder, RawText[])"/>
         public SolutionFolder(string name, SolutionFolder parent, params RawText[] items)
             : this(name, parent, items?.AsEnumerable())
         {
 
         }
 
-        /// <param name="name">Not null Solution folder name.</param>
-        /// <param name="parent">Parent folder.</param>
-        /// <param name="items">Optional items inside.</param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <inheritdoc cref="SolutionFolder(string, string, SolutionFolder, RawText[])"/>
         public SolutionFolder(string name, SolutionFolder parent, IEnumerable<RawText> items)
             : this
             (   new ProjectItem
                 (
-                    name ?? throw new ArgumentNullException(), 
+                    name ?? throw new ArgumentNullException(nameof(name)), 
                     ProjectType.SlnFolder, 
                     parent
                 ),
@@ -160,13 +138,12 @@ namespace net.r_eg.MvsSln.Core
 
         }
 
-        /// <param name="pItem">Information about folder.</param>
-        /// <param name="def">List of items for this folder.</param>
+        /// <inheritdoc cref="SolutionFolder(ProjectItem, RawText[])"/>
         public SolutionFolder(ProjectItem pItem, IEnumerable<RawText> def)
             : this()
         {
             header  = pItem;
-            items   = def ?? new List<RawText>();
+            items   = def ?? [];
         }
 
         /// <param name="folder">Initialize data from other folder.</param>
@@ -178,6 +155,7 @@ namespace net.r_eg.MvsSln.Core
 
         #region DebuggerDisplay
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private string DbgDisplay
         {
             get => $"{header.name} [^{header.parent?.Value?.header.name}] = {items?.Count()} [{header.pGuid}]";

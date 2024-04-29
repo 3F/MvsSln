@@ -52,7 +52,6 @@
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <Configurations>Debug;Release;PublicRelease</Configurations>
     <NoWarn>1701;1702;CS1591</NoWarn>
-    <LangVersion>latest</LangVersion>
     <PackageIconUrl>https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png</PackageIconUrl>
   </PropertyGroup>
 
@@ -86,6 +85,21 @@
   <ItemGroup>
     <None Include="..\.tools\hMSBuild.bat" Pack="true" PackagePath="tools\" Visible="false" />
     <None Include="..\.tools\gnt.bat" Pack="true" PackagePath="tools\" Visible="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MsgR.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MsgR.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="MsgR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>MsgR.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

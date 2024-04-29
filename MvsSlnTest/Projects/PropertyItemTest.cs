@@ -10,8 +10,8 @@ namespace MvsSlnTest.Projects
         {
             var p = new PropertyItem("name", "value", "true");
             Assert.Equal("name", p.name);
-            Assert.Equal("value", p.unevaluatedValue);
-            Assert.Null(p.evaluatedValue);
+            Assert.Equal("value", p.unevaluated);
+            Assert.Null(p.evaluated);
             Assert.Equal("true", p.condition);
             Assert.Null(p.parentProject);
             Assert.Null(p.parentProperty);
@@ -28,8 +28,8 @@ namespace MvsSlnTest.Projects
         {
             var p = new PropertyItem("name", "$(value)");
             Assert.Equal("name", p.name);
-            Assert.Equal("$(value)", p.unevaluatedValue);
-            Assert.Null(p.evaluatedValue);
+            Assert.Equal("$(value)", p.unevaluated);
+            Assert.Null(p.evaluated);
             Assert.Null(p.condition);
             Assert.Null(p.parentProject);
             Assert.Null(p.parentProperty);
@@ -80,20 +80,20 @@ namespace MvsSlnTest.Projects
         {
             Assert.NotEqual
             (
-                new PropertyItem("name1", "value1") { evaluatedValue = "value2" },
+                new PropertyItem("name1", "value1") { evaluated = "value2" },
                 new PropertyItem("name1", "value1")
             );
 
             Assert.Equal
             (
-                new PropertyItem("name1", "value1") { evaluatedValue = "value2" },
-                new PropertyItem("name1", "value1") { evaluatedValue = "value2" }
+                new PropertyItem("name1", "value1") { evaluated = "value2" },
+                new PropertyItem("name1", "value1") { evaluated = "value2" }
             );
 
             Assert.NotEqual
             (
-                new PropertyItem("name1", "value1") { evaluatedValue = "value2" },
-                new PropertyItem("name1", "value1") { evaluatedValue = "value3" }
+                new PropertyItem("name1", "value1") { evaluated = "value2" },
+                new PropertyItem("name1", "value1") { evaluated = "value3" }
             );
         }
 
@@ -122,17 +122,17 @@ namespace MvsSlnTest.Projects
             Assert.False(p.HasNothing);
             Assert.True(p.HasValue);
 
-            p.unevaluatedValue = string.Empty;
+            p.unevaluated = string.Empty;
 
             Assert.True(p.HasNothing);
             Assert.True(p.HasValue);
 
-            p.unevaluatedValue = " ";
+            p.unevaluated = " ";
 
             Assert.True(p.HasNothing);
             Assert.True(p.HasValue);
 
-            p.unevaluatedValue = null;
+            p.unevaluated = null;
 
             Assert.True(p.HasNothing);
             Assert.False(p.HasValue);

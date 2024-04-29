@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using net.r_eg.MvsSln;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Projects;
 using Xunit;
 
@@ -8,6 +9,7 @@ namespace MvsSlnTest
 {
     public class SlnPackagesConfigTest
     {
+#if !NET40
         [Theory]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\1\test.sln", SlnItems.PackagesConfig)]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\1\test.sln", SlnItems.PackagesConfigSolution)]
@@ -43,11 +45,12 @@ namespace MvsSlnTest
             using Sln l2 = new(input, SlnItems.Projects);
             Assert.Empty(l.Result.PackagesConfigs);
         }
+#endif
 
         [Fact]
         public void SlnPackagesConfigTest3()
         {
-            using Sln l = new(TestData.ROOT + @"PackagesConfig\sln\3\test.sln", SlnItems.PackagesConfigLegacy);
+            using Sln l = new(TestData.GetPathTo(@"PackagesConfig\sln\3\test.sln"), SlnItems.PackagesConfigLegacy);
 
             Assert.Single(l.Result.PackagesConfigs);
             PackagesConfig pkg = l.Result.PackagesConfigs.First();
@@ -59,6 +62,7 @@ namespace MvsSlnTest
             Assert.Equal("net472", info.MetaTFM);
         }
 
+#if !NET40
         [Theory]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\3\test.sln")]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\4\test.sln")]
@@ -75,25 +79,25 @@ namespace MvsSlnTest
             Assert.Equal("1.14.1.1", info.Version);
             Assert.Equal("vsSolutionBuildEvent", info.MetaOutput);
         }
+#endif
 
         [Fact]
         public void SlnPackagesConfigTest5()
         {
             const string _IN_DIR = @"PackagesConfig\sln\3\";
-            const string _IN_PKG_LEGACY = _IN_DIR + @"packages\";
+            string _pkgLegacy = TestData.GetPkgLegacyDir(_IN_DIR);
 
-            using Sln l = new(TestData.ROOT + _IN_DIR + "test.sln", SlnItems.PackagesConfigSolution | SlnItems.PackagesConfigLegacy);
+            using Sln l = new(TestData.GetPathTo(_IN_DIR + "test.sln"), SlnItems.PackagesConfigSolution | SlnItems.PackagesConfigLegacy);
 
             Assert.Equal(2, l.Result.PackagesConfigs.Count());
-            PackagesConfig pkg1 = l.Result.PackagesConfigs.First(p => !p.File.Contains(_IN_PKG_LEGACY));
-            PackagesConfig pkg2 = l.Result.PackagesConfigs.First(p => p.File.Contains(_IN_PKG_LEGACY));
-
+            PackagesConfig pkg1 = l.Result.PackagesConfigs.First(p => !p.File.Contains(_pkgLegacy));
             Assert.Single(pkg1.Packages);
 
             IPackageInfo info = pkg1.GetPackage("vsSolutionBuildEvent");
             Assert.Equal("1.14.1.1", info.Version);
             Assert.Equal("vsSolutionBuildEvent", info.MetaOutput);
 
+            PackagesConfig pkg2 = l.Result.PackagesConfigs.First(p => p.File.Contains(_pkgLegacy));
             Assert.Single(pkg2.Packages);
 
             IPackageInfo info2 = pkg2.GetPackage("LX4Cnh");
@@ -105,9 +109,9 @@ namespace MvsSlnTest
         public void SlnPackagesConfigTest6()
         {
             const string _IN_DIR = @"PackagesConfig\sln\4\";
-            const string _IN_PKG_LEGACY = _IN_DIR + @"packages\";
+            string _pkgLegacy = TestData.GetPkgLegacyDir(_IN_DIR);
 
-            using Sln l = new(TestData.ROOT + _IN_DIR + "test.sln", SlnItems.PackagesConfigLegacy);
+            using Sln l = new(TestData.GetPathTo(_IN_DIR + "test.sln"), SlnItems.PackagesConfigLegacy);
 
             Assert.Equal(3, l.Result.PackagesConfigs.Count());
             Assert.Equal(2, l.Result.ProjectItems.Count());
@@ -121,7 +125,7 @@ namespace MvsSlnTest
             );
 
             PackagesConfig pkg3 = l.Result.PackagesConfigs.First(p =>
-                p.File.Contains(_IN_PKG_LEGACY)
+                p.File.Contains(_pkgLegacy)
             );
 
 
@@ -148,9 +152,9 @@ namespace MvsSlnTest
         public void SlnPackagesConfigTest7()
         {
             const string _IN_DIR = @"PackagesConfig\sln\4\";
-            const string _IN_PKG_LEGACY = _IN_DIR + @"packages\";
+            string _pkgLegacy = TestData.GetPkgLegacyDir(_IN_DIR);
 
-            using Sln l = new(TestData.ROOT + _IN_DIR + "test.sln", SlnItems.PackagesConfigSolution | SlnItems.PackagesConfigLegacy);
+            using Sln l = new(TestData.GetPathTo(_IN_DIR + "test.sln"), SlnItems.PackagesConfigSolution | SlnItems.PackagesConfigLegacy);
 
             Assert.Equal(4, l.Result.PackagesConfigs.Count());
             Assert.Equal(2, l.Result.ProjectItems.Count());
@@ -164,7 +168,7 @@ namespace MvsSlnTest
             );
 
             PackagesConfig pkg3 = l.Result.PackagesConfigs.First(p =>
-                p.File.Contains(_IN_PKG_LEGACY)
+                p.File.Contains(_pkgLegacy)
             );
 
 
@@ -188,7 +192,7 @@ namespace MvsSlnTest
 
 
             PackagesConfig pkg4 = l.Result.PackagesConfigs.First(p =>
-                !p.File.Contains(_IN_PKG_LEGACY)
+                !p.File.Contains(_pkgLegacy)
             );
 
             Assert.Single(pkg4.Packages);

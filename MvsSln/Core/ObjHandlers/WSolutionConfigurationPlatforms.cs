@@ -5,13 +5,13 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
     {
         /// <summary>
@@ -19,28 +19,24 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// </summary>
         protected IEnumerable<IConfPlatform> configs;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            if(configs == null) return null;
 
-            sb.AppendLine($"{SP}GlobalSection(SolutionConfigurationPlatforms) = preSolution");
+            lbuilder.Clear();
+            lbuilder.AppendLv1Line(SolutionConfigurationPlatformsPreSolution);
 
-            configs.ForEach(cfg => sb.AppendLine($"{SP}{SP}{cfg} = {cfg}"));
+            configs.ForEach(cfg => lbuilder.AppendLv2Line($"{cfg} = {cfg}"));
 
-            sb.Append($"{SP}EndGlobalSection");
-
-            return sb.ToString();
+            return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
         /// <param name="configs">Solution configurations with platforms.</param>
         public WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
         {
-            this.configs = configs ?? throw new ArgumentNullException();
+            this.configs = configs;
         }
+
+        public WSolutionConfigurationPlatforms() { }
     }
 }

@@ -9,6 +9,7 @@ namespace MvsSlnTest.Projects
 {
     public class PackagesConfigLocatorTest
     {
+#if !NET40
         [Theory]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\1\test.sln", SlnItems.PackagesConfig)]
         [InlineData(TestData.ROOT + @"PackagesConfig\sln\2\test.sln", SlnItems.PackagesConfig)]
@@ -66,6 +67,7 @@ namespace MvsSlnTest.Projects
                 Assert.Equal(config.File, pkgs.ElementAt(idx++));
             }
         }
+#endif
 
         [Fact]
         public void NullTest1()

@@ -10,16 +10,16 @@ using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
-    public struct HandlerValue
+    public readonly struct HandlerValue
     {
-        public IObjHandler handler;
+        public readonly IObjHandler handler;
 
         /// <summary>
         /// Unspecified value for handler.
         /// </summary>
-        public object value;
+        public readonly object value;
 
-        private Guid id;
+        private readonly Guid id;
 
         public static bool operator ==(HandlerValue a, HandlerValue b) => a.Equals(b);
 
@@ -27,26 +27,19 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
 
         public override bool Equals(object obj)
         {
-            if(obj is null || !(obj is HandlerValue)) {
-                return false;
-            }
-
-            var x = (HandlerValue)obj;
+            if(obj is null || obj is not HandlerValue x) return false;
 
             return handler == x.handler 
                     && value == x.value 
                     && id == x.id;
         }
 
-        public override int GetHashCode()
-        {
-            return 0.CalculateHashCode
-            (
-                handler,
-                value,
-                id
-            );
-        }
+        public override int GetHashCode() => 0.CalculateHashCode
+        (
+            handler,
+            value,
+            id
+        );
 
         public HandlerValue(IObjHandler handler)
             : this(handler, null)

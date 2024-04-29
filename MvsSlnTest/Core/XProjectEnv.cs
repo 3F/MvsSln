@@ -15,7 +15,7 @@ namespace MvsSlnTest.Core
             var cfgprj = new Dictionary<string, string>() { { PropertyNames.CONFIG, "DBGprj" }, { PropertyNames.PLATFORM, "Win32" } };
             var cfg = new ConfigItem("DBGprj", "Win32");
 
-            using(var sln = new Sln(TestData.PathTo(@"XProjectEnv\slnProperties\Cpp\App.sln"), SlnItems.Env))
+            using(var sln = new Sln(TestData.GetPathTo(@"XProjectEnv\slnProperties\Cpp\App.sln"), SlnItems.Env))
             {
                 var env = new XProjectEnvStub(sln.Result, cfgsln);
                 env.XProjectByFile(sln.Result.ProjectItems.First().fullPath, cfg, cfgprj);
@@ -34,6 +34,7 @@ namespace MvsSlnTest.Core
             }
         }
 
+#if !NET40
         /// <summary>
         /// Verifies that project instances are valid for the active solution configuration in XProject Environment.
         /// Related problem: https://github.com/3F/vsSolutionBuildEvent/pull/77
@@ -47,7 +48,7 @@ namespace MvsSlnTest.Core
         [InlineData("Release", "Any CPU", SlnItems.EnvWithMinimalProjects)]
         public void CorrectProjectInstnacesTest(string configuration, string platform, SlnItems opt)
         {
-            using Sln sln = new(TestData.PathTo(@"XProjectEnv\projectInstnaces\ClassLibrary1.sln"), opt);
+            using Sln sln = new(TestData.GetPathTo(@"XProjectEnv\projectInstnaces\ClassLibrary1.sln"), opt);
             ISlnResult l = sln.Result;
 
             ConfigItem input = new(configuration, platform);
@@ -60,7 +61,7 @@ namespace MvsSlnTest.Core
                 new Dictionary<string, string>() { { PropertyNames.CONFIG, configuration }, { PropertyNames.PLATFORM, platform } }
             );
 
-            Assert.True(input.Equals(xp.ProjectItem.projectConfig));
+            Assert.True(input.IsEqualPair(xp.ProjectItem.projectConfig));
 
             Assert.Equal
             (
@@ -72,7 +73,7 @@ namespace MvsSlnTest.Core
             (
                 l.ProjectItems.FirstOrDefault(),
                 l.ProjectItemsConfigs
-                    .FirstOrDefault(p => input.Equals(p.solutionConfig) == true)
+                    .FirstOrDefault(p => input.IsEqualPair(p.solutionConfig))
                     .projectConfig
             );
 
@@ -82,5 +83,6 @@ namespace MvsSlnTest.Core
                 input
             );
         }
+#endif
     }
 }

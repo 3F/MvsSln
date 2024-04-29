@@ -5,14 +5,14 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
-    public class WProject: WAbstract, IObjHandler
+    using static net.r_eg.MvsSln.Core.Keywords;
+
+    public class WProject: WAbstract, IObjHandler, IProjectItemsHandler
     {
         /// <summary>
         /// All found projects in solution.
@@ -24,47 +24,52 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// </summary>
         protected ISlnProjectDependencies projectDependencies;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
+        public IEnumerable<ProjectItem> Projects => projectItems;
+
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            if(projectItems == null) return null;
 
-            foreach(var prj in projectItems)
+            lbuilder.Clear();
+            foreach(ProjectItem prj in projectItems)
             {
-                sb.AppendLine(
-                    $"Project(\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
+                lbuilder.AppendLine
+                (
+                    $"{Project_}\"{prj.pType}\") = \"{prj.name}\", \"{prj.path}\", \"{prj.pGuid}\""
                 );
 
-                if(projectDependencies.Dependencies.ContainsKey(prj.pGuid) 
-                    && projectDependencies.Dependencies[prj.pGuid].Count > 0)
+                if(projectDependencies?.Dependencies.GetOrDefault(prj.pGuid)?.Count > 0)
                 {
-                    sb.AppendLine($"{SP}ProjectSection(ProjectDependencies) = postProject");
+                    lbuilder.AppendLv1Line(ProjectDependenciesPostProject);
 
+                    {
                         projectDependencies.Dependencies[prj.pGuid]
-                                           .ForEach(dep => sb.AppendLine($"{SP}{SP}{dep} = {dep}"));
+                                           .ForEach(dep => lbuilder.AppendLv2Line($"{dep} = {dep}"));
+                    }
 
-                    sb.AppendLine($"{SP}EndProjectSection");
+                    lbuilder.AppendLv1Line(EndProjectSection);
                 }
 
-                sb.AppendLine("EndProject");
+                lbuilder.AppendLine(EndProject);
             }
 
-            if(sb.Length > 1) {
-                return sb.ToString(0, sb.Length - Environment.NewLine.Length);
-            }
-            return String.Empty;
+            return lbuilder.ToString(noLastNewLine: true);
         }
 
         /// <param name="pItems">List of projects in solution.</param>
         /// <param name="deps">Solution Project Dependencies.</param>
         public WProject(IEnumerable<ProjectItem> pItems, ISlnProjectDependencies deps)
         {
-            projectItems        = pItems ?? throw new ArgumentNullException();
-            projectDependencies = deps ?? throw new ArgumentNullException();
+            projectItems        = pItems;
+            projectDependencies = deps;
         }
+
+        public WProject(IEnumerable<ProjectItem> pItems)
+            : this(pItems, deps: null)
+        {
+
+        }
+
+        public WProject() { }
     }
 }

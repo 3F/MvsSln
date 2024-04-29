@@ -26,12 +26,12 @@ namespace net.r_eg.MvsSln.Projects
         /// <summary>
         /// The evaluated property value.
         /// </summary>
-        public string evaluatedValue;
+        public string evaluated;
 
         /// <summary>
         /// The unevaluated property value.
         /// </summary>
-        public string unevaluatedValue;
+        public string unevaluated;
 
         /// <summary>
         /// 'Condition' attr if defined.
@@ -75,57 +75,48 @@ namespace net.r_eg.MvsSln.Projects
         public IXProject parentProject;
 
         /// <summary>
-        /// Check an <see cref="unevaluatedValue"/> for not null.
+        /// Check an <see cref="unevaluated"/> for not null.
         /// </summary>
-        public bool HasValue => unevaluatedValue != null;
+        public readonly bool HasValue => unevaluated != null;
 
         /// <summary>
-        /// Check an <see cref="unevaluatedValue"/> for null or empty or whitespace.
+        /// Check an <see cref="unevaluated"/> for null or empty or whitespace.
         /// </summary>
-        public bool HasNothing => string.IsNullOrWhiteSpace(unevaluatedValue);
+        public readonly bool HasNothing => string.IsNullOrWhiteSpace(unevaluated);
 
         public static bool operator ==(PropertyItem a, PropertyItem b) => a.Equals(b);
 
         public static bool operator !=(PropertyItem a, PropertyItem b) => !(a == b);
 
-        public override bool Equals(object obj)
+        public override readonly bool Equals(object obj)
         {
-            if(obj is null || !(obj is PropertyItem)) {
-                return false;
-            }
-
-            var b = (PropertyItem)obj;
+            if(obj is null || obj is not PropertyItem b) return false;
 
             return name == b.name
-                && evaluatedValue == b.evaluatedValue
-                && unevaluatedValue == b.unevaluatedValue
+                && evaluated == b.evaluated
+                && unevaluated == b.unevaluated
                 && condition == b.condition
                 && isEnvironmentProperty == b.isEnvironmentProperty
                 && isGlobalProperty == b.isGlobalProperty
                 && isReservedProperty == b.isReservedProperty
                 && isImported == b.isImported
-                && isUserDef == b.isUserDef
-                && parentProperty == b.parentProperty
-                && parentProject == b.parentProject;
+                && isUserDef == b.isUserDef;
         }
 
-        public override int GetHashCode()
-        {
-            return 0.CalculateHashCode
-            (
-                name,
-                evaluatedValue,
-                unevaluatedValue,
-                condition,
-                isEnvironmentProperty,
-                isGlobalProperty,
-                isReservedProperty,
-                isImported,
-                isUserDef,
-                parentProperty,
-                parentProject
-            );
-        }
+        public override readonly int GetHashCode() => 0.CalculateHashCode
+        (
+            name,
+            evaluated,
+            unevaluated,
+            condition,
+            isEnvironmentProperty,
+            isGlobalProperty,
+            isReservedProperty,
+            isImported,
+            isUserDef,
+            parentProperty,
+            parentProject
+        );
 
         /// <param name="name">The name of property.</param>
         /// <param name="value">Unevaluated value.</param>
@@ -133,26 +124,29 @@ namespace net.r_eg.MvsSln.Projects
         public PropertyItem(string name, string value, string condition = null)
             : this()
         {
-            this.name           = name;
-            this.condition      = condition;
-            unevaluatedValue    = value;
-            isUserDef           = true;
+            this.name       = name;
+            this.condition  = condition;
+            unevaluated     = value;
+            isUserDef       = true;
 
-            // TODO: `evaluatedValue`. Actually we need expose some optional evaluator, 
+            // TODO: `evaluated`. Actually we need expose some optional evaluator, 
             // like in Varhead project: https://github.com/3F/Varhead/blob/master/Varhead/EvaluatorBlank.cs
-            // evaluatedValue = unevaluatedValue;
+            // evaluated = unevaluated;
         }
 
-        /// <param name="eProperty"></param>
+        public PropertyItem(ProjectProperty eProperty, IXProject parentProject)
+            : this(eProperty)
+        {
+            this.parentProject = parentProject;
+        }
+
         public PropertyItem(ProjectProperty eProperty)
             : this()
         {
-            if(eProperty == null) {
-                throw new ArgumentNullException(nameof(eProperty));
-            }
+            if(eProperty == null) throw new ArgumentNullException(nameof(eProperty));
 
             name                    = eProperty.Name;
-            unevaluatedValue        = eProperty.UnevaluatedValue;
+            unevaluated             = eProperty.UnevaluatedValue;
             condition               = eProperty.Xml?.Condition;
             isEnvironmentProperty   = eProperty.IsEnvironmentProperty;
             isGlobalProperty        = eProperty.IsGlobalProperty;
@@ -162,15 +156,31 @@ namespace net.r_eg.MvsSln.Projects
 
             //NOTE: MS describes this as 'the evaluated property value, which is never null'
             //      But, this is not true ! >(  .NETFramework\v4.0\Microsoft.Build.dll - Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a
-            evaluatedValue = eProperty.EvaluatedValue ?? string.Empty;
+            evaluated = eProperty.EvaluatedValue ?? string.Empty;
         }
+
+        internal PropertyItem(IXProject parentProject)
+            : this()
+        {
+            this.parentProject = parentProject;
+        }
+
+        #region Obsolete fields
+        #pragma warning disable IDE1006
+
+        [Obsolete("Renamed as " + nameof(evaluated))]
+        public readonly string evaluatedValue => evaluated;
+
+        [Obsolete("Renamed as " + nameof(unevaluated))]
+        public readonly string unevaluatedValue => unevaluated;
+
+        #pragma warning restore IDE1006
+        #endregion
 
         #region DebuggerDisplay
 
-        private string DbgDisplay
-        {
-            get => $"{name} = {evaluatedValue} [{unevaluatedValue}]";
-        }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly string DbgDisplay => $"{name} = {evaluated} [{unevaluated}]";
 
         #endregion
     }

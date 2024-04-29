@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{297F83DE-F
 		.version = .version
 		build.bat = build.bat
 		changelog.txt = changelog.txt
+		common.props = common.props
 		License.txt = License.txt
 		packages.config = packages.config
 		Readme.md = Readme.md

@@ -5,12 +5,12 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WProjectConfigurationPlatforms: WAbstract, IObjHandler
     {
         /// <summary>
@@ -18,38 +18,37 @@ namespace net.r_eg.MvsSln.Core.ObjHandlers
         /// </summary>
         public IEnumerable<IConfPlatformPrj> configs;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            if(configs == null) return null;
 
-            sb.AppendLine($"{SP}GlobalSection(ProjectConfigurationPlatforms) = postSolution");
+            lbuilder.Clear();
+            lbuilder.AppendLv1Line(ProjectConfigurationPlatformsPostSolution);
 
-            foreach(var cfg in configs)
+            foreach(IConfPlatformPrj cfg in configs)
             {
-                sb.AppendLine($"{SP}{SP}{cfg.PGuid}.{cfg.Sln}.ActiveCfg = {cfg}");
-                if(cfg.IncludeInBuild) {
-                    sb.AppendLine($"{SP}{SP}{cfg.PGuid}.{cfg.Sln}.Build.0 = {cfg}");
+                lbuilder.AppendLv2Line($"{cfg.PGuid}.{cfg.Sln}.ActiveCfg = {cfg}");
+
+                if(cfg.IncludeInBuild)
+                {
+                    lbuilder.AppendLv2Line($"{cfg.PGuid}.{cfg.Sln}.Build.0 = {cfg}");
                 }
 
-                if (cfg.IncludeInDeploy) {
-                    sb.AppendLine($"{SP}{SP}{cfg.PGuid}.{cfg.Sln}.Deploy.0 = {cfg}");
+                if(cfg.IncludeInDeploy)
+                {
+                    lbuilder.AppendLv2Line($"{cfg.PGuid}.{cfg.Sln}.Deploy.0 = {cfg}");
                 }
             }
 
-            sb.Append($"{SP}EndGlobalSection");
-
-            return sb.ToString();
+            return lbuilder.AppendLv1(EndGlobalSection).ToString();
         }
 
         /// <param name="configs">Project configurations with platforms.</param>
         public WProjectConfigurationPlatforms(IEnumerable<IConfPlatformPrj> configs)
         {
-            this.configs = configs ?? throw new ArgumentNullException();
+            this.configs = configs;
         }
+
+        public WProjectConfigurationPlatforms() { }
     }
 }

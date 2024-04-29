@@ -1,0 +1,13 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test", "test.csproj", "{2A9ED8F4-6A60-4B30-90F4-C679EB42D1B4}"
+EndProject
+Global
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2A9ED8F4-6A60-4B30-90F4-C679EB42D1B4}.Debug|x64.ActiveCfg = test|
+		{2A9ED8F4-6A60-4B30-90F4-C679EB42D1B4}.Debug|x64.Build.0 = test|
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+	EndGlobalSection
+EndGlobal

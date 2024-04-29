@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Core.SlnHandlers;
+using net.r_eg.MvsSln.Extensions;
 using Xunit;
 
 namespace MvsSlnTest
@@ -16,7 +16,7 @@ namespace MvsSlnTest
         {
             using(var sln = new Sln(SlnItems.Projects, SlnSamplesResource.vsSolutionBuildEvent))
             {
-                Assert.Equal("\\", sln.Result.SolutionDir);
+                Assert.Equal("\\".AdaptPath(), sln.Result.SolutionDir);
                 Assert.Equal(SlnParser.MEM_FILE, sln.Result.Properties[PropertyNames.SLN_PATH]);
 
                 Assert.Equal(sln.Result.SolutionDir, sln.Result.Properties[PropertyNames.SLN_DIR]);
@@ -88,72 +88,77 @@ namespace MvsSlnTest
         [Fact]
         public void SlnResultTest3()
         {
-            using(var sln = new Sln(SlnItems.SolutionConfPlatforms, SlnSamplesResource.vsSolutionBuildEvent))
-            {
-                Assert.Equal(new ConfigItem("Debug", "Any CPU"), sln.Result.DefaultConfig);
+            using Sln sln = new(SlnItems.SolutionConfPlatforms, SlnSamplesResource.vsSolutionBuildEvent);
+            Assert.True(sln.Result.DefaultConfig.IsEqualPair(new ConfigItem("Debug", "Any CPU")));
 
-                Assert.Equal(8, sln.Result.SolutionConfigs.Count());
+            IConfPlatform[] configs = sln.Result.SolutionConfigs.ToArray();
+            Assert.Equal(configs.Length, sln.Result.SolutionConfigs.Count());
+            Assert.Equal(8, configs.Length);
 
-                Assert.Equal(new ConfigItem("CI_Debug_net45", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(0));
-                Assert.Equal(new ConfigItem("CI_Debug", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(1));
-                Assert.Equal(new ConfigItem("CI_Release_net45", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(2));
-                Assert.Equal(new ConfigItem("CI_Release", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(3));
-                Assert.Equal(new ConfigItem("Debug_net45", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(4));
-                Assert.Equal(new ConfigItem("Debug", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(5));
-                Assert.Equal(new ConfigItem("Release_net45", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(6));
-                Assert.Equal(new ConfigItem("Release", "Any CPU"), sln.Result.SolutionConfigs.ElementAt(7));
-            }
+            Assert.True(configs[0].IsEqualPair(new ConfigItem("CI_Debug_net45", "Any CPU")));
+            Assert.True(configs[1].IsEqualPair(new ConfigSln("CI_Debug", "Any CPU")));
+            Assert.True(configs[2].IsEqualPair(new ConfigSln("CI_Release_net45", "Any CPU")));
+            Assert.True(configs[3].IsEqualPair(new ConfigSln("CI_Release", "Any CPU")));
+            Assert.True(configs[4].IsEqualPair(new ConfigSln("Debug_net45", "Any CPU")));
+            Assert.True(configs[5].IsEqualPair(new ConfigSln("Debug", "Any CPU")));
+            Assert.True(configs[6].IsEqualPair(new ConfigSln("Release_net45", "Any CPU")));
+            Assert.True(configs[7].IsEqualPair(new ConfigItem("Release", "Any CPU")));
         }
 
         [Fact]
         public void SlnResultTest4()
         {
-            using(var sln = new Sln(SlnItems.ProjectConfPlatforms, SlnSamplesResource.vsSolutionBuildEvent))
-            {
-                Assert.Equal(6, sln.Result.ProjectConfigs.Count());
+            using Sln sln = new(SlnItems.ProjectConfPlatforms, SlnSamplesResource.vsSolutionBuildEvent);
+            Assert.Equal(6, sln.Result.ProjectConfigs.Count());
 
-                var cfg0 = sln.Result.ProjectConfigs.ElementAt(0);
-                Assert.Equal(new ConfigItem("Release_net45", "x64"), (ConfigItem)cfg0);
-                Assert.False(cfg0.IncludeInBuild);
-                Assert.False(cfg0.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg0.PGuid);
-                Assert.Equal(new ConfigItem("CI_Debug_net45", "Any CPU"), cfg0.Sln);
+            var cfg0 = sln.Result.ProjectConfigs.ElementAt(0);
+            Assert.True(cfg0.IsEqualPair(new ConfigItem("Release_net45", "x64")));
+            Assert.False(cfg0.IncludeInBuild);
+            Assert.False(cfg0.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg0.PGuid);
+            Assert.True(cfg0.Sln.IsEqualPair(new ConfigItem("CI_Debug_net45", "Any CPU")));
 
-                var cfg1 = sln.Result.ProjectConfigs.ElementAt(1);
-                Assert.Equal(new ConfigItem("Release", "x64"), (ConfigItem)cfg1);
-                Assert.True(cfg1.IncludeInBuild);
-                Assert.False(cfg1.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg1.PGuid);
-                Assert.Equal(new ConfigItem("CI_Debug", "Any CPU"), cfg1.Sln);
+            var cfg1 = sln.Result.ProjectConfigs.ElementAt(1);
+#if !NET40
+            Assert.Equal(new ConfigItem("Release", "x64"), (ConfigItem)cfg1);
+#endif
+            Assert.True(cfg1.IsEqualPair(new ConfigItem("Release", "x64")));
 
-                var cfg2 = sln.Result.ProjectConfigs.ElementAt(2);
-                Assert.Equal(new ConfigItem("Release_net45", "Any CPU"), (ConfigItem)cfg2);
-                Assert.False(cfg2.IncludeInBuild);
-                Assert.False(cfg2.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg2.PGuid);
-                Assert.Equal(new ConfigItem("CI_Release_net45", "Any CPU"), cfg2.Sln);
+            Assert.True(cfg1.IncludeInBuild);
+            Assert.False(cfg1.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg1.PGuid);
+            Assert.Equal(new ConfigSln("CI_Debug", "Any CPU"), cfg1.Sln);
 
-                var cfg3 = sln.Result.ProjectConfigs.ElementAt(3);
-                Assert.Equal(new ConfigItem("Release", "Any CPU"), (ConfigItem)cfg3);
-                Assert.True(cfg3.IncludeInBuild);
-                Assert.True(cfg3.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg3.PGuid);
-                Assert.Equal(new ConfigItem("CI_Release", "Any CPU"), cfg3.Sln);
+            var cfg2 = sln.Result.ProjectConfigs.ElementAt(2);
+            Assert.True(cfg2.IsEqualPair(new ConfigItem("Release_net45", "Any CPU")));
+            Assert.False(cfg2.IncludeInBuild);
+            Assert.False(cfg2.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg2.PGuid);
+            Assert.Equal(new ConfigSln("CI_Release_net45", "Any CPU"), cfg2.Sln);
 
-                var cfg4 = sln.Result.ProjectConfigs.ElementAt(4);
-                Assert.Equal(new ConfigItem("Debug", "x86"), (ConfigItem)cfg4);
-                Assert.True(cfg4.IncludeInBuild);
-                Assert.False(cfg4.IncludeInDeploy);
-                Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg4.PGuid);
-                Assert.Equal(new ConfigItem("Debug", "Any CPU"), cfg4.Sln);
+            var cfg3 = sln.Result.ProjectConfigs.ElementAt(3);
+            Assert.True(cfg3.IsEqualPair(new ConfigItem("Release", "Any CPU")));
+            Assert.True(cfg3.IncludeInBuild);
+            Assert.True(cfg3.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg3.PGuid);
+            Assert.Equal(new ConfigSln("CI_Release", "Any CPU"), cfg3.Sln);
 
-                var cfg5 = sln.Result.ProjectConfigs.ElementAt(5);
-                Assert.Equal(new ConfigItem("Release", "Any CPU"), (ConfigItem)cfg5);
-                Assert.True(cfg5.IncludeInBuild);
-                Assert.False(cfg5.IncludeInDeploy);
-                Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg5.PGuid);
-                Assert.Equal(new ConfigItem("Release", "Any CPU"), cfg5.Sln);
-            }
+            var cfg4 = sln.Result.ProjectConfigs.ElementAt(4);
+#if !NET40
+            Assert.Equal(new ConfigItem("Debug", "x86"), (ConfigItem)cfg4);
+#endif
+            Assert.True(cfg4.IsEqualPair(new ConfigItem("Debug", "x86")));
+            Assert.True(cfg4.IncludeInBuild);
+            Assert.False(cfg4.IncludeInDeploy);
+            Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg4.PGuid);
+            Assert.Equal(new ConfigSln("Debug", "Any CPU"), cfg4.Sln);
+
+            var cfg5 = sln.Result.ProjectConfigs.ElementAt(5);
+            Assert.True(cfg5.IsEqualPair(new ConfigItem("Release", "Any CPU")));
+            Assert.True(cfg5.IncludeInBuild);
+            Assert.False(cfg5.IncludeInDeploy);
+            Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg5.PGuid);
+            Assert.Equal(new ConfigSln("Release", "Any CPU"), cfg5.Sln);
         }
 
         [Fact]
@@ -195,170 +200,176 @@ namespace MvsSlnTest
             }
         }
 
-        [Fact]
-        public void SlnResultTest6()
+#if !NET40
+        [Theory]
+        [InlineData("")]
+        [InlineData(".spaces")]
+        public void SlnResultTest6(string suffix)
         {
-            using(var sln = new Sln(SlnItems.ProjectConfPlatforms, SlnSamplesResource.ConfNamesDots))
-            {
-                Assert.Equal(6, sln.Result.ProjectConfigs.Count());
+            using Sln sln = new(TestData.GetPathTo($@"SlnSamples\Issue13\ConfNamesDots{suffix}.sln"), SlnItems.ProjectConfPlatforms);
 
-                var cfg = sln.Result.ProjectConfigs.ElementAt(0);
-                Assert.Equal(new ConfigItem("Release.net45", "x64"), (ConfigItem)cfg);
-                Assert.False(cfg.IncludeInBuild);
-                Assert.False(cfg.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
-                Assert.Equal(new ConfigItem("CI.Debug.net45", "Any.CPU.etc"), cfg.Sln);
+            Assert.Equal(6, sln.Result.ProjectConfigs.Count());
 
-                cfg = sln.Result.ProjectConfigs.ElementAt(1);
-                Assert.Equal(new ConfigItem("Release", "x64"), (ConfigItem)cfg);
-                Assert.True(cfg.IncludeInBuild);
-                Assert.False(cfg.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
-                Assert.Equal(new ConfigItem("CI.Debug", "Any.CPU.etc"), cfg.Sln);
+            IConfPlatformPrj cfg = sln.Result.ProjectConfigs.ElementAt(0);
+            Assert.Equal(new ConfigItem("Release.net45", "x64"), (ConfigItem)cfg);
+            Assert.False(cfg.IncludeInBuild);
+            Assert.False(cfg.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
+            Assert.Equal(new ConfigItem("CI.Debug.net45", "Any.CPU.etc"), cfg.Sln);
 
-                cfg = sln.Result.ProjectConfigs.ElementAt(2);
-                Assert.Equal(new ConfigItem("Release.net45", "Any.CPU.etc"), (ConfigItem)cfg);
-                Assert.False(cfg.IncludeInBuild);
-                Assert.False(cfg.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
-                Assert.Equal(new ConfigItem("CI.Release.net45", "Any.CPU.etc"), cfg.Sln);
+            cfg = sln.Result.ProjectConfigs.ElementAt(1);
+            Assert.Equal(new ConfigItem("Release", "x64"), (ConfigItem)cfg);
+            Assert.True(cfg.IncludeInBuild);
+            Assert.False(cfg.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
+            Assert.Equal(new ConfigItem("CI.Debug", "Any.CPU.etc"), cfg.Sln);
 
-                cfg = sln.Result.ProjectConfigs.ElementAt(3);
-                Assert.Equal(new ConfigItem("Release", "Any.CPU.etc"), (ConfigItem)cfg);
-                Assert.True(cfg.IncludeInBuild);
-                Assert.True(cfg.IncludeInDeploy);
-                Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
-                Assert.Equal(new ConfigItem("CI.Release", "Any.CPU.etc"), cfg.Sln);
+            cfg = sln.Result.ProjectConfigs.ElementAt(2);
+            Assert.Equal(new ConfigItem("Release.net45", "Any.CPU.etc"), (ConfigItem)cfg);
+            Assert.False(cfg.IncludeInBuild);
+            Assert.False(cfg.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
+            Assert.Equal(new ConfigItem("CI.Release.net45", "Any.CPU.etc"), cfg.Sln);
 
-                cfg = sln.Result.ProjectConfigs.ElementAt(4);
-                Assert.Equal(new ConfigItem("Debug.x64.x86", "x86"), (ConfigItem)cfg);
-                Assert.True(cfg.IncludeInBuild);
-                Assert.False(cfg.IncludeInDeploy);
-                Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg.PGuid);
-                Assert.Equal(new ConfigItem("Debug.x64.x86", "Any.CPU.etc"), cfg.Sln);
+            cfg = sln.Result.ProjectConfigs.ElementAt(3);
+            Assert.Equal(new ConfigItem("Release", "Any.CPU.etc"), (ConfigItem)cfg);
+            Assert.True(cfg.IncludeInBuild);
+            Assert.True(cfg.IncludeInDeploy);
+            Assert.Equal("{A7BF1F9C-F18D-423E-9354-859DC3CFAFD4}", cfg.PGuid);
+            Assert.Equal(new ConfigItem("CI.Release", "Any.CPU.etc"), cfg.Sln);
 
-                cfg = sln.Result.ProjectConfigs.ElementAt(5);
-                Assert.Equal(new ConfigItem("Release", "Any.CPU.etc"), (ConfigItem)cfg);
-                Assert.True(cfg.IncludeInBuild);
-                Assert.False(cfg.IncludeInDeploy);
-                Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg.PGuid);
-                Assert.Equal(new ConfigItem("Release", "Any.CPU.etc"), cfg.Sln);
-            }
+            cfg = sln.Result.ProjectConfigs.ElementAt(4);
+            Assert.Equal(new ConfigItem("Debug.x64.x86", "x86"), (ConfigItem)cfg);
+            Assert.True(cfg.IncludeInBuild);
+            Assert.False(cfg.IncludeInDeploy);
+            Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg.PGuid);
+            Assert.Equal(new ConfigItem("Debug.x64.x86", "Any.CPU.etc"), cfg.Sln);
+
+            cfg = sln.Result.ProjectConfigs.ElementAt(5);
+            Assert.Equal(new ConfigItem("Release", "Any.CPU.etc"), (ConfigItem)cfg);
+            Assert.True(cfg.IncludeInBuild);
+            Assert.False(cfg.IncludeInDeploy);
+            Assert.Equal("{32E44995-F621-4E77-B46A-8F65D64E7FEA}", cfg.PGuid);
+            Assert.Equal(new ConfigItem("Release", "Any.CPU.etc"), cfg.Sln);
         }
+#endif
 
         [Fact]
         public void ExtensibilityGlobalsTest1()
         {
-            using(var sln = new Sln(SlnItems.All &~ SlnItems.ExtItems, SlnSamplesResource.ExtensibilityGlobals))
-            {
-                Assert.Null(sln.Result.ExtItems);
-            }
+            using Sln sln = new(TestData.GetPathTo(@"SlnSamples\ExtensibilityGlobals.sln"), SlnItems.All & ~SlnItems.ExtItems);
+            Assert.Null(sln.Result.ExtItems);
         }
 
         [Fact]
         public void ExtensibilityGlobalsTest2()
         {
-            using(var sln = new Sln(SlnItems.ExtItems, SlnSamplesResource.ExtensibilityGlobals))
-            {
-                Assert.Equal(4, sln.Result.ExtItems.Count());
+            using Sln sln = new(TestData.GetPathTo(@"SlnSamples\ExtensibilityGlobals.sln"), SlnItems.ExtItems);
 
-                Assert.True(sln.Result.ExtItems.ContainsKey("SolutionGuid"));
-                Assert.True(sln.Result.ExtItems.ContainsKey("SomeOtherEmptyData"));
-                Assert.True(sln.Result.ExtItems.ContainsKey("SomeNullData"));
-                Assert.True(sln.Result.ExtItems.ContainsKey("EnterpriseLibraryConfigurationToolBinariesPath"));
+            Assert.Equal(4, sln.Result.ExtItems.Count());
 
-                Assert.Equal("{B3244B90-20DE-4D69-8692-EBC686503F90}", sln.Result.ExtItems["SolutionGuid"]);
-                Assert.Equal(String.Empty, sln.Result.ExtItems["SomeOtherEmptyData"]);
-                Assert.Null(sln.Result.ExtItems["SomeNullData"]);
-                Assert.Equal(@"packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin", sln.Result.ExtItems["EnterpriseLibraryConfigurationToolBinariesPath"]);
-            }
+            Assert.True(sln.Result.ExtItems.ContainsKey("SolutionGuid"));
+            Assert.True(sln.Result.ExtItems.ContainsKey("SomeOtherEmptyData"));
+            Assert.True(sln.Result.ExtItems.ContainsKey("SomeNullData"));
+            Assert.True(sln.Result.ExtItems.ContainsKey("EnterpriseLibraryConfigurationToolBinariesPath"));
+
+            Assert.Equal("{B3244B90-20DE-4D69-8692-EBC686503F90}", sln.Result.ExtItems["SolutionGuid"]);
+            Assert.Equal(string.Empty, sln.Result.ExtItems["SomeOtherEmptyData"]);
+            Assert.Null(sln.Result.ExtItems["SomeNullData"]);
+            Assert.Equal(@"packages\Conari.1.3.0\lib\NET40;packages\vsSBE.CI.MSBuild\bin", sln.Result.ExtItems["EnterpriseLibraryConfigurationToolBinariesPath"]);
         }
 
-        [Fact]
-        public void SolutionFoldersAndProjectsTest1()
+#if !NET40
+        [Theory]
+        [InlineData("tab.sln")]
+        [InlineData("spaces.sln")]
+        public void SolutionFoldersAndProjectsTest1(string file)
         {
-            using(var sln = new Sln(SlnItems.SolutionItems | SlnItems.Projects, SlnSamplesResource.SolutionFoldersAndProjects))
-            {
-                Assert.Equal(4, sln.Result.SolutionFolders.Count());
-                Assert.Equal(5, sln.Result.ProjectItems.Count());
+            using Sln sln = new(TestData.GetPathTo($@"SlnSamples\SolutionFoldersAndProjects\{file}"), SlnItems.SolutionItems | SlnItems.Projects);
 
-                Assert.Equal("dir1", sln.Result.SolutionFolders.ElementAt(0).header.name);
-                Assert.Equal("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.SolutionFolders.ElementAt(0).header.pGuid);
+            Assert.Equal(4, sln.Result.SolutionFolders.Count());
+            Assert.Equal(5, sln.Result.ProjectItems.Count());
 
-                Assert.Equal("subdir1", sln.Result.SolutionFolders.ElementAt(1).header.name);
-                Assert.Equal("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.SolutionFolders.ElementAt(1).header.pGuid);
+            Assert.Equal("dir1", sln.Result.SolutionFolders.ElementAt(0).header.name);
+            Assert.Equal("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.SolutionFolders.ElementAt(0).header.pGuid);
 
-                Assert.Equal("dir3", sln.Result.SolutionFolders.ElementAt(2).header.name);
-                Assert.Equal("{49B0FC00-2D07-419C-86D4-FDEC8BF0F12C}", sln.Result.SolutionFolders.ElementAt(2).header.pGuid);
+            Assert.Equal("subdir1", sln.Result.SolutionFolders.ElementAt(1).header.name);
+            Assert.Equal("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.SolutionFolders.ElementAt(1).header.pGuid);
 
-                Assert.Equal("dir2", sln.Result.SolutionFolders.ElementAt(3).header.name);
-                Assert.Equal("{AB650B89-1B1B-43C6-B254-226B56ACB6EB}", sln.Result.SolutionFolders.ElementAt(3).header.pGuid);
-            }
+            Assert.Equal("dir3", sln.Result.SolutionFolders.ElementAt(2).header.name);
+            Assert.Equal("{49B0FC00-2D07-419C-86D4-FDEC8BF0F12C}", sln.Result.SolutionFolders.ElementAt(2).header.pGuid);
+
+            Assert.Equal("dir2", sln.Result.SolutionFolders.ElementAt(3).header.name);
+            Assert.Equal("{AB650B89-1B1B-43C6-B254-226B56ACB6EB}", sln.Result.SolutionFolders.ElementAt(3).header.pGuid);
         }
 
-        [Fact]
-        public void SolutionFoldersAndProjectsTest2()
+        [Theory]
+        [InlineData("tab.sln")]
+        [InlineData("spaces.sln")]
+        public void SolutionFoldersAndProjectsTest2(string file)
         {
-            using(var sln = new Sln(SlnItems.SolutionItems | SlnItems.Projects, SlnSamplesResource.SolutionFoldersAndProjects))
-            {
-                Assert.Equal(4, sln.Result.SolutionFolders.Count());
-                Assert.Equal(5, sln.Result.ProjectItems.Count());
+            using Sln sln = new(TestData.GetPathTo($@"SlnSamples\SolutionFoldersAndProjects\{file}"), SlnItems.SolutionItems | SlnItems.Projects);
 
-                Assert.Empty(sln.Result.SolutionFolders.ElementAt(0).items);
-                Assert.Equal(2, sln.Result.SolutionFolders.ElementAt(1).items.Count());
-                Assert.Single(sln.Result.SolutionFolders.ElementAt(2).items);
-                Assert.Empty(sln.Result.SolutionFolders.ElementAt(3).items);
+            Assert.Equal(4, sln.Result.SolutionFolders.Count());
+            Assert.Equal(5, sln.Result.ProjectItems.Count());
 
-                Assert.Equal(".gitignore", sln.Result.SolutionFolders.ElementAt(1).items.ElementAt(0).data);
-                Assert.Equal("Readme.txt", sln.Result.SolutionFolders.ElementAt(1).items.ElementAt(1).data);
+            Assert.Empty(sln.Result.SolutionFolders.ElementAt(0).items);
+            Assert.Equal(2, sln.Result.SolutionFolders.ElementAt(1).items.Count());
+            Assert.Single(sln.Result.SolutionFolders.ElementAt(2).items);
+            Assert.Empty(sln.Result.SolutionFolders.ElementAt(3).items);
 
-                Assert.Equal(".gitattributes", sln.Result.SolutionFolders.ElementAt(2).items.ElementAt(0).data);
-            }
+            Assert.Equal(".gitignore", sln.Result.SolutionFolders.ElementAt(1).items.ElementAt(0).data);
+            Assert.Equal("Readme.txt", sln.Result.SolutionFolders.ElementAt(1).items.ElementAt(1).data);
+
+            Assert.Equal(".gitattributes", sln.Result.SolutionFolders.ElementAt(2).items.ElementAt(0).data);
         }
 
-        [Fact]
-        public void SolutionFoldersAndProjectsTest3()
+        [Theory]
+        [InlineData("tab.sln")]
+        [InlineData("spaces.sln")]
+        public void SolutionFoldersAndProjectsTest3(string file)
         {
-            using(var sln = new Sln(SlnItems.SolutionItems | SlnItems.Projects, SlnSamplesResource.SolutionFoldersAndProjects))
-            {
-                Assert.Null(sln.Result.SolutionFolders.ElementAt(0).header.parent.Value);
+            using Sln sln = new(TestData.GetPathTo($@"SlnSamples\SolutionFoldersAndProjects\{file}"), SlnItems.SolutionItems | SlnItems.Projects);
 
-                Assert.NotNull(sln.Result.SolutionFolders.ElementAt(1).header.parent.Value);
-                Assert.Equal("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.SolutionFolders.ElementAt(1).header.parent.Value?.header.pGuid);
-                Assert.Equal("dir1", sln.Result.SolutionFolders.ElementAt(1).header.parent.Value?.header.name);
+            Assert.Null(sln.Result.SolutionFolders.ElementAt(0).header.parent.Value);
 
-                Assert.NotNull(sln.Result.SolutionFolders.ElementAt(2).header.parent.Value);
-                Assert.Equal("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.SolutionFolders.ElementAt(2).header.parent.Value?.header.pGuid);
-                Assert.Equal("subdir1", sln.Result.SolutionFolders.ElementAt(2).header.parent.Value?.header.name);
+            Assert.NotNull(sln.Result.SolutionFolders.ElementAt(1).header.parent.Value);
+            Assert.Equal("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.SolutionFolders.ElementAt(1).header.parent.Value?.header.pGuid);
+            Assert.Equal("dir1", sln.Result.SolutionFolders.ElementAt(1).header.parent.Value?.header.name);
 
-                Assert.Null(sln.Result.SolutionFolders.ElementAt(3).header.parent.Value);
-            }
+            Assert.NotNull(sln.Result.SolutionFolders.ElementAt(2).header.parent.Value);
+            Assert.Equal("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.SolutionFolders.ElementAt(2).header.parent.Value?.header.pGuid);
+            Assert.Equal("subdir1", sln.Result.SolutionFolders.ElementAt(2).header.parent.Value?.header.name);
+
+            Assert.Null(sln.Result.SolutionFolders.ElementAt(3).header.parent.Value);
         }
 
-        [Fact]
-        public void SolutionFoldersAndProjectsTest4()
+        [Theory]
+        [InlineData("tab.sln")]
+        [InlineData("spaces.sln")]
+        public void SolutionFoldersAndProjectsTest4(string file)
         {
-            using(var sln = new Sln(SlnItems.SolutionItems | SlnItems.Projects, SlnSamplesResource.SolutionFoldersAndProjects))
-            {
-                Assert.NotNull(sln.Result.ProjectItems.ElementAt(0).parent.Value);
-                Assert.Equal("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.ProjectItems.ElementAt(0).parent.Value?.header.pGuid);
-                Assert.Equal("dir1", sln.Result.ProjectItems.ElementAt(0).parent.Value?.header.name);
+            using Sln sln = new(TestData.GetPathTo($@"SlnSamples\SolutionFoldersAndProjects\{file}"), SlnItems.SolutionItems | SlnItems.Projects);
 
-                Assert.NotNull(sln.Result.ProjectItems.ElementAt(1).parent.Value);
-                Assert.Equal("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.ProjectItems.ElementAt(1).parent.Value?.header.pGuid);
-                Assert.Equal("subdir1", sln.Result.ProjectItems.ElementAt(1).parent.Value?.header.name);
+            Assert.NotNull(sln.Result.ProjectItems.ElementAt(0).parent.Value);
+            Assert.Equal("{1571A74C-579F-4C91-8484-322B7D89B430}", sln.Result.ProjectItems.ElementAt(0).parent.Value?.header.pGuid);
+            Assert.Equal("dir1", sln.Result.ProjectItems.ElementAt(0).parent.Value?.header.name);
 
-                Assert.Null(sln.Result.ProjectItems.ElementAt(2).parent.Value);
+            Assert.NotNull(sln.Result.ProjectItems.ElementAt(1).parent.Value);
+            Assert.Equal("{260202C1-F43A-43E9-A43B-E3E75406A985}", sln.Result.ProjectItems.ElementAt(1).parent.Value?.header.pGuid);
+            Assert.Equal("subdir1", sln.Result.ProjectItems.ElementAt(1).parent.Value?.header.name);
 
-                Assert.NotNull(sln.Result.ProjectItems.ElementAt(3).parent.Value);
-                Assert.Equal("{49B0FC00-2D07-419C-86D4-FDEC8BF0F12C}", sln.Result.ProjectItems.ElementAt(3).parent.Value?.header.pGuid);
-                Assert.Equal("dir3", sln.Result.ProjectItems.ElementAt(3).parent.Value?.header.name);
+            Assert.Null(sln.Result.ProjectItems.ElementAt(2).parent.Value);
 
-                Assert.NotNull(sln.Result.ProjectItems.ElementAt(4).parent.Value);
-                Assert.Equal("{AB650B89-1B1B-43C6-B254-226B56ACB6EB}", sln.Result.ProjectItems.ElementAt(4).parent.Value?.header.pGuid);
-                Assert.Equal("dir2", sln.Result.ProjectItems.ElementAt(4).parent.Value?.header.name);
-            }
+            Assert.NotNull(sln.Result.ProjectItems.ElementAt(3).parent.Value);
+            Assert.Equal("{49B0FC00-2D07-419C-86D4-FDEC8BF0F12C}", sln.Result.ProjectItems.ElementAt(3).parent.Value?.header.pGuid);
+            Assert.Equal("dir3", sln.Result.ProjectItems.ElementAt(3).parent.Value?.header.name);
+
+            Assert.NotNull(sln.Result.ProjectItems.ElementAt(4).parent.Value);
+            Assert.Equal("{AB650B89-1B1B-43C6-B254-226B56ACB6EB}", sln.Result.ProjectItems.ElementAt(4).parent.Value?.header.pGuid);
+            Assert.Equal("dir2", sln.Result.ProjectItems.ElementAt(4).parent.Value?.header.name);
         }
+#endif
 
         [Fact]
         public void EnvTest1()
@@ -424,6 +435,7 @@ namespace MvsSlnTest
             }
         }
 
+#if !NET40
         [Theory]
         [InlineData(SlnItems.All)]
         [InlineData(SlnItems.ProjectDependenciesXml)]
@@ -435,6 +447,7 @@ namespace MvsSlnTest
                 Assert.Null(sln.Result.ProjectDependencies);
             }
         }
+#endif
 
         [Fact]
         public void MapTest1()

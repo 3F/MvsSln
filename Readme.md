@@ -17,7 +17,7 @@ We're waiting for your awesome contributions!
 | Releases    | Windows | Linux
 |-------------|---------|--------
 | [📦 ![NuGet](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/) | [![status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master) | [![status](https://ci.appveyor.com/api/projects/status/vdt3taxswrxo37tt/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/branch/master) 
-| [![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests) 
+| [![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-2d2c2/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/build/tests) 
 
 </td><td>
 
@@ -380,20 +380,18 @@ public class WSolutionConfigurationPlatforms: WAbstract, IObjHandler
 
     public override string Extract(object data)
     {
-        var sb = new StringBuilder();
+        LineBuilder lb = new();
 
-        sb.AppendLine($"{SP}GlobalSection(SolutionConfigurationPlatforms) = preSolution");
+        lb.AppendLv1Line("GlobalSection(SolutionConfigurationPlatforms) = preSolution");
 
-        configs.ForEach(cfg => sb.AppendLine($"{SP}{SP}{cfg} = {cfg}"));
+        configs.ForEach(cfg => lb.AppendLv2Line($"{cfg} = {cfg}"));
 
-        sb.Append($"{SP}EndGlobalSection");
-
-        return sb.ToString();
+        return lb.AppendLv1("EndGlobalSection").ToString();
     }
 
     public WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
     {
-        this.configs = configs ?? throw new ArgumentNullException();
+        this.configs = configs ?? throw new ArgumentNullException(nameof(configs));
     }
 }
 ```

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace net.r_eg.MvsSln.Core {
+namespace net.r_eg.MvsSln {
     using System;
     
     
@@ -19,17 +19,17 @@ namespace net.r_eg.MvsSln.Core {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MsgResource {
+    internal class MsgR {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MsgResource() {
+        internal MsgR() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace net.r_eg.MvsSln.Core {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("net.r_eg.MvsSln.Core.MsgResource", typeof(MsgResource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("net.r_eg.MvsSln.MsgR", typeof(MsgR).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,6 +57,69 @@ namespace net.r_eg.MvsSln.Core {
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} has been ignored as {1}.
+        /// </summary>
+        internal static string _0_HasBeenIgnoredAs_1 {
+            get {
+                return ResourceManager.GetString("_0_HasBeenIgnoredAs_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} has incorrect line: {1}.
+        /// </summary>
+        internal static string _0_HasIncorrectLine_1 {
+            get {
+                return ResourceManager.GetString("_0_HasIncorrectLine_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is empty or null.
+        /// </summary>
+        internal static string _0_IsEmptyOrNull {
+            get {
+                return ResourceManager.GetString("_0_IsEmptyOrNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is required..
+        /// </summary>
+        internal static string _0_IsRequired {
+            get {
+                return ResourceManager.GetString("_0_IsRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only parent handler is allowed..
+        /// </summary>
+        internal static string OnlyParentHandlerAllowed {
+            get {
+                return ResourceManager.GetString("OnlyParentHandlerAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Define parent handler instead.
+        /// </summary>
+        internal static string ParentHandlerInstead {
+            get {
+                return ResourceManager.GetString("ParentHandlerInstead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value must be in range {0} - {1}.
+        /// </summary>
+        internal static string ValueMustBeInRange_0_1 {
+            get {
+                return ResourceManager.GetString("ValueMustBeInRange_0_1", resourceCulture);
             }
         }
         

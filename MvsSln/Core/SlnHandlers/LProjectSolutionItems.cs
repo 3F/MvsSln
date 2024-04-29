@@ -12,63 +12,50 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.MvsSln.Core.SlnHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class LProjectSolutionItems: LAbstract, ISlnHandler
     {
-        /// <summary>
-        /// Checks the readiness to process data.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <returns>True value if it's ready at current time.</returns>
         public override bool IsActivated(ISvc svc)
         {
-            return ((svc.Sln.ResultType & SlnItems.SolutionItems) == SlnItems.SolutionItems);
+            return (svc.Sln.ResultType & SlnItems.SolutionItems) == SlnItems.SolutionItems;
         }
 
-        /// <summary>
-        /// Condition for line to continue processing.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <returns>true value to continue.</returns>
         public override bool Condition(RawText line)
         {
-            return line.trimmed.StartsWith("Project(", StringComparison.Ordinal);
+            return line.trimmed.StartsWith(Project_, StringComparison.Ordinal);
         }
 
-        /// <summary>
-        /// New position in stream.
-        /// </summary>
-        /// <param name="svc"></param>
-        /// <param name="line">Received line.</param>
-        /// <returns>true if it was processed by current handler, otherwise it means ignoring.</returns>
         public override bool Positioned(ISvc svc, RawText line)
         {
-            var pItem = new ProjectItem(line.trimmed, svc.Sln.SolutionDir);
+            ProjectItem pItem = new(line.trimmed, svc.Sln.SolutionDir);
 
             if(pItem.pGuid == null 
-                || !String.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase))
+                || !string.Equals(Guids.SLN_FOLDER, pItem.pType, StringComparison.OrdinalIgnoreCase))
             {
                 return false;
             }
 
             LSender.Send(this, $"Found solution-folder: '{pItem.name}'", Message.Level.Info);
 
-            var folderItems = new List<RawText>();
-            while((line = svc.ReadLine(this)) != null && (line != "EndProject"))
+            List<RawText> folderItems = [];
+            while((line = svc.ReadLine(this)) != null && (line != EndProject))
             {
-                if(!line.trimmed.StartsWith("ProjectSection(SolutionItems) = preProject", StringComparison.Ordinal)) {
+                if(!line.trimmed.StartsWith(SolutionItemsPreProject, StringComparison.Ordinal)) {
                     continue;
                 }
 
                 for(line = svc.ReadLine(this); line != null; line = svc.ReadLine(this))
                 {
-                    if(line.trimmed.StartsWith("EndProjectSection", StringComparison.Ordinal)) {
+                    if(line.trimmed.StartsWith(EndProjectSection, StringComparison.Ordinal)) {
                         break;
                     }
 
                     var item = line.trimmed.Before('=');
                     if(item == null)
                     {
-                        LSender.Send(
+                        LSender.Send
+                        (
                             this, 
                             $"Ignored incorrect item for '{pItem.name}':{pItem.pGuid} - '{line}'", 
                             Message.Level.Warn
@@ -83,9 +70,7 @@ namespace net.r_eg.MvsSln.Core.SlnHandlers
                 }
             }
 
-            if(svc.Sln.SolutionFolderList == null) {
-                svc.Sln.SolutionFolderList = new List<SolutionFolder>();
-            }
+            if(svc.Sln.SolutionFolderList == null) svc.Sln.SolutionFolderList = [];
 
             svc.Sln.SolutionFolderList.Add(new SolutionFolder(pItem, folderItems));
             return true;

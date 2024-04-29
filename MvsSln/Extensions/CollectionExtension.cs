@@ -7,17 +7,47 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using net.r_eg.MvsSln.Core.ObjHandlers;
 
 namespace net.r_eg.MvsSln.Extensions
 {
     public static class CollectionExtension
     {
+#if !NET40
+
+        /// <inheritdoc cref="ForEach{T}(IEnumerable{T}, Func{T, long, Task}) "/>
+        public static async Task<IEnumerable<T>> ForEach<T>(this IEnumerable<T> items, Func<T, Task> act)
+        {
+            return await (items?.ForEach((x, i) => act(x)) ?? Task.FromResult(items));
+        }
+
         /// <summary>
-        /// Foreach in Linq manner.
+        /// Awaitable Foreach in Linq manner.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="items"></param>
-        /// <param name="act">The action that should be executed for each item.</param>
+        /// <param name="items">Input elements for iteration through it.</param>
+        /// <param name="act">Async action that should be executed for each item.</param>
+        /// <returns>
+        /// Returns the original input value to continue the chain.
+        /// <br/>
+        /// Null is possible because this method can also extend T[] arrays.
+        /// </returns>
+        public static async Task<IEnumerable<T>> ForEach<T>(this IEnumerable<T> items, Func<T, long, Task> act)
+        {
+            if(items == null) return await Task.FromResult(items);
+
+            long n = 0;
+            foreach(T item in items)
+            {
+                await act(item, n++);
+            }
+            return items;
+        }
+
+#endif
+
+        /// <inheritdoc cref="ForEach{T}(IEnumerable{T}, Action{T, long})"/>
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> items, Action<T> act)
         {
             return items?.ForEach((x, i) => act(x));
@@ -27,19 +57,34 @@ namespace net.r_eg.MvsSln.Extensions
         /// Foreach in Linq manner.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="items"></param>
+        /// <param name="items">Input elements for iteration through it</param>
         /// <param name="act">The action that should be executed for each item.</param>
+        /// <returns>
+        /// Returns the original input value to continue the chain.
+        /// <br/>
+        /// Null is possible because this method can also extend T[] arrays. 
+        /// </returns>
         public static IEnumerable<T> ForEach<T>(this IEnumerable<T> items, Action<T, long> act)
         {
-            if(items == null) {
-                return null;
-            }
+            if(items == null) return items;
 
             long n = 0;
-            foreach(var item in items) {
+            foreach(T item in items)
+            {
                 act(item, n++);
             }
             return items;
+        }
+
+        public static bool EqualsE<T>(this IEnumerable<T> a, IEnumerable<T> b)
+        {
+            using IEnumerator<T> ea = a.GetEnumerator();
+            using IEnumerator<T> eb = b.GetEnumerator();
+            while(ea.MoveNext())
+            {
+                if(!eb.MoveNext() || !eb.Current.Equals(ea.Current)) return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -98,6 +143,15 @@ namespace net.r_eg.MvsSln.Extensions
                 }
             }
             return false;
+        }
+
+        public static IDictionary<Type, HandlerValue> UpdateNewLine(this IDictionary<Type, HandlerValue> handlers, string newline)
+        {
+            handlers?.ForEach(h =>
+            {
+                if(h.Value.handler != null) h.Value.handler.NewLine = newline;
+            });
+            return handlers;
         }
     }
 }

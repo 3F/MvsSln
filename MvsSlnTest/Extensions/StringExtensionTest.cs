@@ -5,6 +5,8 @@ using Xunit;
 
 namespace MvsSlnTest.Extensions
 {
+    using _svc.Static;
+
     public class StringExtensionTest
     {
         [Fact]
@@ -42,10 +44,10 @@ namespace MvsSlnTest.Extensions
         [Fact]
         public void DirectoryPathFormatTest1()
         {
-            string dir1 = @"D:\path\to\dir1";
+            string dir1 = @"D:\path\to\dir1".AdaptWinPath();
             Assert.Equal($"{dir1}{Path.DirectorySeparatorChar}", dir1.DirectoryPathFormat());
 
-            string dir2 = @"D:\path\to\dir2\";
+            string dir2 = @"D:\path\to\dir2\".AdaptWinPath();
             Assert.Equal(dir2, dir2.DirectoryPathFormat());
 
             string dir3 = null;
@@ -68,9 +70,19 @@ namespace MvsSlnTest.Extensions
         }
 
         [Fact]
+        public void IsDirectoryPathTest2()
+        {
+            Assert.True("path/to/dir2/".IsDirectoryPath());
+            Assert.True("/".IsDirectoryPath());
+            Assert.True(@"\".IsDirectoryPath());
+            Assert.True(@"..\".IsDirectoryPath());
+            Assert.True(@".\".IsDirectoryPath());
+        }
+
+        [Fact]
         public void MakeRelativePathTest1()
         {
-            string dir0 = @"D:\path\to\dir0";
+            string dir0 = @"D:\path\to\dir0".AdaptWinPath();
 
             string dir1 = null;
             Assert.Null(dir1.MakeRelativePath(dir0));
@@ -88,14 +100,16 @@ namespace MvsSlnTest.Extensions
         [Fact]
         public void MakeRelativePathTest2()
         {
-            Assert.Equal(@"bin\Release\file", @"D:\path\to\dir1".MakeRelativePath(@"D:\path\to\dir1\bin\Release\file"));
+            string dir1 = @"D:\path\to\dir1".AdaptWinPath();
 
-            Assert.Equal(@"..\bin\Release\file", @"D:\path\to\dir1".MakeRelativePath(@"D:\path\to\bin\Release\file"));
-            Assert.Equal(@"..\dir2\bin\Release\file", @"D:\path\to\dir1".MakeRelativePath(@"D:\path\to\dir2\bin\Release\file"));
+            Assert.Equal(@"bin\Release\file".AdaptPath(), dir1.MakeRelativePath(@"D:\path\to\dir1\bin\Release\file".AdaptWinPath()));
 
-            Assert.Equal(@"bin\Release\file", @"D:\path\to\dir1".MakeRelativePath(@"bin\Release\file"));
+            Assert.Equal(@"..\bin\Release\file".AdaptPath(), dir1.MakeRelativePath(@"D:\path\to\bin\Release\file".AdaptWinPath()));
+            Assert.Equal(@"..\dir2\bin\Release\file".AdaptPath(), dir1.MakeRelativePath(@"D:\path\to\dir2\bin\Release\file".AdaptWinPath()));
 
-            Assert.Null(@"path\to\dir1".MakeRelativePath(@"D:\path\to\dir1\bin\Release\file"));
+            Assert.Equal(@"bin\Release\file".AdaptPath(), dir1.MakeRelativePath(@"bin\Release\file"));
+
+            Assert.Null(@"path\to\dir1".AdaptPath().MakeRelativePath(@"D:\path\to\dir1\bin\Release\file".AdaptWinPath()));
         }
 
         [Fact]
@@ -171,5 +185,66 @@ namespace MvsSlnTest.Extensions
             Assert.NotNull(" ".NullIfEmpty());
             Assert.Null(((string)null).NullIfEmpty());
         }
+
+#if !NET40
+        [Theory]
+        [InlineData(@"aaa\bbbb\ TestProject 1\src.csproj", " TestProject 1")]
+        [InlineData(@" TestProject 1\src.csproj", " TestProject 1")]
+        [InlineData(@"\ src.csproj", " src")]
+        [InlineData(@"\src.csproj", "src")]
+        [InlineData(@"\\src.csproj", "src")]
+        [InlineData(@"\\ src.csproj", " src")]
+        [InlineData(@"src.csproj", "src")]
+        [InlineData(@" src.csproj", " src")]
+        [InlineData(@"/src.csproj", "src")]
+        [InlineData(@"/ src.csproj", " src")]
+        [InlineData(@"dir1/src.csproj", "dir1")]
+        [InlineData(@"/dir1/src.csproj", "dir1")]
+        [InlineData(@"\dir1\\src.csproj", "dir1")]
+        [InlineData(@"\\dir1\\src.csproj", "dir1")]
+        [InlineData(@"\ src", " src")]
+        [InlineData(@"\src", "src")]
+        [InlineData(@"\\src", "src")]
+        [InlineData(@"\\ src", " src")]
+        [InlineData(@"src", "src")]
+        [InlineData(@" src", " src")]
+        [InlineData(@"/src", "src")]
+        [InlineData(@"/ src", " src")]
+        [InlineData(@"aaa\bbbb\ TestProject 1\\src.csproj", " TestProject 1")]
+        [InlineData(@"aaa\bbbb\ TestProject 1\\src", " TestProject 1")]
+        [InlineData(@"", "")]
+        [InlineData(@" ", " ")]
+        [InlineData(null, null)]
+        public void GetDirNameOrFileNameTest1(string input, string name)
+        {
+            Assert.Equal(name, input.GetDirNameOrFileName());
+            Assert.Equal(name, input.GetDirNameOrFileName(trim: false));
+            if(name != null)
+            {
+                Assert.Equal(name.Trim(), input.GetDirNameOrFileName(trim: true));
+            }
+        }
+#else
+        [Fact]
+        public void GetDirNameOrFileNameTest1()
+        {
+            Assert.Equal("TestProject 1", @"aaa\bbbb\TestProject 1\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("TestProject 1", @"TestProject 1\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"\\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"\src".GetDirNameOrFileName());
+            Assert.Equal("src", @"\\src".GetDirNameOrFileName());
+            Assert.Equal("src", @"src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"/src.csproj".GetDirNameOrFileName());
+            Assert.Equal("src", @"src".GetDirNameOrFileName());
+            Assert.Equal("src", @"/src".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"dir1/src.csproj".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"/dir1/src.csproj".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"\dir1\\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"\dir1\\src".GetDirNameOrFileName());
+            Assert.Equal("dir1", @"\\dir1\\src.csproj".GetDirNameOrFileName());
+            Assert.Equal("TestProject 1", @"aaa\bbbb\TestProject 1\\src.csproj".GetDirNameOrFileName());
+        }
+#endif
     }
 }

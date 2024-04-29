@@ -5,51 +5,44 @@
  * See accompanying License.txt file or visit https://github.com/3F/MvsSln
 */
 
-using System;
-using System.Text;
-
 namespace net.r_eg.MvsSln.Core.ObjHandlers
 {
+    using static net.r_eg.MvsSln.Core.Keywords;
+
     public class WVisualStudioVersion: WAbstract, IObjHandler
     {
-        /// <summary>
-        /// Header information.
-        /// </summary>
         protected SlnHeader header;
 
-        /// <summary>
-        /// To extract prepared raw-data.
-        /// </summary>
-        /// <param name="data">Any object data which is ready for this IObjHandler.</param>
-        /// <returns>Final part of sln data.</returns>
         public override string Extract(object data)
         {
-            var sb = new StringBuilder();
+            if(header == null) return null;
 
-            string fmt = String.Format("{0}.{1:00}", header.FormatVersion.Major, header.FormatVersion.Minor);
-            sb.AppendLine($"Microsoft Visual Studio Solution File, Format Version {fmt}");
+            lbuilder.Clear();
+            lbuilder.AppendLine($"Microsoft Visual Studio Solution File, Format Version {header.FormatVersionMajorMinor}");
 
-            if(header.ProgramVersion != null) {
-                sb.AppendLine($"# Visual Studio {header.ProgramVersion}");
+            if(header.ProgramVersion != null)
+            {
+                lbuilder.AppendLine($"# Visual Studio {header.ProgramVersion}");
             }
 
-            if(header.VisualStudioVersion != null) {
-                sb.AppendLine($"VisualStudioVersion = {header.VisualStudioVersion.ToString()}");
+            if(header.VisualStudioVersion != null)
+            {
+                lbuilder.AppendLine($"{VisualStudioVersion} = {header.VisualStudioVersion}");
             }
 
-            if(header.MinimumVisualStudioVersion != null) {
-                sb.AppendLine($"MinimumVisualStudioVersion = {header.MinimumVisualStudioVersion.ToString()}");
+            if(header.MinimumVisualStudioVersion != null)
+            {
+                lbuilder.AppendLine($"{MinimumVisualStudioVersion} = {header.MinimumVisualStudioVersion}");
             }
 
-            return sb.ToString(0, sb.Length - Environment.NewLine.Length);
+            return lbuilder.ToString(noLastNewLine: true);
         }
 
         public WVisualStudioVersion(SlnHeader header)
         {
-            if(header.FormatVersion == null) {
-                throw new ArgumentNullException("Format Version is required.");
-            }
             this.header = header;
         }
+
+        public WVisualStudioVersion() { }
     }
 }

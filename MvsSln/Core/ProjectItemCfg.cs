@@ -13,28 +13,15 @@ namespace net.r_eg.MvsSln.Core
     /// Aggregates links to ProjectItem and its configurations.
     /// </summary>
     [DebuggerDisplay("{DbgDisplay}")]
-    public struct ProjectItemCfg
+    public readonly struct ProjectItemCfg(ProjectItem item, IConfPlatform sln, IConfPlatformPrj prj)
     {
-        public ProjectItem project;
+        public readonly ProjectItem project = item;
 
-        public IConfPlatform solutionConfig;
+        public readonly IConfPlatform solutionConfig = sln;
 
-        public IConfPlatformPrj projectConfig;
+        public readonly IConfPlatformPrj projectConfig = prj;
 
-        public ProjectItemCfg(ProjectItem item, IConfPlatform sln, IConfPlatformPrj prj)
-        {
-            project         = item;
-            solutionConfig  = sln;
-            projectConfig   = prj;
-        }
-        
-        #region DebuggerDisplay
-
-        private string DbgDisplay
-        {
-            get => $"{project.name} ({projectConfig}) [{project.pGuid}]";
-        }
-
-        #endregion
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private string DbgDisplay => $"{project.name} ({projectConfig}) [{project.pGuid}]";
     }
 }
