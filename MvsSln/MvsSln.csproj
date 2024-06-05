@@ -44,7 +44,7 @@
     <PackageProjectUrl>https://github.com/3F/MvsSln</PackageProjectUrl>
     <RepositoryUrl>https://github.com/3F/MvsSln</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <!-- <PackageReadmeFile>Readme.md</PackageReadmeFile> -->
     <PackageTags>sln visualstudio parser sln-parser projects sln-files csproj vcxproj visual-studio VS2022 VS2019 VS2017 VS2015 VS2013 VS2012 VS2010 msbuild GetNuTool hMSBuild MvsSln</PackageTags>
     <PackageReleaseNotes> changelog: https://github.com/3F/MvsSln/blob/master/changelog.txt </PackageReleaseNotes>
     <Authors>github.com/3F/MvsSln</Authors>

@@ -1,6 +1,6 @@
 [![](https://raw.githubusercontent.com/3F/MvsSln/master/MvsSln/Resources/MvsSln_v1_96px.png)](https://github.com/3F/MvsSln) [**MvsSln**](https://github.com/3F/MvsSln)
 
-Customizable VisualStudio .sln parser with project support (.vcxproj, .csproj., …). Pluggable lightweight r/w handlers at runtime, and more … 🧩
+Customizable VisualStudio .sln parser with project support (.vcxproj, .csproj., …). Pluggable lightweight r/w handlers at runtime, and more …
 
 ```r
 Copyright (c) 2013-2024  Denis Kuzmin <x-3F@outlook.com> github/3F
@@ -8,15 +8,13 @@ Copyright (c) 2013-2024  Denis Kuzmin <x-3F@outlook.com> github/3F
 
 [ 「 ❤ 」 ](https://3F.github.io/fund) [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/MvsSln/blob/master/License.txt)
 
-MvsSln contributors https://github.com/3F/MvsSln/graphs/contributors
-
-[*MvsSln*](https://github.com/3F/MvsSln) is waiting for your awesome contributions!
+[*MvsSln*](https://github.com/3F/MvsSln) is waiting for your awesome contributions! https://github.com/3F/MvsSln/graphs/contributors
 
 <table><tr><td>
 
-| Releases    | Windows | Linux
+| Download    | Windows | Linux
 |-------------|---------|--------
-| [📦 ![NuGet](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/) | [![status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master) | [![status](https://ci.appveyor.com/api/projects/status/vdt3taxswrxo37tt/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/branch/master) 
+| [![NuGet](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/) <br/> [`gnt MvsSln`](https://github.com/3F/GetNuTool#getnutool) | [![status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master) | [![status](https://ci.appveyor.com/api/projects/status/vdt3taxswrxo37tt/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/branch/master) 
 | [![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-2d2c2/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/build/tests) 
 
 </td><td>
@@ -131,7 +129,7 @@ IPackageInfo found = l.Result.PackagesConfigs
 Version v = l.Result.PackagesConfigs.First().GetPackage("LX4Cnh")?.VersionParsed;
 ```
 
-Easily create files [from scratch](https://github.com/3F/MvsSln/issues/61#issuecomment-2079155362),
+Easily create files [from scratch](https://github.com/3F/MvsSln/wiki/Creating-from-scratch),
 
 ```csharp
 // 2.7+
@@ -238,7 +236,7 @@ Since Microsoft officially distributes [5,000 high quality free icons and bitmap
 
 You can also use related project icons together with MvsSln like it was already for .NET DllExport project:
 
-![](./resources/DllExport_1.7.png)
+![](https://github.com/3F/MvsSln/blob/master/resources/DllExport_1.7.png?raw=true)
 
 Follow License Terms for icons and Find implementation in original repo: [https://github.com/3F/DllExport](https://github.com/3F/DllExport)
 
@@ -256,49 +254,32 @@ DllExport project finally changed distribution of the packages starting with v1.
 
 MvsSln also is **a core logic** in *Post-Processing* feature [[?]](https://github.com/3F/DllExport/pull/148)
 
-![](resources/MvsSln_and_DllExport_PostProc.png)
+![](https://github.com/3F/MvsSln/blob/master/resources/MvsSln_and_DllExport_PostProc.png?raw=true)
 
 ### vsSolutionBuildEvent
 
 vsSolutionBuildEvent now is completely integrated with MvsSln [[?](https://github.com/3F/vsSolutionBuildEvent/pull/53)]
 
-Fully removed original parser and replaced related processing from Environment/IsolatedEnv/MSBuild/CIM. Now it just contains lightweight invoking of relevant methods.
+Fully removed original parser and replaced related processing from Environment/IsolatedEnv/MSBuild/CIM. Now it just calls the corresponding modern methods from MvsSln.
 
 https://github.com/3F/vsSolutionBuildEvent
 
-![](resources/vsSBE_and_MvsSln.png)
+![](https://github.com/3F/MvsSln/blob/master/resources/vsSBE_and_MvsSln.png?raw=true)
 
-![](resources/vsSBE_and_MvsSln_VS.png)
+![](https://github.com/3F/MvsSln/blob/master/resources/vsSBE_and_MvsSln_VS.png?raw=true)
 
 
-## Map of .sln & Writers
+## Map & handlers
 
-v2+ now also may provide map of analyzed data. To enable this, define a bit **0x0080** for type of operations to parser.
+2.0+ can optionally provide a [map of the analyzed data](https://github.com/3F/MvsSln/wiki/SlnWriter#about-skeleton-and-map). To enable this, define a [0x0080 bit](https://github.com/3F/MvsSln/blob/a00e3b341bbddc559a5af618e4a6e520b7bbb2d6/MvsSln/SlnItems.cs#L92).
 
-Parser will expose map through list of `ISection` for each line. For example:
+MvsSln's parser will fill the map using handlers that processed line and/or raw access through wrapper, like:
 
-![](https://raw.githubusercontent.com/3F/MvsSln/master/resources/MvsSln_v2.0_Map.png)
+[![](https://raw.githubusercontent.com/3F/MvsSln/master/resources/MvsSln_v2.0_Map.png)](https://github.com/3F/MvsSln/wiki/SlnWriter#about-skeleton-and-map)
 
-* Each section contains handler which processes this line + simple access via RawText if not.
-* All this may be overloaded by any custom handlers (readers - `ISlnHandler`) if it's required by your environment.
+The map may be used for any modifications or creating a new solution or project files through other handlers etc. 
 
-This map may be used for modification / define new .sln data through writers (`IObjHandler`). For example:
-
-```csharp
-var data = new List<IConfPlatform>() {
-    new ConfigSln("Debug", "Any CPU"),
-    new ConfigSln("Release_net45", "x64"),
-    new ConfigSln("Release", "Any CPU"),
-};
-
-var whandlers = new Dictionary<Type, HandlerValue>() {
-    [typeof(LSolutionConfigurationPlatforms)] = new HandlerValue(new WSolutionConfigurationPlatforms(data)),
-};
-
-using(var w = new SlnWriter("<path_to>.sln", whandlers)) {
-    w.Write(map);
-}
-```
+Read more about map, skeleton, and *SlnWriter* [**here**](https://github.com/3F/MvsSln/wiki/SlnWriter)
 
 ## Projects. Adding References
 
@@ -391,12 +372,6 @@ public class WSolutionConfigurationPlatforms(IEnumerable<IConfPlatform> configs)
 }
 ```
 
-## Download MvsSln
-
-NuGet | [GetNuTool](https://github.com/3F/GetNuTool)
-------|---------------------------------------------
-[![package](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/) | [`gnt MvsSln`](https://3F.github.io/GetNuTool/releases/latest/gnt/)
-
 ## Build MvsSln from source
 
 ```bat
@@ -407,15 +382,15 @@ cd MvsSln
 ### Windows. Visual Studio / MSBuild
 
 ```bat
-build Release
+.\build Release
 ```
 or together with configured [netfx4sdk](https://github.com/3F/netfx4sdk)
 
 ```bat
-build-CI Release
+.\build-CI Release
 ```
 
-### Ubuntu 20.04
+### Ubuntu. vscode / dotnet
 
 ```sh
 dotnet build -c Release
