@@ -189,10 +189,10 @@ namespace net.r_eg.MvsSln.Projects
         #pragma warning disable IDE1006
 
         [Obsolete("Renamed as " + nameof(unevaluated))]
-        public readonly string unevaluatedValue => unevaluated;
+        public readonly string unevaluatedInclude => unevaluated;
 
         [Obsolete("Renamed as " + nameof(evaluated))]
-        public readonly string evaluatedValue => evaluated;
+        public readonly string evaluatedInclude => evaluated;
 
         #pragma warning restore IDE1006
         #endregion
