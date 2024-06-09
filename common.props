@@ -58,7 +58,14 @@
     <DefineConstants Condition="'$(IsNetCoreFamilyTarget)' == 'true'">NETCORE;$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' == 'netstandard2.0'">NETSTD20;NETSTD;$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' == 'net40'">NET40;$(DefineConstants)</DefineConstants>
-  </PropertyGroup>  
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants Condition="'$(MvsSlnFeatureGuidSha1)' == 'true'">FEATURE_GUID_SHA1;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(MvsSlnFeatureHuid)' == 'true'">FEATURE_HUID;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(MvsSlnFeatureExactRopOrderCmp)' == 'true'">FEATURE_EXACT_ROP_ORDER_CMP;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(MvsSlnFeatureCohExt)' == 'true'">FEATURE_COH_EXT;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
 
   <ItemGroup Condition="'$(IsNetCoreFamilyTarget)' != 'true'">
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +74,10 @@
 
   <ItemGroup Condition="'$(IsNetCoreFamilyTarget)' == 'true'">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(MvsSlnFeatureHuid)' == 'true'">
+    <PackageReference Include="Huid" Version="1.0.0" />
   </ItemGroup>
 
   <PropertyGroup>

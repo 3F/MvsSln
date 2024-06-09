@@ -8,8 +8,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
+using net.r_eg.MvsSln.Core;
+
+#if FEATURE_HUID
+using net.r_eg.hashing;
+#else
+using System.Security.Cryptography;
+#endif
 
 namespace net.r_eg.MvsSln.Extensions
 {
@@ -18,23 +24,75 @@ namespace net.r_eg.MvsSln.Extensions
     public static class StringExtension
     {
         /// <summary>
-        /// Gets Guid from hash by any string.
+        /// Get <see cref="System.Guid"/> for input string using specified hashing algorithm*
         /// </summary>
-        /// <param name="str">String for calculating.</param>
-        /// <returns></returns>
+        /// <remarks>
+        /// *Huid (Fnv-1a-128 (via LX4Cnh)), SHA-1, or MD5; depending on compilation options.
+        /// 
+        /// <br/><br/>
+        /// Note: Huid and SHA-1 hashing works in <see cref="Guids.domainMvsSln"/> (the base),
+        /// while implementation on MD5 uses initial vector.
+        /// 
+        /// <br/><br/>
+        /// https://github.com/3F/MvsSln/issues/51
+        /// </remarks>
+        /// <param name="str">Any string data to generate <see cref="System.Guid"/></param>
+        /// <returns>Either parsed GUID from string or new generated using specified hashing algorithm*</returns>
         public static Guid Guid(this string str)
         {
-            if(System.Guid.TryParse(str, out Guid res)) {
-                return res;
-            }
+            if(System.Guid.TryParse(str, out Guid res)) return res;
 
-            if(str == null) {
-                str = String.Empty;
-            }
+            str ??= string.Empty;
 
-            using(MD5 md5 = MD5.Create()) {
-                return new Guid(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
-            }
+            // Note about FIPS https://github.com/3F/DllExport/issues/171#issuecomment-752043556
+
+#if FEATURE_HUID
+
+            return Huid.NewGuid(Guids.domainMvsSln, str);
+
+#elif FEATURE_GUID_SHA1
+
+            const int _FMT = 16; // The UUID format is 16 octets
+
+            byte[] bytes = Encoding.UTF8.GetBytes(str);
+
+            using HashAlgorithm alg = SHA1.Create();
+
+            alg.TransformBlock(Guids.domainMvsSln.ToByteArray(), 0, _FMT, null, 0);
+            alg.TransformFinalBlock(bytes, 0, bytes.Length);
+
+            byte[] ret = new byte[_FMT];
+            Array.Copy(alg.Hash, 0, ret, 0, _FMT);
+
+            // 6-7 octets, the high field of the timestamp multiplexed with the version number;
+            // *local byte order
+            ret[7] &= 0x0F;
+            ret[7] |= 5 << 4;
+            /* rfc4122, UUID version ------v
+                0     1     0     1        5     The name-based version specified in this document
+                                                 that uses SHA-1 hashing.
+            */
+
+            // 8 octet, the high field of the clock sequence multiplexed with the variant;
+            // *reserved
+            ret[8] &= 0x3F;
+            ret[8] |= 0x80;
+
+            return new Guid(ret);
+
+#else
+            byte[] bytes = Encoding.UTF8.GetBytes(str);
+
+            //Note: legacy version does not use Guids.domainMvsSln
+
+    #if NET5_0_OR_GREATER
+            return new Guid(MD5.HashData(bytes));
+    #else
+            using MD5 alg = MD5.Create();
+            return new Guid(alg.ComputeHash(bytes));
+    #endif
+
+#endif
         }
 
         /// <summary>

@@ -14,10 +14,25 @@ namespace MvsSlnTest.Extensions
         {
             string data = " MvsSln_-_v1 ";
 
+#if FEATURE_HUID
+
+            Assert.Equal(new Guid("{cbdd6048-feda-8dac-9dc4-c6c857c4abb7}"), data.Guid());
+            Assert.Equal(new Guid("{e0b7c8ae-3333-8623-aeb8-7decf99dd400}"), "".Guid());
+            Assert.Equal(new Guid("{7635fb3f-6ae4-8d6e-becf-2165e03ae3e9}"), "  ".Guid());
+            Assert.Equal(new Guid("{e0b7c8ae-3333-8623-aeb8-7decf99dd400}"), ((string)null).Guid());
+
+#elif FEATURE_GUID_SHA1
+
+            Assert.Equal(new Guid("{8f78ea2d-50d2-5371-b55d-c09993af4ba8}"), data.Guid());
+            Assert.Equal(new Guid("{67edabcd-520c-5836-b363-f5b468c6f198}"), "".Guid());
+            Assert.Equal(new Guid("{e1fcb595-ffed-5081-92f1-64fee31bbaa5}"), "  ".Guid());
+            Assert.Equal(new Guid("{67edabcd-520c-5836-b363-f5b468c6f198}"), ((string)null).Guid());
+#else
             Assert.Equal(new Guid("{ee265a58-1e72-6c44-60aa-134eaf5c6f9c}"), data.Guid());
             Assert.Equal(new Guid("{d98c1dd4-008f-04b2-e980-0998ecf8427e}"), "".Guid());
             Assert.Equal(new Guid("{ef8db523-b411-2757-d335-1702515f86af}"), "  ".Guid());
             Assert.Equal(new Guid("{d98c1dd4-008f-04b2-e980-0998ecf8427e}"), ((string)null).Guid());
+#endif
         }
 
         [Fact]
@@ -33,10 +48,24 @@ namespace MvsSlnTest.Extensions
         [Fact]
         public void ReformatSlnGuidTest1()
         {
+#if FEATURE_HUID
+
+            Assert.Equal("{E0B7C8AE-3333-8623-AEB8-7DECF99DD400}", "".ReformatSlnGuid());
+            Assert.Equal("{E0B7C8AE-3333-8623-AEB8-7DECF99DD400}", " ".ReformatSlnGuid());
+            Assert.Equal("{9939088C-7F2F-8FEE-B5F3-7DEF927816C5}", "invalid".ReformatSlnGuid());
+
+#elif FEATURE_GUID_SHA1
+
+            Assert.Equal("{67EDABCD-520C-5836-B363-F5B468C6F198}", "".ReformatSlnGuid());
+            Assert.Equal("{67EDABCD-520C-5836-B363-F5B468C6F198}", " ".ReformatSlnGuid());
+            Assert.Equal("{EB71634D-4275-5E2E-9AA2-15419F819ACC}", "invalid".ReformatSlnGuid());
+#else
             Assert.Equal("{D98C1DD4-008F-04B2-E980-0998ECF8427E}", "".ReformatSlnGuid());
             Assert.Equal("{D98C1DD4-008F-04B2-E980-0998ECF8427E}", " ".ReformatSlnGuid());
-            Assert.Null(((string)null).ReformatSlnGuid());
             Assert.Equal("{842DDBFE-FECA-8620-2CB4-399751A8A7E3}", "invalid".ReformatSlnGuid());
+#endif
+            Assert.Null(((string)null).ReformatSlnGuid());
+
             Assert.Equal("{DCE5BB88-7640-4CFB-861D-6CBAA1F6EF0E}", "dce5bb88-7640-4cfb-861d-6cbaa1f6ef0e".ReformatSlnGuid());
             Assert.Equal("{D98C1DD4-008F-04B2-E980-0998ECF8427E}", "{d98c1dd4-008f-04b2-e980-0998ecf8427e}".ReformatSlnGuid());
         }
