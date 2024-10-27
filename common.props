@@ -13,6 +13,7 @@
 
     <LangVersion>latest</LangVersion>
     <TargetLatestRuntimePatch Condition="'$(TargetLatestRuntimePatch)'==''">true</TargetLatestRuntimePatch>
+    <MvsSlnGeneratePackageOnBuild Condition="'$(MvsSlnGeneratePackageOnBuild)'==''">true</MvsSlnGeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Label="Supported TFMs">
@@ -43,10 +44,11 @@
 
   <PropertyGroup>
     <OutPrjDir>$(RootOutDir)$(MSBuildProjectName)\$(Configuration)\$(TargetFramework)\</OutPrjDir>
-    <IntermediateOutputPath>..\$(RootObjDir)$(MSBuildProjectName)\$(Configuration)\</IntermediateOutputPath>
+    <ObjPrjDir>$(RootObjDir)$(MSBuildProjectName)\$(Configuration)\$(TargetFramework)\</ObjPrjDir>
 
-    <OutputPath>..\$(OutPrjDir)\</OutputPath>
     <OutDir>$([MSBuild]::Escape($([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(SolutionDir)`, `$(OutPrjDir)`))`))))</OutDir>
+    <OutputPath>$(OutDir)</OutputPath>
+    <IntermediateOutputPath>$([MSBuild]::Escape($([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(SolutionDir)`, `$(ObjPrjDir)`))`))))</IntermediateOutputPath>
   </PropertyGroup>
 
   <PropertyGroup>

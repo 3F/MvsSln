@@ -10,18 +10,10 @@ Copyright (c) 2013-2024  Denis Kuzmin <x-3F@outlook.com> github/3F
 
 [*MvsSln*](https://github.com/3F/MvsSln) is waiting for your awesome contributions! https://github.com/3F/MvsSln/graphs/contributors
 
-<table><tr><td>
-
 | Download    | Windows | Linux
 |-------------|---------|--------
-| [![NuGet](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/) <br/> [`gnt MvsSln`](https://github.com/3F/GetNuTool#getnutool) | [![status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master) | [![status](https://ci.appveyor.com/api/projects/status/vdt3taxswrxo37tt/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/branch/master) 
-| [![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-2d2c2/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/build/tests) 
-
-</td><td>
-
-[![Build history](https://buildstats.info/appveyor/chart/3Fs/mvssln-fxjnf?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/history)
-
-</td></tr></table>
+| [![NuGet](https://img.shields.io/nuget/v/MvsSln.svg)](https://www.nuget.org/packages/MvsSln/) <br/> [`gnt MvsSln`](https://github.com/3F/GetNuTool#getnutool) | [![status](https://ci.appveyor.com/api/projects/status/6uunsds889rhkpo2/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/branch/master) | [![status](https://ci.appveyor.com/api/projects/status/vdt3taxswrxo37tt/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/branch/master)
+| [![release](https://img.shields.io/github/release/3F/MvsSln.svg)](https://github.com/3F/MvsSln/releases/latest) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-fxjnf/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-fxjnf/build/tests) | [![Tests](https://img.shields.io/appveyor/tests/3Fs/mvssln-2d2c2/master.svg)](https://ci.appveyor.com/project/3Fs/mvssln-2d2c2/build/tests)
 
 ## Why MvsSln
 

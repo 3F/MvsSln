@@ -13,7 +13,7 @@
     <AssemblyName>MvsSln</AssemblyName>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\com.github.3F.snk</AssemblyOriginatorKeyFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>$(MvsSlnGeneratePackageOnBuild)</GeneratePackageOnBuild>
     <Copyright>Copyright (c) 2013-2024  Denis Kuzmin &lt;x-3F@outlook.com&gt; github/3F</Copyright>
     <Title>[ MvsSln ] Customizable VisualStudio .sln parser, projects, r/w handlers at runtime</Title>
     <PackageIcon>MvsSln_v1_96px.png</PackageIcon>
