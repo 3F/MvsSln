@@ -39,5 +39,8 @@ namespace net.r_eg.MvsSln.Projects
         /// Treat the directory path as the path to storage data.
         /// </summary>
         PathToStorage = 0x08,
+
+        /// <inheritdoc cref="IPackagesConfig.AutoCommit"/>
+        AutoCommit = 0x10,
     }
 }

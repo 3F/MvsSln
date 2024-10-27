@@ -298,13 +298,28 @@ namespace MvsSlnTest.Projects
             Assert.Empty(pkg.Packages);
         }
 
+#if NET40
         [Fact]
-        public void ModifyItemsTest3()
+        public void ModifyItemsTest3AutoCommit() => ModifyItemsTest3Logic(useAutoCommitAsFlag: true);
+
+        [Fact]
+        public void ModifyItemsTest3() => ModifyItemsTest3Logic(useAutoCommitAsFlag: false);
+
+        public void ModifyItemsTest3Logic(bool useAutoCommitAsFlag)
+#else
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void ModifyItemsTest3(bool useAutoCommitAsFlag)
+#endif
         {
             string _file = TestData.GetPathTo(@"PackagesConfig\test.3.tmp");
             if(File.Exists(_file)) File.Delete(_file);
 
-            using TempPackagesConfig pkg = new(_file, customNew);
+            PackagesConfigOptions options = customNew;
+            if(useAutoCommitAsFlag) options |= PackagesConfigOptions.AutoCommit;
+
+            using TempPackagesConfig pkg = new(_file, options);
             Assert.Equal(pkg.File, _file);
             Assert.Empty(pkg.Packages);
 
@@ -312,7 +327,7 @@ namespace MvsSlnTest.Projects
             const string _P2 = "Fnv1a128";
             const string _P3 = "Huid";
 
-            pkg.AutoCommit = true;
+            if(!useAutoCommitAsFlag) pkg.AutoCommit = true;
 
             Assert.True(pkg.AddPackage(_P1, "1.1.0"));
             pkg.Rollback();

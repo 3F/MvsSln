@@ -152,6 +152,8 @@ namespace net.r_eg.MvsSln.Projects
             }
 
             xml = Load(options);
+
+            if(options.HasFlag(PackagesConfigOptions.AutoCommit)) AutoCommit = true;
         }
 
         protected PackagesConfig() { }
